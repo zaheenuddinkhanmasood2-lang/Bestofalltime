@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyShare - Share Notes with Classmates</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
@@ -18,10 +21,14 @@
                 <span>StudyShare</span>
             </div>
             <div class="nav-menu" id="nav-menu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#notes" class="nav-link">My Notes</a>
-                <a href="#shared" class="nav-link">Shared</a>
+                <a href="#home" class="nav-link" data-page="home">Home</a>
+                <a href="#features" class="nav-link" data-page="features">Features</a>
+                <a href="#about" class="nav-link" data-page="about">About</a>
+                <a href="#contact" class="nav-link" data-page="contact">Contact</a>
+                <a href="#dashboard" class="nav-link" data-page="dashboard" style="display: none;">Dashboard</a>
+                <a href="#notes" class="nav-link" data-page="notes" style="display: none;">My Notes</a>
+                <a href="#shared" class="nav-link" data-page="shared" style="display: none;">Shared</a>
+                <a href="#profile" class="nav-link" data-page="profile" style="display: none;">Profile</a>
                 <div class="nav-auth">
                     <button class="btn-login" id="loginBtn">Login</button>
                     <button class="btn-register" id="registerBtn">Sign Up</button>
@@ -35,64 +42,123 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Share Knowledge, 
-                    <span class="gradient-text">Build Together</span>
-                </h1>
-                <p class="hero-description">
-                    The ultimate platform for students to share notes, collaborate on projects, 
-                    and learn together. Transform your study experience with our modern, intuitive interface.
-                </p>
-                <div class="hero-buttons">
-                    <button class="btn-primary" id="getStartedBtn">Get Started Free</button>
-                    <button class="btn-secondary" id="watchDemoBtn">
-                        <i class="fas fa-play"></i>
-                        Watch Demo
-                    </button>
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Share Knowledge,
+                        <span class="gradient-text">Build Together</span>
+                    </h1>
+                    <p class="hero-description">
+                        The ultimate platform for students to share notes, collaborate on projects,
+                        and learn together. Transform your study experience with our modern, intuitive interface.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn-primary" id="getStartedBtn">Get Started Free</button>
+                        <button class="btn-secondary" id="watchDemoBtn">
+                            <i class="fas fa-play"></i>
+                            Watch Demo
+                        </button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">10K+</span>
+                            <span class="stat-label">Students</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">50K+</span>
+                            <span class="stat-label">Notes Shared</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">95%</span>
+                            <span class="stat-label">Satisfaction</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="stat-number">10K+</span>
-                        <span class="stat-label">Students</span>
+                <div class="hero-visual">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Math Notes</span>
                     </div>
-                    <div class="stat">
-                        <span class="stat-number">50K+</span>
-                        <span class="stat-label">Notes Shared</span>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-atom"></i>
+                        <span>Physics</span>
                     </div>
-                    <div class="stat">
-                        <span class="stat-number">95%</span>
-                        <span class="stat-label">Satisfaction</span>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-code"></i>
+                        <span>Programming</span>
+                    </div>
+                    <div class="floating-card card-4">
+                        <i class="fas fa-book"></i>
+                        <span>Literature</span>
                     </div>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="floating-card card-1">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Math Notes</span>
-                </div>
-                <div class="floating-card card-2">
-                    <i class="fas fa-atom"></i>
-                    <span>Physics</span>
-                </div>
-                <div class="floating-card card-3">
-                    <i class="fas fa-code"></i>
-                    <span>Programming</span>
-                </div>
-                <div class="floating-card card-4">
-                    <i class="fas fa-book"></i>
-                    <span>Literature</span>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Why Choose StudyShare?</h2>
+                    <p class="section-description">
+                        Powerful features designed specifically for students and educators
+                    </p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <h3>Easy Sharing</h3>
+                        <p>Share notes instantly with your classmates using simple links or invite codes</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h3>Real-time Editing</h3>
+                        <p>Collaborate on notes in real-time with live editing and instant updates</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Smart Search</h3>
+                        <p>Find any note instantly with our powerful search and tagging system</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Mobile Ready</h3>
+                        <p>Access your notes anywhere with our fully responsive design</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3>Secure & Private</h3>
+                        <p>Your notes are encrypted and secure with granular privacy controls</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3>Version History</h3>
+                        <p>Track changes and revert to previous versions of your notes</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Features Page -->
+    <div id="features" class="page">
+        <div class="container" style="padding: 80px 0;">
             <div class="section-header">
                 <h2 class="section-title">Why Choose StudyShare?</h2>
                 <p class="section-description">
@@ -100,42 +166,42 @@
                 </p>
             </div>
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card stagger-animation">
                     <div class="feature-icon">
                         <i class="fas fa-share-alt"></i>
                     </div>
                     <h3>Easy Sharing</h3>
                     <p>Share notes instantly with your classmates using simple links or invite codes</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card stagger-animation">
                     <div class="feature-icon">
                         <i class="fas fa-edit"></i>
                     </div>
                     <h3>Real-time Editing</h3>
                     <p>Collaborate on notes in real-time with live editing and instant updates</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card stagger-animation">
                     <div class="feature-icon">
                         <i class="fas fa-search"></i>
                     </div>
                     <h3>Smart Search</h3>
                     <p>Find any note instantly with our powerful search and tagging system</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card stagger-animation">
                     <div class="feature-icon">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
                     <h3>Mobile Ready</h3>
                     <p>Access your notes anywhere with our fully responsive design</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card stagger-animation">
                     <div class="feature-icon">
                         <i class="fas fa-lock"></i>
                     </div>
                     <h3>Secure & Private</h3>
                     <p>Your notes are encrypted and secure with granular privacy controls</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card stagger-animation">
                     <div class="feature-icon">
                         <i class="fas fa-history"></i>
                     </div>
@@ -144,47 +210,224 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Notes Section -->
-    <section id="notes" class="notes-section">
-        <div class="container">
-            <div class="notes-header">
-                <h2>My Notes</h2>
-                <button class="btn-primary" id="createNoteBtn">
-                    <i class="fas fa-plus"></i>
-                    Create New Note
-                </button>
+    <!-- About Page -->
+    <div id="about" class="page">
+        <div class="about">
+            <div class="about-section">
+                <h2>About StudyShare</h2>
+                <p>StudyShare is a modern, intuitive platform designed to revolutionize how students collaborate and
+                    share knowledge. Built with the latest web technologies and inspired by the best design practices,
+                    we aim to make learning more collaborative and accessible.</p>
+                <p>Our mission is to break down barriers between students and create a global community of learners who
+                    support each other's academic journey.</p>
             </div>
-            <div class="notes-filters">
-                <input type="text" placeholder="Search notes..." class="search-input" id="searchInput">
-                <select class="filter-select" id="categoryFilter">
-                    <option value="">All Categories</option>
-                    <option value="math">Mathematics</option>
-                    <option value="science">Science</option>
-                    <option value="programming">Programming</option>
-                    <option value="literature">Literature</option>
-                    <option value="history">History</option>
-                </select>
+
+            <div class="about-section">
+                <h2>Our Vision</h2>
+                <p>We envision a world where knowledge flows freely between students, where collaboration is seamless,
+                    and where every student has access to the resources they need to succeed academically.</p>
             </div>
-            <div class="notes-grid" id="notesGrid">
-                <!-- Notes will be dynamically added here -->
+
+            <div class="about-section">
+                <h2>Meet Our Team</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-member-avatar">JD</div>
+                        <h3>John Doe</h3>
+                        <p>Founder & CEO</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-member-avatar">JS</div>
+                        <h3>Jane Smith</h3>
+                        <p>Lead Developer</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-member-avatar">MJ</div>
+                        <h3>Mike Johnson</h3>
+                        <p>UI/UX Designer</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Shared Notes Section -->
-    <section id="shared" class="shared-section">
-        <div class="container">
+    <!-- Contact Page -->
+    <div id="contact" class="page">
+        <div class="contact">
             <div class="section-header">
-                <h2>Shared with Me</h2>
-                <p>Notes shared by your classmates</p>
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="section-description">Have questions or feedback? We'd love to hear from you!</p>
             </div>
-            <div class="shared-notes-grid" id="sharedNotesGrid">
-                <!-- Shared notes will be dynamically added here -->
+
+            <div class="contact-form">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="contactName">Name</label>
+                        <input type="text" id="contactName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmail">Email</label>
+                        <input type="email" id="contactEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactSubject">Subject</label>
+                        <input type="text" id="contactSubject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMessage">Message</label>
+                        <textarea id="contactMessage" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Send Message</button>
+                </form>
+            </div>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-item-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email</h3>
+                    <p>support@studyshare.com</p>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-item-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3>Phone</h3>
+                    <p>+1 (555) 123-4567</p>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-item-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Address</h3>
+                    <p>123 Learning St, Education City</p>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard" class="page">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1>Dashboard</h1>
+                <p>Welcome back! Here's an overview of your activity.</p>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-card-icon">
+                        <i class="fas fa-sticky-note"></i>
+                    </div>
+                    <div class="stat-card-number" id="totalNotes">0</div>
+                    <div class="stat-card-label">Total Notes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="stat-card-number" id="sharedNotes">0</div>
+                    <div class="stat-card-label">Shared Notes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="stat-card-number" id="receivedNotes">0</div>
+                    <div class="stat-card-label">Received Notes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="stat-card-number" id="thisWeek">0</div>
+                    <div class="stat-card-label">This Week</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Page -->
+    <div id="notes" class="page">
+        <!-- Notes Section -->
+        <section class="notes-section">
+            <div class="container">
+                <div class="notes-header">
+                    <h2>My Notes</h2>
+                    <button class="btn-primary" id="createNoteBtn">
+                        <i class="fas fa-plus"></i>
+                        Create New Note
+                    </button>
+                </div>
+                <div class="notes-filters">
+                    <input type="text" placeholder="Search notes..." class="search-input" id="searchInput">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="math">Mathematics</option>
+                        <option value="science">Science</option>
+                        <option value="programming">Programming</option>
+                        <option value="literature">Literature</option>
+                        <option value="history">History</option>
+                    </select>
+                </div>
+                <div class="notes-grid" id="notesGrid">
+                    <!-- Notes will be dynamically added here -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Shared Notes Page -->
+    <div id="shared" class="page">
+        <!-- Shared Notes Section -->
+        <section class="shared-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Shared with Me</h2>
+                    <p>Notes shared by your classmates</p>
+                </div>
+                <div class="shared-notes-grid" id="sharedNotesGrid">
+                    <!-- Shared notes will be dynamically added here -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile" class="page">
+        <div class="profile">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">U</div>
+                <h1 id="profileName">User Name</h1>
+                <p id="profileEmail">user@example.com</p>
+            </div>
+
+            <div class="profile-info">
+                <h2>Profile Information</h2>
+                <div class="profile-field">
+                    <label for="profileNameInput">Full Name</label>
+                    <input type="text" id="profileNameInput" value="">
+                </div>
+                <div class="profile-field">
+                    <label for="profileEmailInput">Email</label>
+                    <input type="email" id="profileEmailInput" value="" readonly>
+                </div>
+                <div class="profile-field">
+                    <label for="profileBio">Bio</label>
+                    <textarea id="profileBio" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                <button class="btn-primary" id="saveProfileBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
 
     <!-- Login Modal -->
     <div class="modal" id="loginModal">
@@ -267,4 +510,5 @@
     </script>
     <script src="script.js"></script>
 </body>
+
 </html>

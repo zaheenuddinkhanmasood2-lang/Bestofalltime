@@ -29,10 +29,10 @@ class StudyShare {
         // Subscribe to shared notes changes
         this.supabase
             .channel('shared_notes_changes')
-            .on('postgres_changes', 
-                { 
-                    event: 'INSERT', 
-                    schema: 'public', 
+            .on('postgres_changes',
+                {
+                    event: 'INSERT',
+                    schema: 'public',
                     table: 'shared_notes',
                     filter: `shared_with=eq.${this.currentUser?.id || ''}`
                 },
@@ -76,10 +76,12 @@ class StudyShare {
 
     init() {
         this.setupEventListeners();
+        this.setupPageRouting();
         this.checkAuthStatus();
         this.renderNotes();
         this.renderSharedNotes();
         this.setupMobileMenu();
+        this.setupScrollEffects();
     }
 
     // Authentication Methods
@@ -121,21 +123,56 @@ class StudyShare {
             registerBtn.textContent = 'Logout';
             registerBtn.onclick = () => this.logout();
 
-            // Show user-specific sections
-            document.getElementById('notes').style.display = 'block';
-            document.getElementById('shared').style.display = 'block';
+            // Show user-specific navigation items
+            document.querySelector('[data-page="dashboard"]').style.display = 'block';
+            document.querySelector('[data-page="notes"]').style.display = 'block';
+            document.querySelector('[data-page="shared"]').style.display = 'block';
+            document.querySelector('[data-page="profile"]').style.display = 'block';
+
+            // Update profile information
+            this.updateProfileUI();
         } else {
             loginBtn.textContent = 'Login';
             registerBtn.textContent = 'Sign Up';
             registerBtn.onclick = () => this.showRegisterModal();
 
-            // Hide user-specific sections
-            document.getElementById('notes').style.display = 'none';
-            document.getElementById('shared').style.display = 'none';
+            // Hide user-specific navigation items
+            document.querySelector('[data-page="dashboard"]').style.display = 'none';
+            document.querySelector('[data-page="notes"]').style.display = 'none';
+            document.querySelector('[data-page="shared"]').style.display = 'none';
+            document.querySelector('[data-page="profile"]').style.display = 'none';
+        }
+    }
+
+    updateProfileUI() {
+        if (!this.currentUser) return;
+
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileName = document.getElementById('profileName');
+        const profileEmail = document.getElementById('profileEmail');
+        const profileNameInput = document.getElementById('profileNameInput');
+        const profileEmailInput = document.getElementById('profileEmailInput');
+
+        if (profileAvatar) {
+            profileAvatar.textContent = this.currentUser.name.charAt(0).toUpperCase();
+        }
+        if (profileName) {
+            profileName.textContent = this.currentUser.name;
+        }
+        if (profileEmail) {
+            profileEmail.textContent = this.currentUser.email;
+        }
+        if (profileNameInput) {
+            profileNameInput.value = this.currentUser.name;
+        }
+        if (profileEmailInput) {
+            profileEmailInput.value = this.currentUser.email;
         }
     }
 
     async login(email, password) {
+        this.showLoading();
+
         if (this.supabase) {
             try {
                 const { data, error } = await this.supabase.auth.signInWithPassword({
@@ -144,6 +181,7 @@ class StudyShare {
                 });
 
                 if (error) {
+                    this.hideLoading();
                     this.showMessage(error.message, 'error');
                     return false;
                 }
@@ -154,15 +192,18 @@ class StudyShare {
                     email: data.user.email,
                     created_at: data.user.created_at
                 };
-                
+
                 this.updateAuthUI();
                 await this.loadNotes();
                 await this.loadSharedNotes();
                 this.setupRealtimeSubscriptions();
+                this.hideLoading();
                 this.showMessage('Welcome back!', 'success');
                 this.hideModal('loginModal');
+                this.showPage('dashboard');
                 return true;
             } catch (error) {
+                this.hideLoading();
                 this.showMessage('Login failed. Please try again.', 'error');
                 return false;
             }
@@ -216,7 +257,7 @@ class StudyShare {
                         email: data.user.email,
                         created_at: data.user.created_at
                     };
-                    
+
                     this.updateAuthUI();
                     await this.loadNotes();
                     await this.loadSharedNotes();
@@ -418,18 +459,18 @@ class StudyShare {
                     .eq('author', this.currentUser.id)
                     .select()
                     .single();
-                
+
                 if (error) {
                     this.showMessage('Error updating note: ' + error.message, 'error');
                     return;
                 }
-                
+
                 // Update local notes array
                 const noteIndex = this.notes.findIndex(note => note.id === id);
                 if (noteIndex !== -1) {
                     this.notes[noteIndex] = data;
                 }
-                
+
                 this.renderNotes();
                 this.showMessage('Note updated successfully!', 'success');
             } catch (error) {
@@ -459,12 +500,12 @@ class StudyShare {
                         .delete()
                         .eq('id', id)
                         .eq('author', this.currentUser.id);
-                    
+
                     if (error) {
                         this.showMessage('Error deleting note: ' + error.message, 'error');
                         return;
                     }
-                    
+
                     this.notes = this.notes.filter(note => note.id !== id);
                     this.renderNotes();
                     this.showMessage('Note deleted successfully!', 'success');
@@ -488,19 +529,19 @@ class StudyShare {
         if (this.supabase) {
             try {
                 let shareCode = note.share_code;
-                
+
                 if (!note.is_shared) {
                     // Generate share code using Supabase function
                     const { data, error } = await this.supabase
                         .rpc('share_note', { note_uuid: id });
-                    
+
                     if (error) {
                         this.showMessage('Error sharing note: ' + error.message, 'error');
                         return;
                     }
-                    
+
                     shareCode = data;
-                    
+
                     // Update local note
                     const noteIndex = this.notes.findIndex(n => n.id === id);
                     if (noteIndex !== -1) {
@@ -510,7 +551,7 @@ class StudyShare {
                 }
 
                 const shareUrl = `${window.location.origin}${window.location.pathname}?shared=${shareCode}`;
-                
+
                 // Copy to clipboard
                 navigator.clipboard.writeText(shareUrl).then(() => {
                     this.showMessage('Share link copied to clipboard!', 'success');
@@ -538,7 +579,7 @@ class StudyShare {
             }
 
             const shareUrl = `${window.location.origin}${window.location.pathname}?shared=${note.shareCode}`;
-            
+
             // Copy to clipboard
             navigator.clipboard.writeText(shareUrl).then(() => {
                 this.showMessage('Share link copied to clipboard!', 'success');
@@ -567,25 +608,25 @@ class StudyShare {
                 // First, get the note details using the share code
                 const { data: noteData, error: noteError } = await this.supabase
                     .rpc('access_shared_note', { share_code_param: shareCode });
-                
+
                 if (noteError || !noteData || noteData.length === 0) {
                     this.showMessage('Invalid or expired share link', 'error');
                     return null;
                 }
-                
+
                 const note = noteData[0];
-                
+
                 // Add to shared notes if not already there
                 const { error: addError } = await this.supabase
                     .rpc('add_shared_note', { share_code_param: shareCode });
-                
+
                 if (addError && !addError.message.includes('already shared')) {
                     console.error('Error adding shared note:', addError);
                 }
-                
+
                 // Refresh shared notes list
                 await this.loadSharedNotes();
-                
+
                 return {
                     id: note.note_id,
                     title: note.title,
@@ -851,6 +892,103 @@ class StudyShare {
         }, 3000);
     }
 
+    setupPageRouting() {
+        // Handle navigation clicks
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.getAttribute('data-page');
+                if (page) {
+                    this.showPage(page);
+                }
+            });
+        });
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', (e) => {
+            const page = e.state?.page || 'home';
+            this.showPage(page, false);
+        });
+
+        // Initialize with current page
+        const currentPage = window.location.hash.replace('#', '') || 'home';
+        this.showPage(currentPage, false);
+    }
+
+    showPage(pageId, updateHistory = true) {
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+
+        // Show target page
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.classList.add('active');
+
+            // Add stagger animation to cards
+            setTimeout(() => {
+                const cards = targetPage.querySelectorAll('.stagger-animation');
+                cards.forEach((card, index) => {
+                    card.style.animationDelay = `${index * 0.1}s`;
+                });
+            }, 100);
+        }
+
+        // Update navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        const activeLink = document.querySelector(`[data-page="${pageId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+
+        // Update URL
+        if (updateHistory) {
+            history.pushState({ page: pageId }, '', `#${pageId}`);
+        }
+
+        // Load page-specific data
+        this.loadPageData(pageId);
+    }
+
+    loadPageData(pageId) {
+        switch (pageId) {
+            case 'dashboard':
+                this.loadDashboardData();
+                break;
+            case 'notes':
+                this.renderNotes();
+                break;
+            case 'shared':
+                this.renderSharedNotes();
+                break;
+            case 'profile':
+                this.updateProfileUI();
+                break;
+        }
+    }
+
+    loadDashboardData() {
+        if (!this.currentUser) return;
+
+        const totalNotes = this.notes.length;
+        const sharedNotes = this.notes.filter(note => note.is_shared || note.isShared).length;
+        const receivedNotes = this.sharedNotes.length;
+        const thisWeek = this.notes.filter(note => {
+            const noteDate = new Date(note.updated_at || note.updatedAt);
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            return noteDate > weekAgo;
+        }).length;
+
+        document.getElementById('totalNotes').textContent = totalNotes;
+        document.getElementById('sharedNotes').textContent = sharedNotes;
+        document.getElementById('receivedNotes').textContent = receivedNotes;
+        document.getElementById('thisWeek').textContent = thisWeek;
+    }
+
     setupMobileMenu() {
         const navToggle = document.getElementById('nav-toggle');
         const navMenu = document.getElementById('nav-menu');
@@ -867,6 +1005,37 @@ class StudyShare {
                 navToggle.classList.remove('active');
             });
         });
+    }
+
+    setupScrollEffects() {
+        let lastScrollY = window.scrollY;
+        const navbar = document.querySelector('.navbar');
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            lastScrollY = currentScrollY;
+        });
+    }
+
+    showLoading() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('show');
+        }
+    }
+
+    hideLoading() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.remove('show');
+        }
     }
 
     setupEventListeners() {
@@ -953,10 +1122,21 @@ class StudyShare {
         // Hero buttons
         document.getElementById('getStartedBtn').addEventListener('click', () => {
             if (this.currentUser) {
-                document.getElementById('notes').scrollIntoView({ behavior: 'smooth' });
+                this.showPage('dashboard');
             } else {
                 this.showModal('registerModal');
             }
+        });
+
+        // Contact form
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleContactForm();
+        });
+
+        // Profile save
+        document.getElementById('saveProfileBtn').addEventListener('click', () => {
+            this.saveProfile();
         });
 
         document.getElementById('watchDemoBtn').addEventListener('click', () => {
@@ -1027,14 +1207,56 @@ class StudyShare {
             if (note) {
                 this.showMessage('Shared note loaded successfully!', 'success');
                 this.renderSharedNotes();
-                // Scroll to shared notes section
+                // Navigate to shared notes page
                 setTimeout(() => {
-                    document.getElementById('shared').scrollIntoView({ behavior: 'smooth' });
+                    this.showPage('shared');
                 }, 1000);
             } else {
                 this.showMessage('Invalid or expired share link', 'error');
             }
         }
+    }
+
+    handleContactForm() {
+        const name = document.getElementById('contactName').value;
+        const email = document.getElementById('contactEmail').value;
+        const subject = document.getElementById('contactSubject').value;
+        const message = document.getElementById('contactMessage').value;
+
+        if (!name || !email || !subject || !message) {
+            this.showMessage('Please fill in all fields', 'error');
+            return;
+        }
+
+        // Simulate form submission
+        this.showLoading();
+        setTimeout(() => {
+            this.hideLoading();
+            this.showMessage('Thank you for your message! We\'ll get back to you soon.', 'success');
+            document.getElementById('contactForm').reset();
+        }, 2000);
+    }
+
+    saveProfile() {
+        if (!this.currentUser) return;
+
+        const name = document.getElementById('profileNameInput').value;
+        const bio = document.getElementById('profileBio').value;
+
+        if (!name.trim()) {
+            this.showMessage('Name is required', 'error');
+            return;
+        }
+
+        // Update user data
+        this.currentUser.name = name;
+        this.currentUser.bio = bio;
+
+        // Update UI
+        this.updateProfileUI();
+        this.updateAuthUI();
+
+        this.showMessage('Profile updated successfully!', 'success');
     }
 }
 
