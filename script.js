@@ -1,13 +1,77 @@
-// StudyShare - Note Sharing Platform
+// StudyShare - Note Sharing Platform with Supabase
 class StudyShare {
     constructor() {
         this.currentUser = null;
-        this.notes = this.loadNotes();
-        this.sharedNotes = this.loadSharedNotes();
+        this.notes = [];
+        this.sharedNotes = [];
         this.currentNoteId = null;
         this.isEditing = false;
+        this.supabase = null;
 
+        this.initSupabase();
         this.init();
+    }
+
+    initSupabase() {
+        // Initialize Supabase client
+        if (typeof supabase !== 'undefined' && SUPABASE_URL && SUPABASE_ANON_KEY) {
+            this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('Supabase initialized successfully');
+            this.setupRealtimeSubscriptions();
+        } else {
+            console.warn('Supabase not configured. Using localStorage fallback.');
+        }
+    }
+
+    setupRealtimeSubscriptions() {
+        if (!this.supabase) return;
+
+        // Subscribe to shared notes changes
+        this.supabase
+            .channel('shared_notes_changes')
+            .on('postgres_changes', 
+                { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'shared_notes',
+                    filter: `shared_with=eq.${this.currentUser?.id || ''}`
+                },
+                (payload) => {
+                    console.log('New shared note received:', payload);
+                    this.loadSharedNotes();
+                    this.showMessage('You received a new shared note!', 'success');
+                }
+            )
+            .on('postgres_changes',
+                {
+                    event: 'DELETE',
+                    schema: 'public',
+                    table: 'shared_notes',
+                    filter: `shared_with=eq.${this.currentUser?.id || ''}`
+                },
+                (payload) => {
+                    console.log('Shared note removed:', payload);
+                    this.loadSharedNotes();
+                }
+            )
+            .subscribe();
+
+        // Subscribe to notes changes (for real-time updates)
+        this.supabase
+            .channel('notes_changes')
+            .on('postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'notes',
+                    filter: `author=eq.${this.currentUser?.id || ''}`
+                },
+                (payload) => {
+                    console.log('Note changed:', payload);
+                    this.loadNotes();
+                }
+            )
+            .subscribe();
     }
 
     init() {
@@ -19,11 +83,31 @@ class StudyShare {
     }
 
     // Authentication Methods
-    checkAuthStatus() {
-        const user = localStorage.getItem('currentUser');
-        if (user) {
-            this.currentUser = JSON.parse(user);
-            this.updateAuthUI();
+    async checkAuthStatus() {
+        if (this.supabase) {
+            try {
+                const { data: { user }, error } = await this.supabase.auth.getUser();
+                if (user && !error) {
+                    this.currentUser = {
+                        id: user.id,
+                        name: user.user_metadata?.full_name || user.email,
+                        email: user.email,
+                        created_at: user.created_at
+                    };
+                    this.updateAuthUI();
+                    await this.loadNotes();
+                    await this.loadSharedNotes();
+                }
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+            }
+        } else {
+            // Fallback to localStorage
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                this.currentUser = JSON.parse(user);
+                this.updateAuthUI();
+            }
         }
     }
 
@@ -51,61 +135,145 @@ class StudyShare {
         }
     }
 
-    login(email, password) {
-        const users = this.loadUsers();
-        const user = users.find(u => u.email === email && u.password === password);
+    async login(email, password) {
+        if (this.supabase) {
+            try {
+                const { data, error } = await this.supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
 
-        if (user) {
-            this.currentUser = user;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            this.updateAuthUI();
-            this.renderNotes();
-            this.showMessage('Welcome back!', 'success');
-            this.hideModal('loginModal');
-            return true;
+                if (error) {
+                    this.showMessage(error.message, 'error');
+                    return false;
+                }
+
+                this.currentUser = {
+                    id: data.user.id,
+                    name: data.user.user_metadata?.full_name || data.user.email,
+                    email: data.user.email,
+                    created_at: data.user.created_at
+                };
+                
+                this.updateAuthUI();
+                await this.loadNotes();
+                await this.loadSharedNotes();
+                this.setupRealtimeSubscriptions();
+                this.showMessage('Welcome back!', 'success');
+                this.hideModal('loginModal');
+                return true;
+            } catch (error) {
+                this.showMessage('Login failed. Please try again.', 'error');
+                return false;
+            }
         } else {
-            this.showMessage('Invalid email or password', 'error');
-            return false;
+            // Fallback to localStorage
+            const users = this.loadUsers();
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                this.currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                this.updateAuthUI();
+                this.renderNotes();
+                this.showMessage('Welcome back!', 'success');
+                this.hideModal('loginModal');
+                return true;
+            } else {
+                this.showMessage('Invalid email or password', 'error');
+                return false;
+            }
         }
     }
 
-    register(name, email, password, confirmPassword) {
+    async register(name, email, password, confirmPassword) {
         if (password !== confirmPassword) {
             this.showMessage('Passwords do not match', 'error');
             return false;
         }
 
-        const users = this.loadUsers();
-        if (users.find(u => u.email === email)) {
-            this.showMessage('Email already exists', 'error');
-            return false;
+        if (this.supabase) {
+            try {
+                const { data, error } = await this.supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: name
+                        }
+                    }
+                });
+
+                if (error) {
+                    this.showMessage(error.message, 'error');
+                    return false;
+                }
+
+                if (data.user) {
+                    this.currentUser = {
+                        id: data.user.id,
+                        name: name,
+                        email: data.user.email,
+                        created_at: data.user.created_at
+                    };
+                    
+                    this.updateAuthUI();
+                    await this.loadNotes();
+                    await this.loadSharedNotes();
+                    this.setupRealtimeSubscriptions();
+                    this.showMessage('Account created successfully! Please check your email to verify your account.', 'success');
+                    this.hideModal('registerModal');
+                    return true;
+                }
+            } catch (error) {
+                this.showMessage('Registration failed. Please try again.', 'error');
+                return false;
+            }
+        } else {
+            // Fallback to localStorage
+            const users = this.loadUsers();
+            if (users.find(u => u.email === email)) {
+                this.showMessage('Email already exists', 'error');
+                return false;
+            }
+
+            const newUser = {
+                id: Date.now().toString(),
+                name,
+                email,
+                password,
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            this.currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            this.updateAuthUI();
+            this.renderNotes();
+            this.showMessage('Account created successfully!', 'success');
+            this.hideModal('registerModal');
+            return true;
         }
-
-        const newUser = {
-            id: Date.now().toString(),
-            name,
-            email,
-            password,
-            createdAt: new Date().toISOString()
-        };
-
-        users.push(newUser);
-        localStorage.setItem('users', JSON.stringify(users));
-
-        this.currentUser = newUser;
-        localStorage.setItem('currentUser', JSON.stringify(newUser));
-        this.updateAuthUI();
-        this.renderNotes();
-        this.showMessage('Account created successfully!', 'success');
-        this.hideModal('registerModal');
-        return true;
     }
 
-    logout() {
+    async logout() {
+        if (this.supabase) {
+            try {
+                await this.supabase.auth.signOut();
+            } catch (error) {
+                console.error('Error signing out:', error);
+            }
+        }
+
         this.currentUser = null;
         localStorage.removeItem('currentUser');
+        this.notes = [];
+        this.sharedNotes = [];
         this.updateAuthUI();
         this.renderNotes();
+        this.renderSharedNotes();
         this.showMessage('Logged out successfully', 'success');
     }
 
@@ -114,125 +282,349 @@ class StudyShare {
     }
 
     // Note Management Methods
-    loadNotes() {
-        return JSON.parse(localStorage.getItem('notes') || '[]');
+    async loadNotes() {
+        if (this.supabase && this.currentUser) {
+            try {
+                const { data, error } = await this.supabase
+                    .from('notes')
+                    .select('*')
+                    .eq('author', this.currentUser.id)
+                    .order('updated_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error loading notes:', error);
+                    this.notes = [];
+                } else {
+                    this.notes = data || [];
+                }
+            } catch (error) {
+                console.error('Error loading notes:', error);
+                this.notes = [];
+            }
+        } else {
+            // Fallback to localStorage
+            this.notes = JSON.parse(localStorage.getItem('notes') || '[]');
+        }
     }
 
-    loadSharedNotes() {
-        return JSON.parse(localStorage.getItem('sharedNotes') || '[]');
+    async loadSharedNotes() {
+        if (this.supabase && this.currentUser) {
+            try {
+                const { data, error } = await this.supabase
+                    .from('shared_notes')
+                    .select(`
+                        *,
+                        notes!inner(title, content, category, author, author_name, created_at, updated_at)
+                    `)
+                    .eq('shared_with', this.currentUser.id)
+                    .order('shared_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error loading shared notes:', error);
+                    this.sharedNotes = [];
+                } else {
+                    this.sharedNotes = (data || []).map(item => ({
+                        id: item.id,
+                        originalId: item.note_id,
+                        title: item.notes.title,
+                        content: item.notes.content,
+                        category: item.notes.category,
+                        author: item.notes.author,
+                        authorName: item.notes.author_name,
+                        sharedAt: item.shared_at,
+                        shareCode: item.share_code
+                    }));
+                }
+            } catch (error) {
+                console.error('Error loading shared notes:', error);
+                this.sharedNotes = [];
+            }
+        } else {
+            // Fallback to localStorage
+            this.sharedNotes = JSON.parse(localStorage.getItem('sharedNotes') || '[]');
+        }
     }
 
-    saveNotes() {
-        localStorage.setItem('notes', JSON.stringify(this.notes));
-    }
-
-    saveSharedNotes() {
-        localStorage.setItem('sharedNotes', JSON.stringify(this.sharedNotes));
-    }
-
-    createNote(title, content, category = 'general') {
+    async createNote(title, content, category = 'general') {
         if (!this.currentUser) {
             this.showMessage('Please login to create notes', 'error');
             return;
         }
 
-        const note = {
-            id: Date.now().toString(),
-            title: title || 'Untitled Note',
-            content: content || '',
-            category,
-            author: this.currentUser.id,
-            authorName: this.currentUser.name,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            isShared: false,
-            shareCode: null
-        };
+        if (this.supabase) {
+            try {
+                const { data, error } = await this.supabase
+                    .from('notes')
+                    .insert({
+                        title: title || 'Untitled Note',
+                        content: content || '',
+                        category: category,
+                        author: this.currentUser.id,
+                        author_name: this.currentUser.name,
+                        is_shared: false,
+                        share_code: null
+                    })
+                    .select()
+                    .single();
 
-        this.notes.push(note);
-        this.saveNotes();
-        this.renderNotes();
-        this.showMessage('Note created successfully!', 'success');
-        return note;
-    }
+                if (error) {
+                    this.showMessage('Error creating note: ' + error.message, 'error');
+                    return;
+                }
 
-    updateNote(id, title, content, category) {
-        const noteIndex = this.notes.findIndex(note => note.id === id);
-        if (noteIndex !== -1) {
-            this.notes[noteIndex].title = title;
-            this.notes[noteIndex].content = content;
-            this.notes[noteIndex].category = category;
-            this.notes[noteIndex].updatedAt = new Date().toISOString();
-            this.saveNotes();
+                this.notes.unshift(data);
+                this.renderNotes();
+                this.showMessage('Note created successfully!', 'success');
+                return data;
+            } catch (error) {
+                this.showMessage('Error creating note. Please try again.', 'error');
+                return;
+            }
+        } else {
+            // Fallback to localStorage
+            const note = {
+                id: Date.now().toString(),
+                title: title || 'Untitled Note',
+                content: content || '',
+                category,
+                author: this.currentUser.id,
+                authorName: this.currentUser.name,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                isShared: false,
+                shareCode: null
+            };
+
+            this.notes.push(note);
+            localStorage.setItem('notes', JSON.stringify(this.notes));
             this.renderNotes();
-            this.showMessage('Note updated successfully!', 'success');
+            this.showMessage('Note created successfully!', 'success');
+            return note;
         }
     }
 
-    deleteNote(id) {
+    async updateNote(id, title, content, category) {
+        if (this.supabase) {
+            try {
+                const { data, error } = await this.supabase
+                    .from('notes')
+                    .update({
+                        title: title,
+                        content: content,
+                        category: category,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', id)
+                    .eq('author', this.currentUser.id)
+                    .select()
+                    .single();
+                
+                if (error) {
+                    this.showMessage('Error updating note: ' + error.message, 'error');
+                    return;
+                }
+                
+                // Update local notes array
+                const noteIndex = this.notes.findIndex(note => note.id === id);
+                if (noteIndex !== -1) {
+                    this.notes[noteIndex] = data;
+                }
+                
+                this.renderNotes();
+                this.showMessage('Note updated successfully!', 'success');
+            } catch (error) {
+                this.showMessage('Error updating note. Please try again.', 'error');
+            }
+        } else {
+            // Fallback to localStorage
+            const noteIndex = this.notes.findIndex(note => note.id === id);
+            if (noteIndex !== -1) {
+                this.notes[noteIndex].title = title;
+                this.notes[noteIndex].content = content;
+                this.notes[noteIndex].category = category;
+                this.notes[noteIndex].updatedAt = new Date().toISOString();
+                localStorage.setItem('notes', JSON.stringify(this.notes));
+                this.renderNotes();
+                this.showMessage('Note updated successfully!', 'success');
+            }
+        }
+    }
+
+    async deleteNote(id) {
         if (confirm('Are you sure you want to delete this note?')) {
-            this.notes = this.notes.filter(note => note.id !== id);
-            this.saveNotes();
-            this.renderNotes();
-            this.showMessage('Note deleted successfully!', 'success');
+            if (this.supabase) {
+                try {
+                    const { error } = await this.supabase
+                        .from('notes')
+                        .delete()
+                        .eq('id', id)
+                        .eq('author', this.currentUser.id);
+                    
+                    if (error) {
+                        this.showMessage('Error deleting note: ' + error.message, 'error');
+                        return;
+                    }
+                    
+                    this.notes = this.notes.filter(note => note.id !== id);
+                    this.renderNotes();
+                    this.showMessage('Note deleted successfully!', 'success');
+                } catch (error) {
+                    this.showMessage('Error deleting note. Please try again.', 'error');
+                }
+            } else {
+                // Fallback to localStorage
+                this.notes = this.notes.filter(note => note.id !== id);
+                localStorage.setItem('notes', JSON.stringify(this.notes));
+                this.renderNotes();
+                this.showMessage('Note deleted successfully!', 'success');
+            }
         }
     }
 
-    shareNote(id) {
+    async shareNote(id) {
         const note = this.notes.find(n => n.id === id);
         if (!note) return;
 
-        if (!note.isShared) {
-            note.isShared = true;
-            note.shareCode = this.generateShareCode();
-            this.saveNotes();
+        if (this.supabase) {
+            try {
+                let shareCode = note.share_code;
+                
+                if (!note.is_shared) {
+                    // Generate share code using Supabase function
+                    const { data, error } = await this.supabase
+                        .rpc('share_note', { note_uuid: id });
+                    
+                    if (error) {
+                        this.showMessage('Error sharing note: ' + error.message, 'error');
+                        return;
+                    }
+                    
+                    shareCode = data;
+                    
+                    // Update local note
+                    const noteIndex = this.notes.findIndex(n => n.id === id);
+                    if (noteIndex !== -1) {
+                        this.notes[noteIndex].is_shared = true;
+                        this.notes[noteIndex].share_code = shareCode;
+                    }
+                }
+
+                const shareUrl = `${window.location.origin}${window.location.pathname}?shared=${shareCode}`;
+                
+                // Copy to clipboard
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    this.showMessage('Share link copied to clipboard!', 'success');
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = shareUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    this.showMessage('Share link copied to clipboard!', 'success');
+                });
+
+                this.renderNotes();
+            } catch (error) {
+                this.showMessage('Error sharing note. Please try again.', 'error');
+            }
+        } else {
+            // Fallback to localStorage
+            if (!note.isShared) {
+                note.isShared = true;
+                note.shareCode = this.generateShareCode();
+                localStorage.setItem('notes', JSON.stringify(this.notes));
+            }
+
+            const shareUrl = `${window.location.origin}${window.location.pathname}?shared=${note.shareCode}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                this.showMessage('Share link copied to clipboard!', 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = shareUrl;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                this.showMessage('Share link copied to clipboard!', 'success');
+            });
+
+            this.renderNotes();
         }
-
-        const shareUrl = `${window.location.origin}${window.location.pathname}?shared=${note.shareCode}`;
-
-        // Copy to clipboard
-        navigator.clipboard.writeText(shareUrl).then(() => {
-            this.showMessage('Share link copied to clipboard!', 'success');
-        }).catch(() => {
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = shareUrl;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            this.showMessage('Share link copied to clipboard!', 'success');
-        });
-
-        this.renderNotes();
     }
 
     generateShareCode() {
         return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
 
-    accessSharedNote(shareCode) {
-        const note = this.notes.find(n => n.shareCode === shareCode && n.isShared);
-        if (note) {
-            // Add to shared notes if not already there
-            if (!this.sharedNotes.find(sn => sn.originalId === note.id)) {
-                const sharedNote = {
-                    id: Date.now().toString(),
-                    originalId: note.id,
+    async accessSharedNote(shareCode) {
+        if (this.supabase) {
+            try {
+                // First, get the note details using the share code
+                const { data: noteData, error: noteError } = await this.supabase
+                    .rpc('access_shared_note', { share_code_param: shareCode });
+                
+                if (noteError || !noteData || noteData.length === 0) {
+                    this.showMessage('Invalid or expired share link', 'error');
+                    return null;
+                }
+                
+                const note = noteData[0];
+                
+                // Add to shared notes if not already there
+                const { error: addError } = await this.supabase
+                    .rpc('add_shared_note', { share_code_param: shareCode });
+                
+                if (addError && !addError.message.includes('already shared')) {
+                    console.error('Error adding shared note:', addError);
+                }
+                
+                // Refresh shared notes list
+                await this.loadSharedNotes();
+                
+                return {
+                    id: note.note_id,
                     title: note.title,
                     content: note.content,
                     category: note.category,
-                    author: note.author,
-                    authorName: note.authorName,
-                    sharedAt: new Date().toISOString(),
-                    shareCode: note.shareCode
+                    author: note.author_name,
+                    authorName: note.author_name,
+                    createdAt: note.created_at,
+                    updatedAt: note.updated_at
                 };
-                this.sharedNotes.push(sharedNote);
-                this.saveSharedNotes();
+            } catch (error) {
+                console.error('Error accessing shared note:', error);
+                this.showMessage('Error accessing shared note. Please try again.', 'error');
+                return null;
             }
-            return note;
+        } else {
+            // Fallback to localStorage
+            const note = this.notes.find(n => n.shareCode === shareCode && n.isShared);
+            if (note) {
+                // Add to shared notes if not already there
+                if (!this.sharedNotes.find(sn => sn.originalId === note.id)) {
+                    const sharedNote = {
+                        id: Date.now().toString(),
+                        originalId: note.id,
+                        title: note.title,
+                        content: note.content,
+                        category: note.category,
+                        author: note.author,
+                        authorName: note.authorName,
+                        sharedAt: new Date().toISOString(),
+                        shareCode: note.shareCode
+                    };
+                    this.sharedNotes.push(sharedNote);
+                    localStorage.setItem('sharedNotes', JSON.stringify(this.sharedNotes));
+                }
+                return note;
+            }
+            return null;
         }
-        return null;
     }
 
     // Rendering Methods
