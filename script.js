@@ -1,0 +1,700 @@
+// StudyShare - Note Sharing Platform
+class StudyShare {
+    constructor() {
+        this.currentUser = null;
+        this.notes = this.loadNotes();
+        this.sharedNotes = this.loadSharedNotes();
+        this.currentNoteId = null;
+        this.isEditing = false;
+
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.checkAuthStatus();
+        this.renderNotes();
+        this.renderSharedNotes();
+        this.setupMobileMenu();
+    }
+
+    // Authentication Methods
+    checkAuthStatus() {
+        const user = localStorage.getItem('currentUser');
+        if (user) {
+            this.currentUser = JSON.parse(user);
+            this.updateAuthUI();
+        }
+    }
+
+    updateAuthUI() {
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const navMenu = document.querySelector('.nav-menu');
+
+        if (this.currentUser) {
+            loginBtn.textContent = this.currentUser.name;
+            registerBtn.textContent = 'Logout';
+            registerBtn.onclick = () => this.logout();
+
+            // Show user-specific sections
+            document.getElementById('notes').style.display = 'block';
+            document.getElementById('shared').style.display = 'block';
+        } else {
+            loginBtn.textContent = 'Login';
+            registerBtn.textContent = 'Sign Up';
+            registerBtn.onclick = () => this.showRegisterModal();
+
+            // Hide user-specific sections
+            document.getElementById('notes').style.display = 'none';
+            document.getElementById('shared').style.display = 'none';
+        }
+    }
+
+    login(email, password) {
+        const users = this.loadUsers();
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if (user) {
+            this.currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            this.updateAuthUI();
+            this.renderNotes();
+            this.showMessage('Welcome back!', 'success');
+            this.hideModal('loginModal');
+            return true;
+        } else {
+            this.showMessage('Invalid email or password', 'error');
+            return false;
+        }
+    }
+
+    register(name, email, password, confirmPassword) {
+        if (password !== confirmPassword) {
+            this.showMessage('Passwords do not match', 'error');
+            return false;
+        }
+
+        const users = this.loadUsers();
+        if (users.find(u => u.email === email)) {
+            this.showMessage('Email already exists', 'error');
+            return false;
+        }
+
+        const newUser = {
+            id: Date.now().toString(),
+            name,
+            email,
+            password,
+            createdAt: new Date().toISOString()
+        };
+
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+
+        this.currentUser = newUser;
+        localStorage.setItem('currentUser', JSON.stringify(newUser));
+        this.updateAuthUI();
+        this.renderNotes();
+        this.showMessage('Account created successfully!', 'success');
+        this.hideModal('registerModal');
+        return true;
+    }
+
+    logout() {
+        this.currentUser = null;
+        localStorage.removeItem('currentUser');
+        this.updateAuthUI();
+        this.renderNotes();
+        this.showMessage('Logged out successfully', 'success');
+    }
+
+    loadUsers() {
+        return JSON.parse(localStorage.getItem('users') || '[]');
+    }
+
+    // Note Management Methods
+    loadNotes() {
+        return JSON.parse(localStorage.getItem('notes') || '[]');
+    }
+
+    loadSharedNotes() {
+        return JSON.parse(localStorage.getItem('sharedNotes') || '[]');
+    }
+
+    saveNotes() {
+        localStorage.setItem('notes', JSON.stringify(this.notes));
+    }
+
+    saveSharedNotes() {
+        localStorage.setItem('sharedNotes', JSON.stringify(this.sharedNotes));
+    }
+
+    createNote(title, content, category = 'general') {
+        if (!this.currentUser) {
+            this.showMessage('Please login to create notes', 'error');
+            return;
+        }
+
+        const note = {
+            id: Date.now().toString(),
+            title: title || 'Untitled Note',
+            content: content || '',
+            category,
+            author: this.currentUser.id,
+            authorName: this.currentUser.name,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            isShared: false,
+            shareCode: null
+        };
+
+        this.notes.push(note);
+        this.saveNotes();
+        this.renderNotes();
+        this.showMessage('Note created successfully!', 'success');
+        return note;
+    }
+
+    updateNote(id, title, content, category) {
+        const noteIndex = this.notes.findIndex(note => note.id === id);
+        if (noteIndex !== -1) {
+            this.notes[noteIndex].title = title;
+            this.notes[noteIndex].content = content;
+            this.notes[noteIndex].category = category;
+            this.notes[noteIndex].updatedAt = new Date().toISOString();
+            this.saveNotes();
+            this.renderNotes();
+            this.showMessage('Note updated successfully!', 'success');
+        }
+    }
+
+    deleteNote(id) {
+        if (confirm('Are you sure you want to delete this note?')) {
+            this.notes = this.notes.filter(note => note.id !== id);
+            this.saveNotes();
+            this.renderNotes();
+            this.showMessage('Note deleted successfully!', 'success');
+        }
+    }
+
+    shareNote(id) {
+        const note = this.notes.find(n => n.id === id);
+        if (!note) return;
+
+        if (!note.isShared) {
+            note.isShared = true;
+            note.shareCode = this.generateShareCode();
+            this.saveNotes();
+        }
+
+        const shareUrl = `${window.location.origin}${window.location.pathname}?shared=${note.shareCode}`;
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            this.showMessage('Share link copied to clipboard!', 'success');
+        }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = shareUrl;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            this.showMessage('Share link copied to clipboard!', 'success');
+        });
+
+        this.renderNotes();
+    }
+
+    generateShareCode() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+
+    accessSharedNote(shareCode) {
+        const note = this.notes.find(n => n.shareCode === shareCode && n.isShared);
+        if (note) {
+            // Add to shared notes if not already there
+            if (!this.sharedNotes.find(sn => sn.originalId === note.id)) {
+                const sharedNote = {
+                    id: Date.now().toString(),
+                    originalId: note.id,
+                    title: note.title,
+                    content: note.content,
+                    category: note.category,
+                    author: note.author,
+                    authorName: note.authorName,
+                    sharedAt: new Date().toISOString(),
+                    shareCode: note.shareCode
+                };
+                this.sharedNotes.push(sharedNote);
+                this.saveSharedNotes();
+            }
+            return note;
+        }
+        return null;
+    }
+
+    // Rendering Methods
+    renderNotes() {
+        if (!this.currentUser) return;
+
+        const notesGrid = document.getElementById('notesGrid');
+        const userNotes = this.notes.filter(note => note.author === this.currentUser.id);
+
+        if (userNotes.length === 0) {
+            notesGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-sticky-note"></i>
+                    <h3>No notes yet</h3>
+                    <p>Create your first note to get started!</p>
+                    <button class="btn-primary" onclick="studyShare.showCreateNoteModal()">
+                        <i class="fas fa-plus"></i>
+                        Create Note
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        notesGrid.innerHTML = userNotes.map(note => `
+            <div class="note-card" onclick="studyShare.openNote('${note.id}')">
+                <div class="note-card-header">
+                    <div>
+                        <div class="note-title">${this.escapeHtml(note.title)}</div>
+                        <div class="note-category">${note.category}</div>
+                    </div>
+                    <div class="note-actions">
+                        <button class="note-action" onclick="event.stopPropagation(); studyShare.shareNote('${note.id}')" title="Share">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        <button class="note-action" onclick="event.stopPropagation(); studyShare.deleteNote('${note.id}')" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="note-preview">${this.escapeHtml(note.content.substring(0, 150))}${note.content.length > 150 ? '...' : ''}</div>
+                <div class="note-meta">
+                    <span>Updated ${this.formatDate(note.updatedAt)}</span>
+                    ${note.isShared ? '<span><i class="fas fa-share-alt"></i> Shared</span>' : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    renderSharedNotes() {
+        const sharedNotesGrid = document.getElementById('sharedNotesGrid');
+
+        if (this.sharedNotes.length === 0) {
+            sharedNotesGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-users"></i>
+                    <h3>No shared notes</h3>
+                    <p>Notes shared by your classmates will appear here</p>
+                </div>
+            `;
+            return;
+        }
+
+        sharedNotesGrid.innerHTML = this.sharedNotes.map(note => `
+            <div class="note-card" onclick="studyShare.openSharedNote('${note.id}')">
+                <div class="note-card-header">
+                    <div>
+                        <div class="note-title">${this.escapeHtml(note.title)}</div>
+                        <div class="note-category">${note.category}</div>
+                    </div>
+                </div>
+                <div class="note-preview">${this.escapeHtml(note.content.substring(0, 150))}${note.content.length > 150 ? '...' : ''}</div>
+                <div class="note-meta">
+                    <span>By ${note.authorName}</span>
+                    <span>Shared ${this.formatDate(note.sharedAt)}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Modal Methods
+    showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+
+    showCreateNoteModal() {
+        if (!this.currentUser) {
+            this.showMessage('Please login to create notes', 'error');
+            return;
+        }
+        this.currentNoteId = null;
+        this.isEditing = false;
+        document.getElementById('noteTitle').value = '';
+        document.getElementById('noteContent').value = '';
+        this.showModal('noteEditorModal');
+    }
+
+    showEditNoteModal(noteId) {
+        const note = this.notes.find(n => n.id === noteId);
+        if (!note) return;
+
+        this.currentNoteId = noteId;
+        this.isEditing = true;
+        document.getElementById('noteTitle').value = note.title;
+        document.getElementById('noteContent').value = note.content;
+        this.showModal('noteEditorModal');
+    }
+
+    openNote(noteId) {
+        this.showEditNoteModal(noteId);
+    }
+
+    openSharedNote(sharedNoteId) {
+        const sharedNote = this.sharedNotes.find(n => n.id === sharedNoteId);
+        if (!sharedNote) return;
+
+        // Open in read-only mode
+        this.currentNoteId = null;
+        this.isEditing = false;
+        document.getElementById('noteTitle').value = sharedNote.title;
+        document.getElementById('noteContent').value = sharedNote.content;
+        document.getElementById('noteTitle').readOnly = true;
+        document.getElementById('noteContent').readOnly = true;
+        this.showModal('noteEditorModal');
+    }
+
+    // Search and Filter Methods
+    searchNotes(query) {
+        const userNotes = this.notes.filter(note => note.author === this.currentUser.id);
+        const filteredNotes = userNotes.filter(note =>
+            note.title.toLowerCase().includes(query.toLowerCase()) ||
+            note.content.toLowerCase().includes(query.toLowerCase())
+        );
+        this.renderFilteredNotes(filteredNotes);
+    }
+
+    filterNotesByCategory(category) {
+        const userNotes = this.notes.filter(note => note.author === this.currentUser.id);
+        const filteredNotes = category ?
+            userNotes.filter(note => note.category === category) :
+            userNotes;
+        this.renderFilteredNotes(filteredNotes);
+    }
+
+    renderFilteredNotes(notes) {
+        const notesGrid = document.getElementById('notesGrid');
+
+        if (notes.length === 0) {
+            notesGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>No notes found</h3>
+                    <p>Try adjusting your search or filter criteria</p>
+                </div>
+            `;
+            return;
+        }
+
+        notesGrid.innerHTML = notes.map(note => `
+            <div class="note-card" onclick="studyShare.openNote('${note.id}')">
+                <div class="note-card-header">
+                    <div>
+                        <div class="note-title">${this.escapeHtml(note.title)}</div>
+                        <div class="note-category">${note.category}</div>
+                    </div>
+                    <div class="note-actions">
+                        <button class="note-action" onclick="event.stopPropagation(); studyShare.shareNote('${note.id}')" title="Share">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        <button class="note-action" onclick="event.stopPropagation(); studyShare.deleteNote('${note.id}')" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="note-preview">${this.escapeHtml(note.content.substring(0, 150))}${note.content.length > 150 ? '...' : ''}</div>
+                <div class="note-meta">
+                    <span>Updated ${this.formatDate(note.updatedAt)}</span>
+                    ${note.isShared ? '<span><i class="fas fa-share-alt"></i> Shared</span>' : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Utility Methods
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffTime = Math.abs(now - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) return 'yesterday';
+        if (diffDays < 7) return `${diffDays} days ago`;
+        if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+        return date.toLocaleDateString();
+    }
+
+    showMessage(message, type = 'success') {
+        // Remove existing messages
+        const existingMessages = document.querySelectorAll('.message');
+        existingMessages.forEach(msg => msg.remove());
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.textContent = message;
+
+        document.body.insertBefore(messageDiv, document.body.firstChild);
+
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 3000);
+    }
+
+    setupMobileMenu() {
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
+
+        // Close menu when clicking on links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            });
+        });
+    }
+
+    setupEventListeners() {
+        // Navigation
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            if (this.currentUser) return;
+            this.showModal('loginModal');
+        });
+
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            if (this.currentUser) return;
+            this.showModal('registerModal');
+        });
+
+        // Modals
+        document.getElementById('closeLogin').addEventListener('click', () => {
+            this.hideModal('loginModal');
+        });
+
+        document.getElementById('closeRegister').addEventListener('click', () => {
+            this.hideModal('registerModal');
+        });
+
+        document.getElementById('closeNoteEditor').addEventListener('click', () => {
+            this.hideModal('noteEditorModal');
+            document.getElementById('noteTitle').readOnly = false;
+            document.getElementById('noteContent').readOnly = false;
+        });
+
+        // Forms
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            this.login(email, password);
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirm').value;
+            this.register(name, email, password, confirmPassword);
+        });
+
+        // Auth switching
+        document.getElementById('switchToRegister').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.hideModal('loginModal');
+            this.showModal('registerModal');
+        });
+
+        document.getElementById('switchToLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.hideModal('registerModal');
+            this.showModal('loginModal');
+        });
+
+        // Note actions
+        document.getElementById('createNoteBtn').addEventListener('click', () => {
+            this.showCreateNoteModal();
+        });
+
+        document.getElementById('saveNoteBtn').addEventListener('click', () => {
+            this.saveCurrentNote();
+        });
+
+        document.getElementById('shareNoteBtn').addEventListener('click', () => {
+            if (this.currentNoteId) {
+                this.shareNote(this.currentNoteId);
+            }
+        });
+
+        // Search and filter
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            this.searchNotes(e.target.value);
+        });
+
+        document.getElementById('categoryFilter').addEventListener('change', (e) => {
+            this.filterNotesByCategory(e.target.value);
+        });
+
+        // Hero buttons
+        document.getElementById('getStartedBtn').addEventListener('click', () => {
+            if (this.currentUser) {
+                document.getElementById('notes').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                this.showModal('registerModal');
+            }
+        });
+
+        document.getElementById('watchDemoBtn').addEventListener('click', () => {
+            this.showMessage('Demo video coming soon!', 'success');
+        });
+
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.hideModal(modal.id);
+                    document.getElementById('noteTitle').readOnly = false;
+                    document.getElementById('noteContent').readOnly = false;
+                }
+            });
+        });
+
+        // Auto-save note content
+        let saveTimeout;
+        document.getElementById('noteContent').addEventListener('input', () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                if (this.isEditing && this.currentNoteId) {
+                    this.autoSaveNote();
+                }
+            }, 2000);
+        });
+
+        // Handle shared note access from URL
+        this.handleSharedNoteAccess();
+    }
+
+    saveCurrentNote() {
+        const title = document.getElementById('noteTitle').value;
+        const content = document.getElementById('noteContent').value;
+        const category = 'general'; // You can add category selection later
+
+        if (!title.trim() && !content.trim()) {
+            this.showMessage('Please add a title or content', 'error');
+            return;
+        }
+
+        if (this.isEditing && this.currentNoteId) {
+            this.updateNote(this.currentNoteId, title, content, category);
+        } else {
+            this.createNote(title, content, category);
+        }
+
+        this.hideModal('noteEditorModal');
+    }
+
+    autoSaveNote() {
+        const title = document.getElementById('noteTitle').value;
+        const content = document.getElementById('noteContent').value;
+        const category = 'general';
+
+        if (this.isEditing && this.currentNoteId) {
+            this.updateNote(this.currentNoteId, title, content, category);
+        }
+    }
+
+    handleSharedNoteAccess() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const shareCode = urlParams.get('shared');
+
+        if (shareCode) {
+            const note = this.accessSharedNote(shareCode);
+            if (note) {
+                this.showMessage('Shared note loaded successfully!', 'success');
+                this.renderSharedNotes();
+                // Scroll to shared notes section
+                setTimeout(() => {
+                    document.getElementById('shared').scrollIntoView({ behavior: 'smooth' });
+                }, 1000);
+            } else {
+                this.showMessage('Invalid or expired share link', 'error');
+            }
+        }
+    }
+}
+
+// Initialize the application
+const studyShare = new StudyShare();
+
+// Add some demo data if no users exist
+if (studyShare.loadUsers().length === 0) {
+    const demoUsers = [
+        {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            password: 'password123',
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: '2',
+            name: 'Jane Smith',
+            email: 'jane@example.com',
+            password: 'password123',
+            createdAt: new Date().toISOString()
+        }
+    ];
+    localStorage.setItem('users', JSON.stringify(demoUsers));
+
+    // Add some demo notes
+    const demoNotes = [
+        {
+            id: '1',
+            title: 'Calculus Integration Techniques',
+            content: 'Here are the main integration techniques we covered in class:\n\n1. Integration by parts\n2. Trigonometric substitution\n3. Partial fractions\n4. Integration by substitution\n\nRemember to always check your answer by differentiating!',
+            category: 'math',
+            author: '1',
+            authorName: 'John Doe',
+            createdAt: new Date(Date.now() - 86400000).toISOString(),
+            updatedAt: new Date(Date.now() - 86400000).toISOString(),
+            isShared: true,
+            shareCode: 'demo123'
+        },
+        {
+            id: '2',
+            title: 'Physics: Newton\'s Laws',
+            content: 'Newton\'s three laws of motion:\n\n1. First Law (Law of Inertia): An object at rest stays at rest, and an object in motion stays in motion, unless acted upon by an external force.\n\n2. Second Law: F = ma (Force equals mass times acceleration)\n\n3. Third Law: For every action, there is an equal and opposite reaction.',
+            category: 'science',
+            author: '2',
+            authorName: 'Jane Smith',
+            createdAt: new Date(Date.now() - 172800000).toISOString(),
+            updatedAt: new Date(Date.now() - 172800000).toISOString(),
+            isShared: false,
+            shareCode: null
+        }
+    ];
+    localStorage.setItem('notes', JSON.stringify(demoNotes));
+}
