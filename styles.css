@@ -1416,3 +1416,52 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-light);
 }
+
+/* WhatsApp Floating Button */
+.whatsapp-float {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #25D366;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-xl);
+    z-index: 3000;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.whatsapp-float:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 20px 25px -5px rgb(37 211 102 / 0.35), 0 8px 10px -6px rgb(37 211 102 / 0.25);
+}
+
+.whatsapp-float i {
+    font-size: 28px;
+}
+
+/* Optional label next to WhatsApp button on larger screens */
+.whatsapp-label {
+    position: fixed;
+    right: 90px;
+    bottom: 28px;
+    background: #ffffff;
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    font-weight: 600;
+    z-index: 3000;
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .whatsapp-label {
+        display: inline-block;
+    }
+}
