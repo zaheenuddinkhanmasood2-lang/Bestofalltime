@@ -893,24 +893,29 @@ class StudyShare {
     }
 
     setupPageRouting() {
-        // Handle navigation clicks
+        // Handle navigation clicks (only if link has data-page)
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
-                e.preventDefault();
                 const page = link.getAttribute('data-page');
-                if (page) {
-                    this.showPage(page);
-                }
+                if (!page) return; // allow normal links without data-page
+                e.preventDefault();
+                this.showPage(page);
             });
         });
 
-        // Handle browser back/forward
+        // Handle hash changes (direct URL access or manual hash edits)
+        window.addEventListener('hashchange', () => {
+            const fromHash = window.location.hash.replace('#', '') || 'home';
+            this.showPage(fromHash, false);
+        });
+
+        // Handle browser back/forward when using history API
         window.addEventListener('popstate', (e) => {
-            const page = e.state?.page || 'home';
+            const page = e.state?.page || (window.location.hash.replace('#', '') || 'home');
             this.showPage(page, false);
         });
 
-        // Initialize with current page
+        // Initialize with current page (fallback to home)
         const currentPage = window.location.hash.replace('#', '') || 'home';
         this.showPage(currentPage, false);
     }
@@ -921,21 +926,27 @@ class StudyShare {
             page.classList.remove('active');
         });
 
+        // Resolve to 'home' if target not found
+        let targetPage = document.getElementById(pageId);
+        if (!targetPage) {
+            pageId = 'home';
+            targetPage = document.getElementById('home');
+        }
+
         // Show target page
-        const targetPage = document.getElementById(pageId);
         if (targetPage) {
             targetPage.classList.add('active');
 
             // Add stagger animation to cards
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 const cards = targetPage.querySelectorAll('.stagger-animation');
                 cards.forEach((card, index) => {
                     card.style.animationDelay = `${index * 0.1}s`;
                 });
-            }, 100);
+            });
         }
 
-        // Update navigation
+        // Update navigation (ignore links without data-page)
         document.querySelectorAll('.nav-link').forEach(link => {
             link.classList.remove('active');
         });
@@ -944,9 +955,11 @@ class StudyShare {
             activeLink.classList.add('active');
         }
 
-        // Update URL
+        // Sync URL hash
         if (updateHistory) {
-            history.pushState({ page: pageId }, '', `#${pageId}`);
+            if (window.location.hash !== `#${pageId}`) {
+                history.pushState({ page: pageId }, '', `#${pageId}`);
+            }
         }
 
         // Load page-specific data
