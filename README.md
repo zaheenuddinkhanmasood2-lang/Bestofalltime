@@ -1,184 +1,235 @@
-# StudyShare - Modern Note Sharing Platform
+# Supabase MCP Integration & Schema Sync
 
-A beautiful, modern web application for students to share notes with classmates and collaborate on academic content. Built with a design inspired by BrandCurb's modern aesthetic.
+This repository provides automated schema synchronization between your Supabase database and Cursor IDE via MCP (Model Context Protocol), with GitHub Actions for continuous integration.
 
-## 🚀 Features
+## 🚀 Quick Start
 
-### Core Functionality
-- **User Authentication**: Secure login and registration system
-- **Note Management**: Create, edit, delete, and organize notes
-- **Real-time Sharing**: Share notes with classmates using generated links
-- **Smart Search**: Find notes quickly with powerful search functionality
-- **Category Filtering**: Organize notes by subject categories
-- **Mobile Responsive**: Fully responsive design for all devices
+### 1. Cursor MCP Setup
 
-### Modern UI/UX
-- **Gradient Design**: Beautiful gradient backgrounds and buttons inspired by BrandCurb
-- **Smooth Animations**: Micro-interactions and hover effects
-- **Floating Cards**: Animated floating elements in the hero section
-- **Glass Morphism**: Modern backdrop blur effects
-- **Typography**: Clean, modern Inter font family
+1. **Open Cursor Settings**
+   - Go to `File` → `Preferences` → `Settings`
+   - Search for "MCP" or navigate to `Features` → `MCP Servers`
 
-### Technical Features
-- **Local Storage**: Data persistence using browser localStorage
-- **Auto-save**: Notes are automatically saved as you type
-- **Share Links**: Generate shareable URLs for notes
-- **Version History**: Track note updates and modifications
-- **Empty States**: Helpful empty state messages and CTAs
+2. **Add MCP Server**
+   ```json
+   {
+     "name": "supabase-mcp",
+     "command": "npx",
+     "args": [
+       "@supabase/mcp-server",
+       "--url",
+       "https://your-project-id.supabase.co",
+       "--service-role-key",
+       "${SUPABASE_SERVICE_ROLE_KEY}"
+     ],
+     "env": {
+       "SUPABASE_SERVICE_ROLE_KEY": "your-service-role-key-here"
+     }
+   }
+   ```
 
-## 🎨 Design Inspiration
+3. **Test Connection**
+   - Restart Cursor
+   - Open Command Palette (`Cmd/Ctrl + Shift + P`)
+   - Type "MCP" and select "MCP: Test Connection"
 
-The design is inspired by BrandCurb's modern website aesthetic, featuring:
-- Gradient color schemes
-- Clean typography
-- Smooth animations
-- Professional layout
-- Modern card-based design
+### 2. GitHub Secrets Setup
 
-## 🛠️ Technologies Used
+Add these secrets to your GitHub repository:
 
-- **HTML5**: Semantic markup structure
-- **CSS3**: Modern styling with CSS Grid, Flexbox, and animations
-- **Vanilla JavaScript**: No frameworks, pure JavaScript for functionality
-- **Font Awesome**: Icon library for UI elements
-- **Google Fonts**: Inter font family for typography
+1. Go to your repo → `Settings` → `Secrets and variables` → `Actions`
+2. Add these repository secrets:
 
-## 📱 Responsive Design
+| Secret Name | Description | Example |
+|-------------|-------------|---------|
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key from Supabase | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `SUPABASE_PROJECT_ID` | Your Supabase project ID | `abcdefghijklmnop` |
+| `SUPABASE_DB_URL` | Database connection URL | `postgres://user:pass@host:port/dbname` |
 
-The application is fully responsive and optimized for:
-- Desktop computers (1200px+)
-- Tablets (768px - 1199px)
-- Mobile phones (320px - 767px)
+### 3. Environment Variables
 
-## 🚀 Getting Started
+Set these in your local environment:
 
-### Prerequisites
-- A modern web browser (Chrome, Firefox, Safari, Edge)
-- No server setup required - runs entirely in the browser
-
-### Installation
-1. Clone or download the project files
-2. Open `index.html` in your web browser
-3. Start creating and sharing notes!
-
-### Demo Accounts
-The application comes with pre-configured demo accounts:
-- **Email**: john@example.com | **Password**: password123
-- **Email**: jane@example.com | **Password**: password123
-
-## 📖 How to Use
-
-### Creating an Account
-1. Click "Sign Up" in the navigation
-2. Fill in your details
-3. Click "Create Account"
-
-### Creating Notes
-1. Login to your account
-2. Click "Create New Note" button
-3. Add a title and content
-4. Click "Save" to save your note
-
-### Sharing Notes
-1. Open any note you've created
-2. Click the "Share" button
-3. The share link is automatically copied to your clipboard
-4. Send the link to your classmates
-
-### Accessing Shared Notes
-1. Click on a shared note link
-2. The note will be automatically added to your "Shared with Me" section
-3. View the note content (read-only mode)
-
-### Searching and Filtering
-1. Use the search bar to find notes by title or content
-2. Use the category filter to filter by subject
-3. Both search and filter work together
-
-## 🎯 Key Features Explained
-
-### Note Management
-- **Create**: Start with a blank note and add content
-- **Edit**: Click on any note to edit it
-- **Delete**: Remove notes you no longer need
-- **Auto-save**: Changes are saved automatically as you type
-
-### Sharing System
-- **Generate Links**: Each shared note gets a unique share code
-- **Access Control**: Only users with the link can access shared notes
-- **Read-only Mode**: Shared notes open in read-only mode for security
-
-### Search & Filter
-- **Real-time Search**: Search results update as you type
-- **Category Filtering**: Filter by Mathematics, Science, Programming, etc.
-- **Combined Filtering**: Use search and category filter together
-
-## 🔧 Customization
-
-### Adding New Categories
-Edit the category filter in `index.html`:
-```html
-<option value="newcategory">New Category</option>
+```bash
+export SUPABASE_SERVICE_ROLE_KEY="your-service-role-key-here"
+export SUPABASE_PROJECT_ID="your-project-id-here"
+export SUPABASE_DB_URL="postgres://user:pass@host:port/dbname"
+export SUPABASE_URL="https://your-project-id.supabase.co"
+export SUPABASE_ANON_KEY="your-anon-key-here"
 ```
 
-### Changing Colors
-Modify CSS variables in `styles.css`:
-```css
-:root {
-    --primary-color: #6366f1;
-    --secondary-color: #ec4899;
-    /* Add your colors here */
-}
-```
-
-### Adding Features
-The modular JavaScript structure makes it easy to add new features:
-- Add new methods to the `StudyShare` class
-- Extend the UI with new HTML elements
-- Style new components with CSS
-
-## 📁 File Structure
+## 📁 Project Structure
 
 ```
-StudyShare/
-├── index.html          # Main HTML file
-├── styles.css          # CSS styles and animations
-├── script.js           # JavaScript functionality
-└── README.md           # This file
+.
+├── .github/
+│   └── workflows/
+│       └── supabase-sync.yml      # GitHub Actions workflow
+├── scripts/
+│   ├── sync_pull.sh               # Pull schema from Supabase
+│   └── sync_push.sh               # Apply migrations to Supabase
+├── supabase/
+│   └── migrations/                # Generated migration files
+├── CURSOR_MCP_SETUP.md           # Cursor MCP configuration
+├── TEST.md                       # Test procedures
+└── SECURITY.md                   # Security checklist
 ```
 
-## 🌟 Future Enhancements
+## 🔧 Usage
 
-Potential features for future versions:
-- Real-time collaboration (WebSocket integration)
-- Rich text editor with formatting options
-- File uploads and attachments
-- User profiles and avatars
-- Note templates
-- Export to PDF functionality
-- Dark mode theme
-- Offline support with service workers
+### Manual Schema Sync
+
+```bash
+# Pull latest schema from Supabase
+./scripts/sync_pull.sh
+
+# Test migrations (dry run)
+./scripts/sync_push.sh --dry-run
+
+# Apply migrations to Supabase
+./scripts/sync_push.sh --force
+
+# Apply specific migration
+./scripts/sync_push.sh --migration 20240101120000_sync.sql
+```
+
+### Cursor MCP Commands
+
+Once configured, use these commands in Cursor:
+
+```
+@supabase-mcp list tables
+@supabase-mcp describe table profiles
+@supabase-mcp execute query "SELECT COUNT(*) FROM notes"
+@supabase-mcp get schema
+```
+
+### GitHub Actions
+
+The workflow automatically:
+- **On Push**: Applies migrations to Supabase
+- **On Schedule**: Pulls schema changes and creates PRs
+- **On PR**: Runs security scans and dry-run tests
+
+## 🧪 Testing
+
+See [TEST.md](./TEST.md) for comprehensive testing procedures.
+
+### Quick Test
+
+```bash
+# 1. Test Cursor MCP connection
+# Open Cursor and try: @supabase-mcp list tables
+
+# 2. Test schema pull
+./scripts/sync_pull.sh
+
+# 3. Test dry run
+./scripts/sync_push.sh --dry-run
+
+# 4. Verify database connection
+supabase status
+```
+
+## 🔒 Security
+
+See [SECURITY.md](./SECURITY.md) for security best practices.
+
+### Key Security Features
+
+- ✅ Service role key stored in GitHub Secrets
+- ✅ Dry-run mode for all migrations
+- ✅ Automatic backups before changes
+- ✅ Git commit tracking for all changes
+- ✅ Security scanning in CI/CD
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+1. **"MCP server not found"**
+   - Check Supabase CLI installation: `npm install -g supabase`
+   - Verify service role key is correct
+
+2. **"Authentication failed"**
+   - Verify `SUPABASE_SERVICE_ROLE_KEY` is set correctly
+   - Check project ID matches your Supabase project
+
+3. **"Migration failed"**
+   - Check database connection: `supabase status`
+   - Review migration files for syntax errors
+   - Use `--dry-run` to test first
+
+### Debug Commands
+
+```bash
+# Check Supabase connection
+supabase status
+
+# Test database connection
+supabase db ping
+
+# View migration history
+ls -la supabase/migrations/
+
+# Check logs
+tail -f sync.log
+```
+
+## 📚 Advanced Usage
+
+### Custom Migration Scripts
+
+Create custom migration scripts in `supabase/migrations/`:
+
+```sql
+-- 20240101120000_custom_migration.sql
+-- Custom migration description
+
+-- Your SQL here
+ALTER TABLE profiles ADD COLUMN avatar_url TEXT;
+```
+
+### Environment-Specific Configurations
+
+Use different configurations for different environments:
+
+```bash
+# Development
+export SUPABASE_PROJECT_ID="dev-project-id"
+
+# Production
+export SUPABASE_PROJECT_ID="prod-project-id"
+```
+
+### Backup and Restore
+
+```bash
+# Create backup
+supabase db dump --file backup.sql
+
+# Restore from backup
+supabase db reset --file backup.sql
+```
 
 ## 🤝 Contributing
 
-This is a demo project, but contributions are welcome! Areas for improvement:
-- Additional animations and micro-interactions
-- Enhanced mobile experience
-- Accessibility improvements
-- Performance optimizations
-- Additional note formatting options
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## 📄 License
 
-This project is open source and available under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🆘 Support
 
-- Design inspiration from BrandCurb
-- Icons by Font Awesome
-- Typography by Google Fonts (Inter)
-- Modern CSS techniques and best practices
+- **Documentation**: [Supabase Docs](https://supabase.com/docs)
+- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
+- **Community**: [Supabase Discord](https://discord.supabase.com)
 
 ---
 
-**StudyShare** - Share knowledge, build together! 🎓✨
+**⚠️ Important**: Always test migrations in a development environment before applying to production!

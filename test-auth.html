@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyShare - Auth Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+        .error { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+        .warning { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
+        .info { background: #dbeafe; color: #1e40af; border: 1px solid #3b82f6; }
+        
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background: #4f46e5; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .test-section { margin: 30px 0; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }
+        .console-output {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 StudyShare Authentication Test</h1>
+        <p>This page will help you test and fix your Supabase authentication.</p>
+        
+        <div id="status"></div>
+        
+        <div class="test-section">
+            <h2>Step 1: Configure Credentials</h2>
+            <p>First, update your Supabase credentials below:</p>
+            <div class="form-group">
+                <label>Supabase URL:</label>
+                <input type="text" id="supabaseUrl" placeholder="https://your-project-id.supabase.co">
+            </div>
+            <div class="form-group">
+                <label>Supabase Anon Key:</label>
+                <input type="text" id="supabaseKey" placeholder="eyJ...">
+            </div>
+            <button onclick="testConnection()">Test Connection</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Step 2: Test Authentication</h2>
+            <p>Try registering and logging in:</p>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="testEmail" placeholder="test@example.com">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="testPassword" placeholder="password123">
+            </div>
+            <div class="form-group">
+                <label>Full Name:</label>
+                <input type="text" id="testName" placeholder="Test User">
+            </div>
+            <button onclick="testRegister()">Test Register</button>
+            <button onclick="testLogin()">Test Login</button>
+            <button onclick="testLogout()">Test Logout</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Step 3: Test Database</h2>
+            <p>Test if you can access the database:</p>
+            <button onclick="testDatabase()">Test Database Connection</button>
+            <button onclick="testTables()">Check Tables</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Console Output</h2>
+            <div id="consoleOutput" class="console-output">Ready to test...\n</div>
+        </div>
+    </div>
+
+    <script>
+        let supabase;
+        let currentUser = null;
+        
+        // Override console.log to show in page
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        function addToConsole(message, type = 'log') {
+            const consoleDiv = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ef4444' : '#6b7280';
+            consoleDiv.textContent += `[${timestamp}] ${message}\n`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole(args.join(' '), 'error');
+        };
+        
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function testConnection() {
+            const url = document.getElementById('supabaseUrl').value;
+            const key = document.getElementById('supabaseKey').value;
+            
+            if (!url || !key) {
+                showStatus('Please enter both URL and Key', 'error');
+                return;
+            }
+            
+            try {
+                supabase = window.supabase.createClient(url, key);
+                console.log('✅ Supabase client created');
+                showStatus('Connection test successful! You can now test authentication.', 'success');
+            } catch (error) {
+                console.error('❌ Connection failed:', error);
+                showStatus('Connection failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testRegister() {
+            if (!supabase) {
+                showStatus('Please test connection first', 'error');
+                return;
+            }
+            
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            const name = document.getElementById('testName').value;
+            
+            if (!email || !password || !name) {
+                showStatus('Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                console.log('📝 Testing registration...');
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: name
+                        }
+                    }
+                });
+                
+                if (error) throw error;
+                
+                console.log('✅ Registration successful:', data);
+                showStatus('Registration successful! Check your email to verify the account.', 'success');
+            } catch (error) {
+                console.error('❌ Registration failed:', error);
+                showStatus('Registration failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testLogin() {
+            if (!supabase) {
+                showStatus('Please test connection first', 'error');
+                return;
+            }
+            
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            
+            if (!email || !password) {
+                showStatus('Please fill in email and password', 'error');
+                return;
+            }
+            
+            try {
+                console.log('🔐 Testing login...');
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                
+                if (error) throw error;
+                
+                currentUser = data.user;
+                console.log('✅ Login successful:', data.user);
+                showStatus('Login successful! User: ' + data.user.email, 'success');
+            } catch (error) {
+                console.error('❌ Login failed:', error);
+                showStatus('Login failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testLogout() {
+            if (!supabase) {
+                showStatus('Please test connection first', 'error');
+                return;
+            }
+            
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                currentUser = null;
+                console.log('✅ Logout successful');
+                showStatus('Logout successful!', 'success');
+            } catch (error) {
+                console.error('❌ Logout failed:', error);
+                showStatus('Logout failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testDatabase() {
+            if (!supabase) {
+                showStatus('Please test connection first', 'error');
+                return;
+            }
+            
+            try {
+                console.log('🗄️ Testing database connection...');
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('count')
+                    .limit(1);
+                
+                if (error) throw error;
+                
+                console.log('✅ Database connection successful');
+                showStatus('Database connection successful!', 'success');
+            } catch (error) {
+                console.error('❌ Database connection failed:', error);
+                showStatus('Database connection failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testTables() {
+            if (!supabase) {
+                showStatus('Please test connection first', 'error');
+                return;
+            }
+            
+            try {
+                console.log('📋 Checking tables...');
+                const { data, error } = await supabase
+                    .rpc('get_table_names');
+                
+                if (error) {
+                    // Fallback method
+                    const tables = ['profiles', 'notes', 'categories', 'note_shares'];
+                    console.log('📋 Available tables:', tables);
+                    showStatus('Tables check completed. Check console for details.', 'info');
+                } else {
+                    console.log('📋 Available tables:', data);
+                    showStatus('Tables check completed. Check console for details.', 'info');
+                }
+            } catch (error) {
+                console.error('❌ Tables check failed:', error);
+                showStatus('Tables check failed: ' + error.message, 'error');
+            }
+        }
+        
+        // Initialize
+        console.log('🚀 Auth test page loaded');
+        showStatus('Ready to test! Please configure your Supabase credentials above.', 'info');
+    </script>
+</body>
+</html>

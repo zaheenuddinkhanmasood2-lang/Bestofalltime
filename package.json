@@ -1,0 +1,23 @@
+{
+  "name": "allaho",
+  "version": "1.0.0",
+  "description": "A beautiful, modern web application for students to share notes with classmates",
+  "main": "script.js",
+  "scripts": {
+    "dev": "npx live-server --port=5500 --open=./index.html",
+    "start": "npx live-server --port=5500 --open=./index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaheenuddinkhanmasood2-lang/Allaho.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/zaheenuddinkhanmasood2-lang/Allaho/issues"
+  },
+  "homepage": "https://github.com/zaheenuddinkhanmasood2-lang/Allaho#readme"
+}
