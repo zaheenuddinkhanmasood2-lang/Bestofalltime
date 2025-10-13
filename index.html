@@ -55,84 +55,83 @@
     <main>
         <div id="home" class="page active">
             <!-- Hero Section -->
-            <section class="hero relative bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-white">
+            <section class="hero relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-700 via-teal-700 to-teal-800"></div>
+                <svg class="absolute inset-0 w-full h-full opacity-20" aria-hidden="true">
+                    <defs>
+                        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+                            <rect width="60" height="60" fill="none" stroke="white" stroke-opacity="0.15" />
+                            <path d="M60 0 V60 M0 60 H60" stroke="white" stroke-opacity="0.15" />
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                </svg>
                 <div
-                    class="hero-container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 md:py-32 grid md:grid-cols-2 gap-12 items-center">
+                    class="relative hero-container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 md:pt-32 pb-16 grid md:grid-cols-2 gap-12 items-center text-white min-h-[calc(100vh-4rem)]">
                     <div class="hero-content">
-                        <h1 class="hero-title text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-                            Share Knowledge,
-                            <span
-                                class="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">Build
-                                Together</span>
+                        <p class="text-white/80 text-sm md:text-base mb-4">Your Online Learning Partner</p>
+                        <h1 class="hero-title text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                            Learn, Grow, and
+                            <br />Achieve with
+                            <span class="text-lime-300">Expert Guidance</span>
                         </h1>
-                        <p class="hero-description text-white/90 text-lg md:text-xl mb-8 max-w-xl">
-                            The ultimate platform for students to share notes, collaborate on projects,
-                            and learn together. Transform your study experience with our modern, intuitive interface.
+                        <p class="hero-description text-white/90 text-base md:text-lg mb-8 max-w-xl">
+                            Access high‑quality courses anytime, anywhere, and take control of your learning journey
+                            with ease.
                         </p>
                         <div class="hero-buttons flex items-center gap-4">
                             <button
-                                class="btn-primary inline-flex items-center rounded-xl bg-white px-6 py-3 text-indigo-700 font-semibold shadow hover:bg-white/90"
-                                id="getStartedBtn" aria-label="Get started for free">Get Started Free</button>
+                                class="btn-primary inline-flex items-center rounded-full bg-lime-300 px-6 py-3 text-teal-900 font-semibold shadow hover:bg-lime-200"
+                                id="getStartedBtn" aria-label="Get started now">Get Started Now</button>
                             <button
-                                class="btn-secondary inline-flex items-center rounded-xl border border-white/30 px-6 py-3 text-white hover:bg-white/10"
+                                class="btn-secondary inline-flex items-center rounded-full border border-white/30 px-6 py-3 text-white hover:bg-white/10"
                                 id="watchDemoBtn" aria-label="Watch the demo">
                                 <i class="fas fa-play mr-2"></i>
                                 Watch Demo
                             </button>
                         </div>
-                        <div class="hero-stats mt-10 grid grid-cols-3 gap-6 max-w-md">
-                            <div class="stat text-center">
-                                <span class="stat-number block text-2xl md:text-3xl font-bold">10K+</span>
-                                <span class="stat-label block text-white/80 text-sm">Students</span>
+                        <div class="mt-8 flex items-center gap-4">
+                            <div class="flex -space-x-2">
+                                <img src="https://i.pravatar.cc/40?img=5" alt="Student avatar"
+                                    class="h-9 w-9 rounded-full ring-2 ring-white/60" />
+                                <img src="https://i.pravatar.cc/40?img=15" alt="Student avatar"
+                                    class="h-9 w-9 rounded-full ring-2 ring-white/60" />
+                                <img src="https://i.pravatar.cc/40?img=25" alt="Student avatar"
+                                    class="h-9 w-9 rounded-full ring-2 ring-white/60" />
                             </div>
-                            <div class="stat text-center">
-                                <span class="stat-number block text-2xl md:text-3xl font-bold">50K+</span>
-                                <span class="stat-label block text-white/80 text-sm">Notes Shared</span>
-                            </div>
-                            <div class="stat text-center">
-                                <span class="stat-number block text-2xl md:text-3xl font-bold">95%</span>
-                                <span class="stat-label block text-white/80 text-sm">Satisfaction</span>
+                            <div class="text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="inline-flex items-center justify-center h-7 w-7 rounded-full bg-white/20 text-white text-xs font-semibold">4.8</span>
+                                    <span class="text-white/90">Student Review</span>
+                                </div>
+                                <p class="text-white/70 text-xs">Based on more than 10,000 feedbacks</p>
                             </div>
                         </div>
                     </div>
                     <div class="hero-visual relative hidden md:block" aria-hidden="true">
-                        <!-- Placeholder illustration: replace with real SVG/PNG asset -->
-                        <div
-                            class="aspect-[4/3] rounded-3xl bg-white/10 ring-1 ring-white/20 backdrop-blur flex items-center justify-center">
-                            <svg viewBox="0 0 200 150" class="w-4/5 h-4/5" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-                                        <stop offset="0%" stop-color="#fff" stop-opacity="0.9" />
-                                        <stop offset="100%" stop-color="#fff" stop-opacity="0.5" />
-                                    </linearGradient>
-                                </defs>
-                                <rect x="10" y="10" width="180" height="130" rx="16" fill="url(#g)" />
-                                <circle cx="60" cy="60" r="22" fill="#4f46e5" opacity="0.9" />
-                                <rect x="95" y="46" width="80" height="12" rx="6" fill="#312e81" opacity="0.6" />
-                                <rect x="95" y="66" width="70" height="10" rx="5" fill="#1e1b4b" opacity="0.5" />
-                                <rect x="30" y="100" width="140" height="16" rx="8" fill="#4f46e5" opacity="0.8" />
-                            </svg>
-                        </div>
-                        <!-- Existing floating cards kept for motion accents -->
-                        <div
-                            class="floating-card card-1 absolute top-6 left-6 bg-white/90 text-gray-800 rounded-xl shadow px-3 py-2">
-                            <i class="fas fa-file-alt mr-1"></i>
-                            <span>Software Eng.</span>
-                        </div>
-                        <div
-                            class="floating-card card-2 absolute bottom-10 left-10 bg-white/90 text-gray-800 rounded-xl shadow px-3 py-2">
-                            <i class="fas fa-atom mr-1"></i>
-                            <span>Data Structure and design</span>
-                        </div>
-                        <div
-                            class="floating-card card-3 absolute top-10 right-10 bg-white/90 text-gray-800 rounded-xl shadow px-3 py-2">
-                            <i class="fas fa-code mr-1"></i>
-                            <span>Information Secuirity</span>
-                        </div>
-                        <div
-                            class="floating-card card-4 absolute bottom-6 right-6 bg-white/90 text-gray-800 rounded-xl shadow px-3 py-2">
-                            <i class="fas fa-book mr-1"></i>
-                            <span>Artificial Intelligence</span>
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?q=80&w=800&auto=format&fit=crop"
+                                alt="Happy student giving thumbs up"
+                                class="rounded-3xl shadow-2xl ring-1 ring-white/20 object-cover aspect-[3/4]" />
+                            <div
+                                class="absolute top-6 right-6 backdrop-blur bg-white/20 text-white rounded-xl px-4 py-2 shadow">
+                                <div class="flex items-center gap-2 text-sm"><i class="fas fa-book-open"></i><span>Total
+                                        Courses</span></div>
+                                <div class="text-right font-semibold">1200+</div>
+                            </div>
+                            <div
+                                class="absolute bottom-24 right-6 backdrop-blur bg-white/20 text-white rounded-xl px-4 py-2 shadow">
+                                <div class="flex items-center gap-2 text-sm"><i
+                                        class="fas fa-chalkboard-teacher"></i><span>Total Instructors</span></div>
+                                <div class="text-right font-semibold">400+</div>
+                            </div>
+                            <div
+                                class="absolute bottom-6 left-6 backdrop-blur bg-white/20 text-white rounded-xl px-4 py-2 shadow">
+                                <div class="flex items-center gap-2 text-sm"><i
+                                        class="fas fa-user-graduate"></i><span>Total Students</span></div>
+                                <div class="text-right font-semibold">20,000+</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -217,7 +216,7 @@
 
     <!-- Features Page -->
     <div id="features" class="page">
-        <div class="container" style="padding: 80px 0;">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
             <div class="section-header">
                 <h2 class="section-title">Why Choose StudyShare?</h2>
                 <p class="section-description">
@@ -273,157 +272,209 @@
 
     <!-- About Page -->
     <div id="about" class="page">
-        <div class="about">
-            <div class="about-section">
-                <h2>About StudyShare</h2>
-                <p>StudyShare is a modern, intuitive platform designed to revolutionize how students collaborate and
-                    share knowledge. Built with the latest web technologies and inspired by the best design practices,
-                    we aim to make learning more collaborative and accessible.</p>
-                <p>Our mission is to break down barriers between students and create a global community of learners who
-                    support each other's academic journey.</p>
-            </div>
+        <section class="about bg-gray-50">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+                <div class="about-section max-w-3xl">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">About StudyShare</h2>
+                    <p class="text-gray-600 leading-7">StudyShare is a modern, intuitive platform designed to
+                        revolutionize how students collaborate and
+                        share knowledge. Built with the latest web technologies and inspired by the best design
+                        practices,
+                        we aim to make learning more collaborative and accessible.</p>
+                    <p class="text-gray-600 leading-7 mt-4">Our mission is to break down barriers between students and
+                        create a global community of learners who
+                        support each other's academic journey.</p>
+                </div>
 
-            <div class="about-section">
-                <h2>Our Vision</h2>
-                <p>We envision a world where knowledge flows freely between students, where collaboration is seamless,
-                    and where every student has access to the resources they need to succeed academically.</p>
-            </div>
+                <div class="about-section max-w-3xl mt-12">
+                    <h2 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-3">Our Vision</h2>
+                    <p class="text-gray-600 leading-7">We envision a world where knowledge flows freely between
+                        students, where collaboration is seamless,
+                        and where every student has access to the resources they need to succeed academically.</p>
+                </div>
 
-            <div class="about-section">
-                <h2>Meet Our Team</h2>
-                <div class="team-grid">
-                    <div class="team-member">
-                        <div class="team-member-avatar">JD</div>
-                        <h3>John Doe</h3>
-                        <p>Founder & CEO</p>
-                    </div>
-                    <div class="team-member">
-                        <div class="team-member-avatar">JS</div>
-                        <h3>Jane Smith</h3>
-                        <p>Lead Developer</p>
-                    </div>
-                    <div class="team-member">
-                        <div class="team-member-avatar">MJ</div>
-                        <h3>Mike Johnson</h3>
-                        <p>UI/UX Designer</p>
+                <div class="about-section mt-16">
+                    <h2 class="text-2xl md:text-3xl font-semibold text-gray-900 mb-8">Meet Our Team</h2>
+                    <div class="team-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="team-member rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                            <div
+                                class="team-member-avatar h-14 w-14 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold mb-4">
+                                JD</div>
+                            <h3 class="text-lg font-semibold text-gray-900">John Doe</h3>
+                            <p class="text-gray-600">Founder & CEO</p>
+                        </div>
+                        <div class="team-member rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                            <div
+                                class="team-member-avatar h-14 w-14 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold mb-4">
+                                JS</div>
+                            <h3 class="text-lg font-semibold text-gray-900">Jane Smith</h3>
+                            <p class="text-gray-600">Lead Developer</p>
+                        </div>
+                        <div class="team-member rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                            <div
+                                class="team-member-avatar h-14 w-14 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold mb-4">
+                                MJ</div>
+                            <h3 class="text-lg font-semibold text-gray-900">Mike Johnson</h3>
+                            <p class="text-gray-600">UI/UX Designer</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
     <!-- Contact Page -->
     <div id="contact" class="page">
-        <div class="contact">
-            <div class="section-header">
-                <h2 class="section-title">Get In Touch</h2>
-                <p class="section-description">Have questions or feedback? We'd love to hear from you!</p>
-            </div>
+        <section class="contact bg-white">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+                <div class="section-header text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="section-title text-3xl md:text-4xl font-bold text-gray-900">Get In Touch</h2>
+                    <p class="section-description mt-4 text-gray-600">Have questions or feedback? We'd love to hear from
+                        you!</p>
+                </div>
 
-            <div class="contact-form">
-                <form id="contactForm">
-                    <div class="form-group">
-                        <label for="contactName">Name</label>
-                        <input type="text" id="contactName" required>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="contact-form rounded-2xl border border-gray-200 p-6 shadow-sm">
+                            <form id="contactForm" aria-label="Contact form" class="grid grid-cols-1 gap-4">
+                                <div class="form-group">
+                                    <label for="contactName"
+                                        class="block text-sm font-medium text-gray-700">Name</label>
+                                    <input type="text" id="contactName" required aria-required="true"
+                                        class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactEmail"
+                                        class="block text-sm font-medium text-gray-700">Email</label>
+                                    <input type="email" id="contactEmail" required aria-required="true"
+                                        class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactSubject"
+                                        class="block text-sm font-medium text-gray-700">Subject</label>
+                                    <input type="text" id="contactSubject" required aria-required="true"
+                                        class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactMessage"
+                                        class="block text-sm font-medium text-gray-700">Message</label>
+                                    <textarea id="contactMessage" required aria-required="true" rows="4"
+                                        class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                                </div>
+                                <button type="submit"
+                                    class="btn-primary inline-flex items-center rounded-xl bg-indigo-600 px-5 py-3 text-white font-semibold hover:bg-indigo-500 w-fit">Send
+                                    Message</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="contactEmail">Email</label>
-                        <input type="email" id="contactEmail" required>
+                    <div class="contact-info space-y-4">
+                        <div
+                            class="contact-item rounded-2xl border border-gray-200 p-6 bg-white shadow-sm flex items-start gap-4">
+                            <div class="contact-item-icon h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl"
+                                aria-hidden="true">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Email</h3>
+                                <p class="text-gray-600">support@studyshare.com</p>
+                            </div>
+                        </div>
+                        <div
+                            class="contact-item rounded-2xl border border-gray-200 p-6 bg-white shadow-sm flex items-start gap-4">
+                            <div class="contact-item-icon h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl"
+                                aria-hidden="true">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Phone</h3>
+                                <p class="text-gray-600">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div
+                            class="contact-item rounded-2xl border border-gray-200 p-6 bg-white shadow-sm flex items-start gap-4">
+                            <div class="contact-item-icon h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl"
+                                aria-hidden="true">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Address</h3>
+                                <p class="text-gray-600">123 Learning St, Education City</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="contactSubject">Subject</label>
-                        <input type="text" id="contactSubject" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactMessage">Message</label>
-                        <textarea id="contactMessage" required></textarea>
-                    </div>
-                    <button type="submit" class="btn-primary">Send Message</button>
-                </form>
+                </div>
             </div>
-
-            <div class="contact-info">
-                <div class="contact-item">
-                    <div class="contact-item-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <h3>Email</h3>
-                    <p>support@studyshare.com</p>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-item-icon">
-                        <i class="fas fa-phone"></i>
-                    </div>
-                    <h3>Phone</h3>
-                    <p>+1 (555) 123-4567</p>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-item-icon">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </div>
-                    <h3>Address</h3>
-                    <p>123 Learning St, Education City</p>
-                </div>
-            </div>
-        </div>
+        </section>
     </div>
 
     <!-- Dashboard Page -->
     <div id="dashboard" class="page">
-        <div class="dashboard">
-            <div class="dashboard-header">
-                <h1>Dashboard</h1>
-                <p>Welcome back! Here's an overview of your activity.</p>
-            </div>
+        <section class="dashboard bg-gray-50">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+                <div class="dashboard-header mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+                    <p class="text-gray-600">Welcome back! Here's an overview of your activity.</p>
+                </div>
 
-            <div class="dashboard-stats">
-                <div class="stat-card">
-                    <div class="stat-card-icon">
-                        <i class="fas fa-sticky-note"></i>
+                <div class="dashboard-stats grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="stat-card rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div
+                            class="stat-card-icon h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg mb-3">
+                            <i class="fas fa-sticky-note" aria-hidden="true"></i>
+                        </div>
+                        <div class="stat-card-number text-2xl font-bold text-gray-900" id="totalNotes">0</div>
+                        <div class="stat-card-label text-gray-600">Total Notes</div>
                     </div>
-                    <div class="stat-card-number" id="totalNotes">0</div>
-                    <div class="stat-card-label">Total Notes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">
-                        <i class="fas fa-share-alt"></i>
+                    <div class="stat-card rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div
+                            class="stat-card-icon h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg mb-3">
+                            <i class="fas fa-share-alt" aria-hidden="true"></i>
+                        </div>
+                        <div class="stat-card-number text-2xl font-bold text-gray-900" id="sharedNotes">0</div>
+                        <div class="stat-card-label text-gray-600">Shared Notes</div>
                     </div>
-                    <div class="stat-card-number" id="sharedNotes">0</div>
-                    <div class="stat-card-label">Shared Notes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">
-                        <i class="fas fa-download"></i>
+                    <div class="stat-card rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div
+                            class="stat-card-icon h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg mb-3">
+                            <i class="fas fa-download" aria-hidden="true"></i>
+                        </div>
+                        <div class="stat-card-number text-2xl font-bold text-gray-900" id="receivedNotes">0</div>
+                        <div class="stat-card-label text-gray-600">Received Notes</div>
                     </div>
-                    <div class="stat-card-number" id="receivedNotes">0</div>
-                    <div class="stat-card-label">Received Notes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">
-                        <i class="fas fa-calendar"></i>
+                    <div class="stat-card rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                        <div
+                            class="stat-card-icon h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg mb-3">
+                            <i class="fas fa-calendar" aria-hidden="true"></i>
+                        </div>
+                        <div class="stat-card-number text-2xl font-bold text-gray-900" id="thisWeek">0</div>
+                        <div class="stat-card-label text-gray-600">This Week</div>
                     </div>
-                    <div class="stat-card-number" id="thisWeek">0</div>
-                    <div class="stat-card-label">This Week</div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
     <!-- Notes Page -->
     <div id="notes" class="page">
         <!-- Notes Section -->
-        <section class="notes-section">
-            <div class="container">
-                <div class="notes-header">
-                    <h2>My Notes</h2>
-                    <button class="btn-primary" id="createNoteBtn">
+        <section class="notes-section bg-white">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+                <div class="notes-header flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">My Notes</h2>
+                    <button
+                        class="btn-primary inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-white font-semibold hover:bg-indigo-500"
+                        id="createNoteBtn">
                         <i class="fas fa-plus"></i>
                         Create New Note
                     </button>
                 </div>
-                <div class="notes-filters">
-                    <input type="text" placeholder="Search notes..." class="search-input" id="searchInput">
-                    <select class="filter-select" id="categoryFilter">
+                <div class="notes-filters flex flex-col sm:flex-row gap-3 mb-6">
+                    <input type="text" placeholder="Search notes..."
+                        class="search-input w-full sm:w-auto flex-1 rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                        id="searchInput" aria-label="Search notes">
+                    <select
+                        class="filter-select rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                        id="categoryFilter" aria-label="Filter by category">
                         <option value="">All Categories</option>
                         <option value="math">Mathematics</option>
                         <option value="science">Science</option>
@@ -432,7 +483,7 @@
                         <option value="history">History</option>
                     </select>
                 </div>
-                <div class="notes-grid" id="notesGrid">
+                <div class="notes-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="notesGrid">
                     <!-- Notes will be dynamically added here -->
                 </div>
             </div>
@@ -442,13 +493,14 @@
     <!-- Shared Notes Page -->
     <div id="shared" class="page">
         <!-- Shared Notes Section -->
-        <section class="shared-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Shared with Me</h2>
-                    <p>Notes shared by your classmates</p>
+        <section class="shared-section bg-gray-50">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+                <div class="section-header mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Shared with Me</h2>
+                    <p class="text-gray-600">Notes shared by your classmates</p>
                 </div>
-                <div class="shared-notes-grid" id="sharedNotesGrid">
+                <div class="shared-notes-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    id="sharedNotesGrid">
                     <!-- Shared notes will be dynamically added here -->
                 </div>
             </div>
@@ -457,28 +509,36 @@
 
     <!-- Profile Page -->
     <div id="profile" class="page">
-        <div class="profile">
-            <div class="profile-header">
-                <div class="profile-avatar" id="profileAvatar">U</div>
-                <h1 id="profileName">User Name</h1>
-                <p id="profileEmail">user@example.com</p>
-            </div>
+        <div class="profile bg-white">
+            <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16">
+                <div class="profile-header text-center mb-8">
+                    <div class="profile-avatar mx-auto h-16 w-16 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold"
+                        id="profileAvatar">U</div>
+                    <h1 class="text-2xl font-bold text-gray-900 mt-3" id="profileName">User Name</h1>
+                    <p class="text-gray-600" id="profileEmail">user@example.com</p>
+                </div>
 
-            <div class="profile-info">
-                <h2>Profile Information</h2>
-                <div class="profile-field">
-                    <label for="profileNameInput">Full Name</label>
-                    <input type="text" id="profileNameInput" value="">
+                <div class="profile-info rounded-2xl border border-gray-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Profile Information</h2>
+                    <div class="profile-field mb-4">
+                        <label for="profileNameInput" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <input type="text" id="profileNameInput" value=""
+                            class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div class="profile-field mb-4">
+                        <label for="profileEmailInput" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="profileEmailInput" value="" readonly
+                            class="mt-1 w-full rounded-xl border-gray-300 bg-gray-50">
+                    </div>
+                    <div class="profile-field mb-6">
+                        <label for="profileBio" class="block text-sm font-medium text-gray-700">Bio</label>
+                        <textarea id="profileBio" placeholder="Tell us about yourself..." rows="4"
+                            class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                    </div>
+                    <button
+                        class="btn-primary inline-flex items-center rounded-xl bg-indigo-600 px-5 py-3 text-white font-semibold hover:bg-indigo-500"
+                        id="saveProfileBtn">Save Changes</button>
                 </div>
-                <div class="profile-field">
-                    <label for="profileEmailInput">Email</label>
-                    <input type="email" id="profileEmailInput" value="" readonly>
-                </div>
-                <div class="profile-field">
-                    <label for="profileBio">Bio</label>
-                    <textarea id="profileBio" placeholder="Tell us about yourself..."></textarea>
-                </div>
-                <button class="btn-primary" id="saveProfileBtn">Save Changes</button>
             </div>
         </div>
     </div>
