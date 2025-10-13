@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - StudyShare</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            color: #1f2937;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+        }
+
+        .auth-header p {
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #6b7280;
+        }
+
+        .auth-switch a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .notification-error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .notification-info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <button class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+
+        <div class="auth-header">
+            <h1>Create Account</h1>
+            <p>Join StudyShare and start sharing knowledge</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="registerName">Full Name</label>
+                <input type="text" id="registerName" required>
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">Email</label>
+                <input type="email" id="registerEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" required>
+            </div>
+            <div class="form-group">
+                <label for="registerConfirm">Confirm Password</label>
+                <input type="password" id="registerConfirm" required>
+            </div>
+            <button type="submit" class="btn-primary">Create Account</button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account? <a href="login.html">Sign in</a>
+        </p>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Supabase Configuration -->
+    <script>
+        // Replace these with your actual Supabase project credentials
+        // Get these from your Supabase project dashboard
+        const SUPABASE_URL = 'https://dbpmgzgeevgotfxsldjh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRicG1nemdlZXZnb3RmeHNsZGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NjA2NDksImV4cCI6MjA3NTEzNjY0OX0.TLYH19D6jH0-g4OfbwI_XYPy8flk54JFDeZW05CirdU';
+
+        // Check if credentials are configured
+        function checkSupabaseConfig() {
+            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+                console.error('❌ Supabase credentials not configured!');
+                showNotification('Please configure your Supabase credentials first!', 'error');
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+    <script>
+        // Initialize Supabase
+        let supabase;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!checkSupabaseConfig()) {
+                return;
+            }
+
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized');
+            } catch (error) {
+                console.error('❌ Failed to initialize Supabase:', error);
+                showNotification('Failed to connect to database', 'error');
+            }
+
+            // Set up form handler
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+        });
+
+        async function handleRegister(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirm').value;
+
+            // Validation
+            if (!name || !email || !password || !confirmPassword) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showNotification('Password must be at least 6 characters long', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match', 'error');
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                console.log('📝 Attempting registration...');
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: name
+                        }
+                    }
+                });
+
+                if (error) {
+                    console.error('❌ Registration error:', error);
+                    throw error;
+                }
+
+                console.log('✅ Registration successful:', data);
+                showNotification('Registration successful! Please check your email to verify your account.', 'success');
+
+                // Redirect to login page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+
+            } catch (error) {
+                console.error('❌ Registration failed:', error);
+                let errorMessage = 'Registration failed. Please try again.';
+
+                if (error.message.includes('User already registered')) {
+                    errorMessage = 'An account with this email already exists. Please try logging in.';
+                } else if (error.message.includes('Password should be at least')) {
+                    errorMessage = 'Password must be at least 6 characters long';
+                } else if (error.message.includes('Invalid email')) {
+                    errorMessage = 'Please enter a valid email address';
+                } else if (error.message.includes('Signup is disabled')) {
+                    errorMessage = 'Registration is currently disabled. Please contact support.';
+                }
+
+                showNotification(errorMessage, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function showLoading(show) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = show ? 'flex' : 'none';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existing = document.querySelectorAll('.notification');
+            existing.forEach(n => n.remove());
+
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+
+            // Add to page
+            document.body.appendChild(notification);
+
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            // Remove notification after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

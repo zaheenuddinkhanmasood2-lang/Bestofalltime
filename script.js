@@ -51,13 +51,8 @@ function setupEventListeners() {
     // Navigation
     document.getElementById('nav-toggle')?.addEventListener('click', toggleMobileMenu);
 
-    // Auth modals
-    document.getElementById('loginBtn')?.addEventListener('click', () => openModal('loginModal'));
-    document.getElementById('registerBtn')?.addEventListener('click', () => openModal('registerModal'));
-    document.getElementById('closeLogin')?.addEventListener('click', () => closeModal('loginModal'));
-    document.getElementById('closeRegister')?.addEventListener('click', () => closeModal('registerModal'));
-    document.getElementById('switchToRegister')?.addEventListener('click', () => switchAuthModal('register'));
-    document.getElementById('switchToLogin')?.addEventListener('click', () => switchAuthModal('login'));
+    // Auth navigation - buttons now navigate to separate pages
+    // No need for modal event listeners since we're using direct navigation
 
     // Auth forms
     document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
@@ -75,7 +70,7 @@ function setupEventListeners() {
     });
 
     // Dashboard buttons
-    document.getElementById('getStartedBtn')?.addEventListener('click', () => openModal('registerModal'));
+    document.getElementById('getStartedBtn')?.addEventListener('click', () => window.location.href = 'signup.html');
     document.getElementById('watchDemoBtn')?.addEventListener('click', () => showNotification('Demo coming soon!', 'info'));
 
     // Notes functionality

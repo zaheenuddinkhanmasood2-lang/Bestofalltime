@@ -10,151 +10,210 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Tailwind CSS CDN for utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-graduation-cap"></i>
-                <span>StudyShare</span>
-            </div>
-            <div class="nav-menu" id="nav-menu">
-                <a href="#home" class="nav-link" data-page="home">Home</a>
-                <a href="#features" class="nav-link" data-page="features">Features</a>
-                <a href="#about" class="nav-link" data-page="about">About</a>
-                <a href="#contact" class="nav-link" data-page="contact">Contact</a>
-                <a href="#dashboard" class="nav-link" data-page="dashboard" style="display: none;">Dashboard</a>
-                <a href="#notes" class="nav-link" data-page="notes" style="display: none;">My Notes</a>
-                <a href="#shared" class="nav-link" data-page="shared" style="display: none;">Shared</a>
-                <a href="#profile" class="nav-link" data-page="profile" style="display: none;">Profile</a>
-                <div class="nav-auth">
-                    <button class="btn-login" id="loginBtn">Login</button>
-                    <button class="btn-register" id="registerBtn">Sign Up</button>
+    <header>
+        <nav
+            class="navbar bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 fixed w-full z-50 border-b border-gray-100">
+            <div class="nav-container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+                <div class="nav-logo flex items-center gap-2 text-indigo-600 font-semibold">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>StudyShare</span>
+                </div>
+                <div class="nav-menu hidden md:flex items-center gap-6" id="nav-menu">
+                    <a href="#home" class="nav-link" data-page="home">Home</a>
+                    <a href="#features" class="nav-link" data-page="features">Features</a>
+                    <a href="#about" class="nav-link" data-page="about">About</a>
+                    <a href="#contact" class="nav-link" data-page="contact">Contact</a>
+                    <a href="#dashboard" class="nav-link" data-page="dashboard" style="display: none;">Dashboard</a>
+                    <a href="#notes" class="nav-link" data-page="notes" style="display: none;">My Notes</a>
+                    <a href="#shared" class="nav-link" data-page="shared" style="display: none;">Shared</a>
+                    <a href="#profile" class="nav-link" data-page="profile" style="display: none;">Profile</a>
+                    <div class="nav-auth">
+                        <a href="login.html" class="btn-login text-sm font-medium text-gray-700 hover:text-gray-900"
+                            id="loginBtn">Login</a>
+                        <a href="signup.html"
+                            class="btn-register inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-500"
+                            id="registerBtn">Sign Up</a>
+                    </div>
+                </div>
+                <div class="nav-toggle md:hidden cursor-pointer flex flex-col gap-1" id="nav-toggle"
+                    aria-label="Open menu" role="button" tabindex="0">
+                    <span class="bar block h-0.5 w-6 bg-gray-800"></span>
+                    <span class="bar block h-0.5 w-6 bg-gray-800"></span>
+                    <span class="bar block h-0.5 w-6 bg-gray-800"></span>
                 </div>
             </div>
-            <div class="nav-toggle" id="nav-toggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
     <!-- Home Page -->
-    <div id="home" class="page active">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-container">
-                <div class="hero-content">
-                    <h1 class="hero-title">
-                        Share Knowledge,
-                        <span class="gradient-text">Build Together</span>
-                    </h1>
-                    <p class="hero-description">
-                        The ultimate platform for students to share notes, collaborate on projects,
-                        and learn together. Transform your study experience with our modern, intuitive interface.
-                    </p>
-                    <div class="hero-buttons">
-                        <button class="btn-primary" id="getStartedBtn">Get Started Free</button>
-                        <button class="btn-secondary" id="watchDemoBtn">
-                            <i class="fas fa-play"></i>
-                            Watch Demo
-                        </button>
+    <main>
+        <div id="home" class="page active">
+            <!-- Hero Section -->
+            <section class="hero relative bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-white">
+                <div
+                    class="hero-container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 md:py-32 grid md:grid-cols-2 gap-12 items-center">
+                    <div class="hero-content">
+                        <h1 class="hero-title text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+                            Share Knowledge,
+                            <span
+                                class="gradient-text bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">Build
+                                Together</span>
+                        </h1>
+                        <p class="hero-description text-white/90 text-lg md:text-xl mb-8 max-w-xl">
+                            The ultimate platform for students to share notes, collaborate on projects,
+                            and learn together. Transform your study experience with our modern, intuitive interface.
+                        </p>
+                        <div class="hero-buttons flex items-center gap-4">
+                            <button
+                                class="btn-primary inline-flex items-center rounded-xl bg-white px-6 py-3 text-indigo-700 font-semibold shadow hover:bg-white/90"
+                                id="getStartedBtn" aria-label="Get started for free">Get Started Free</button>
+                            <button
+                                class="btn-secondary inline-flex items-center rounded-xl border border-white/30 px-6 py-3 text-white hover:bg-white/10"
+                                id="watchDemoBtn" aria-label="Watch the demo">
+                                <i class="fas fa-play mr-2"></i>
+                                Watch Demo
+                            </button>
+                        </div>
+                        <div class="hero-stats mt-10 grid grid-cols-3 gap-6 max-w-md">
+                            <div class="stat text-center">
+                                <span class="stat-number block text-2xl md:text-3xl font-bold">10K+</span>
+                                <span class="stat-label block text-white/80 text-sm">Students</span>
+                            </div>
+                            <div class="stat text-center">
+                                <span class="stat-number block text-2xl md:text-3xl font-bold">50K+</span>
+                                <span class="stat-label block text-white/80 text-sm">Notes Shared</span>
+                            </div>
+                            <div class="stat text-center">
+                                <span class="stat-number block text-2xl md:text-3xl font-bold">95%</span>
+                                <span class="stat-label block text-white/80 text-sm">Satisfaction</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <span class="stat-number">10K+</span>
-                            <span class="stat-label">Students</span>
+                    <div class="hero-visual relative hidden md:block" aria-hidden="true">
+                        <!-- Placeholder illustration: replace with real SVG/PNG asset -->
+                        <div
+                            class="aspect-[4/3] rounded-3xl bg-white/10 ring-1 ring-white/20 backdrop-blur flex items-center justify-center">
+                            <svg viewBox="0 0 200 150" class="w-4/5 h-4/5" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#fff" stop-opacity="0.9" />
+                                        <stop offset="100%" stop-color="#fff" stop-opacity="0.5" />
+                                    </linearGradient>
+                                </defs>
+                                <rect x="10" y="10" width="180" height="130" rx="16" fill="url(#g)" />
+                                <circle cx="60" cy="60" r="22" fill="#4f46e5" opacity="0.9" />
+                                <rect x="95" y="46" width="80" height="12" rx="6" fill="#312e81" opacity="0.6" />
+                                <rect x="95" y="66" width="70" height="10" rx="5" fill="#1e1b4b" opacity="0.5" />
+                                <rect x="30" y="100" width="140" height="16" rx="8" fill="#4f46e5" opacity="0.8" />
+                            </svg>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">50K+</span>
-                            <span class="stat-label">Notes Shared</span>
+                        <!-- Existing floating cards kept for motion accents -->
+                        <div
+                            class="floating-card card-1 absolute top-6 left-6 bg-white/90 text-gray-800 rounded-xl shadow px-3 py-2">
+                            <i class="fas fa-file-alt mr-1"></i>
+                            <span>Software Eng.</span>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">95%</span>
-                            <span class="stat-label">Satisfaction</span>
+                        <div
+                            class="floating-card card-2 absolute bottom-10 left-10 bg-white/90 text-gray-800 rounded-xl shadow px-3 py-2">
+                            <i class="fas fa-atom mr-1"></i>
+                            <span>Data Structure and design</span>
+                        </div>
+                        <div
+                            class="floating-card card-3 absolute top-10 right-10 bg-white/90 text-gray-800 rounded-xl shadow px-3 py-2">
+                            <i class="fas fa-code mr-1"></i>
+                            <span>Information Secuirity</span>
+                        </div>
+                        <div
+                            class="floating-card card-4 absolute bottom-6 right-6 bg-white/90 text-gray-800 rounded-xl shadow px-3 py-2">
+                            <i class="fas fa-book mr-1"></i>
+                            <span>Artificial Intelligence</span>
                         </div>
                     </div>
                 </div>
-                <div class="hero-visual">
-                    <div class="floating-card card-1">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Software Eng.</span>
-                    </div>
-                    <div class="floating-card card-2">
-                        <i class="fas fa-atom"></i>
-                        <span>Data Structure and design</span>
-                    </div>
-                    <div class="floating-card card-3">
-                        <i class="fas fa-code"></i>
-                        <span>Information Secuirity</span>
-                    </div>
-                    <div class="floating-card card-4">
-                        <i class="fas fa-book"></i>
-                        <span>Artificial Intelligence</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Features Section -->
-        <section class="features">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Why Choose StudyShare?</h2>
-                    <p class="section-description">
-                        Powerful features designed specifically for students and educators
-                    </p>
+            <!-- Features Section -->
+            <section class="features bg-white">
+                <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+                    <div class="section-header text-center max-w-2xl mx-auto mb-12">
+                        <h2 class="section-title text-3xl md:text-4xl font-bold tracking-tight text-gray-900">Why Choose
+                            StudyShare?</h2>
+                        <p class="section-description mt-4 text-gray-600">
+                            Powerful features designed specifically for students and educators
+                        </p>
+                    </div>
+                    <div class="features-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                        <div
+                            class="feature-card rounded-2xl border border-gray-200 shadow-sm p-6 bg-white hover:shadow-md transition">
+                            <div
+                                class="feature-icon h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl mb-4">
+                                <i class="fas fa-share-alt" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900">Easy Sharing</h3>
+                            <p class="mt-2 text-gray-600">Share notes instantly with your classmates using simple links
+                                or invite codes</p>
+                        </div>
+                        <div
+                            class="feature-card rounded-2xl border border-gray-200 shadow-sm p-6 bg-white hover:shadow-md transition">
+                            <div
+                                class="feature-icon h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl mb-4">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900">Real-time Editing</h3>
+                            <p class="mt-2 text-gray-600">Collaborate on notes in real-time with live editing and
+                                instant updates</p>
+                        </div>
+                        <div
+                            class="feature-card rounded-2xl border border-gray-200 shadow-sm p-6 bg-white hover:shadow-md transition">
+                            <div
+                                class="feature-icon h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl mb-4">
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900">Smart Search</h3>
+                            <p class="mt-2 text-gray-600">Find any note instantly with our powerful search and tagging
+                                system</p>
+                        </div>
+                        <div
+                            class="feature-card rounded-2xl border border-gray-200 shadow-sm p-6 bg-white hover:shadow-md transition">
+                            <div
+                                class="feature-icon h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl mb-4">
+                                <i class="fas fa-mobile-alt" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900">Mobile Ready</h3>
+                            <p class="mt-2 text-gray-600">Access your notes anywhere with our fully responsive design
+                            </p>
+                        </div>
+                        <div
+                            class="feature-card rounded-2xl border border-gray-200 shadow-sm p-6 bg-white hover:shadow-md transition">
+                            <div
+                                class="feature-icon h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl mb-4">
+                                <i class="fas fa-lock" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900">Secure & Private</h3>
+                            <p class="mt-2 text-gray-600">Your notes are encrypted and secure with granular privacy
+                                controls</p>
+                        </div>
+                        <div
+                            class="feature-card rounded-2xl border border-gray-200 shadow-sm p-6 bg-white hover:shadow-md transition">
+                            <div
+                                class="feature-icon h-12 w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl mb-4">
+                                <i class="fas fa-history" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900">Version History</h3>
+                            <p class="mt-2 text-gray-600">Track changes and revert to previous versions of your notes
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-share-alt"></i>
-                        </div>
-                        <h3>Easy Sharing</h3>
-                        <p>Share notes instantly with your classmates using simple links or invite codes</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-edit"></i>
-                        </div>
-                        <h3>Real-time Editing</h3>
-                        <p>Collaborate on notes in real-time with live editing and instant updates</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <h3>Smart Search</h3>
-                        <p>Find any note instantly with our powerful search and tagging system</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <h3>Mobile Ready</h3>
-                        <p>Access your notes anywhere with our fully responsive design</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <h3>Secure & Private</h3>
-                        <p>Your notes are encrypted and secure with granular privacy controls</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-history"></i>
-                        </div>
-                        <h3>Version History</h3>
-                        <p>Track changes and revert to previous versions of your notes</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
+            </section>
+        </div>
+    </main>
 
     <!-- Features Page -->
     <div id="features" class="page">
@@ -726,6 +785,7 @@
             align-items: center;
         }
     </style>
+    <script src="navigation.js"></script>
     <script src="script.js"></script>
 </body>
 
