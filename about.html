@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1e293b">
+    <title>About Us - StudyShare</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Learn about StudyShare - The ultimate platform for sharing and discovering study materials. Meet our team and discover our mission to revolutionize education.">
+    <meta name="keywords"
+        content="about studyshare, team, mission, education platform, study notes, academic collaboration">
+    <meta name="author" content="StudyShare">
+    <meta name="robots" content="index, follow">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="font-inter bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-x-hidden">
+
+    <!-- Animated Background Elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none" role="presentation" aria-hidden="true">
+        <!-- Floating Orbs -->
+        <div
+            class="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob">
+        </div>
+        <div
+            class="absolute top-40 right-10 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000">
+        </div>
+        <div
+            class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000">
+        </div>
+
+        <!-- Grid Pattern -->
+        <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+
+        <!-- Floating Particles -->
+        <div class="particles-container"></div>
+    </div>
+
+    <!-- Modern Glassmorphism Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 navbar-holo" id="navbar"
+        style="pointer-events: auto;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="holo-logo">
+                        <div class="logo-core">
+                            <i class="fas fa-graduation-cap text-white text-lg"></i>
+                        </div>
+                        <div class="logo-orbit">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    <a href="index.html" class="text-xl font-bold brand-holo">
+                        StudyShare
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group"
+                        id="homeLink" onclick="window.location.href='index.html'; return false;">
+                        Home
+                        <span class="holo-underline"></span>
+                    </a>
+                    <a href="index.html#features"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        Features
+                        <span class="holo-underline"></span>
+                    </a>
+                    <a href="browse.html"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group"
+                        id="browseNotesLink">
+                        Browse Notes
+                        <span class="holo-underline"></span>
+                    </a>
+                    <a href="about.html" class="nav-link text-white transition-colors duration-200 relative group">
+                        About
+                        <span class="holo-underline"></span>
+                    </a>
+                    <a href="index.html#contact"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        Contact
+                        <span class="holo-underline"></span>
+                    </a>
+
+                    <!-- Auth Buttons -->
+                    <div class="flex items-center space-x-3 ml-8" id="authArea">
+                        <a href="login.html"
+                            class="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-3 py-2 rounded-lg hover:bg-white/5">
+                            Login
+                        </a>
+                        <a href="signup.html"
+                            class="glass-button liquid shimmer px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105">
+                            Sign Up
+                        </a>
+                        <a href="upload.html" id="uploadLink"
+                            class="hidden glass-button px-6 py-2 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 transform hover:scale-105">
+                            <i class="fas fa-upload mr-2"></i>Upload Notes
+                        </a>
+                        <div class="hidden flex items-center space-x-3" id="userMenu">
+                            <div class="flex items-center space-x-3">
+                                <div
+                                    class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                <a href="profile.html" id="profileLink"
+                                    class="text-gray-300 hover:text-white transition-colors duration-200 font-medium">
+                                    Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button
+                    class="md:hidden text-white p-3 rounded-lg hover:bg-white/10 transition-colors duration-200 touch-manipulation"
+                    id="mobile-menu-button" aria-label="Open mobile menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="md:hidden glass-panel mt-2 mx-2 sm:mx-4 rounded-2xl p-4 sm:p-6 hidden" id="mobile-menu">
+            <div class="flex flex-col space-y-4">
+                <a href="index.html"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center"
+                    onclick="window.location.href='index.html'; return false;">Home</a>
+                <a href="index.html#features"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center">Features</a>
+                <a href="browse.html"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center"
+                    id="mobileBrowseNotesLink">Browse Notes</a>
+                <a href="about.html"
+                    class="text-white py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center">About</a>
+                <a href="index.html#contact"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center">Contact</a>
+
+                <div class="pt-4 border-t border-gray-700 space-y-3">
+                    <!-- User Menu for logged in users -->
+                    <div id="mobileUserMenu" class="hidden space-y-3">
+                        <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5">
+                            <div
+                                class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <a href="profile.html" id="mobileProfileLink"
+                                class="text-gray-300 hover:text-white transition-colors duration-200 font-medium">Profile</a>
+                        </div>
+                        <a href="upload.html" id="mobileUploadLink"
+                            class="hidden flex items-center space-x-3 p-3 rounded-lg bg-white/5 text-gray-300 hover:text-white transition-colors duration-200">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload Notes</span>
+                        </a>
+                    </div>
+
+                    <!-- Auth buttons for logged out users -->
+                    <div id="mobileAuthMenu" class="space-y-3">
+                        <a href="login.html" id="mobileLoginLink"
+                            class="block text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5">Login</a>
+                        <a href="signup.html" id="mobileGetStartedBtn"
+                            class="block w-full glass-button liquid shimmer px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-lg text-center">
+                            Get Started
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-holo-overlay"></div>
+        </div>
+        <div class="lensflare"></div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen-mobile flex items-center justify-center pt-16 hero-section">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div
+                    class="inline-flex items-center px-4 py-2 rounded-full glass-panel text-sm font-medium text-purple-300 mb-6">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    About StudyShare
+                </div>
+
+                <h1 class="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+                    <span class="bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                        Our Story
+                    </span>
+                    <br>
+                    <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        Revolutionizing Education
+                    </span>
+                </h1>
+
+                <!-- Test Button -->
+                <div class="mb-8">
+                    <button onclick="window.location.href='index.html'"
+                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-bold">
+                        TEST: Go to Home Page
+                    </button>
+                </div>
+
+                <p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                    Discover the journey behind StudyShare and meet the passionate team dedicated to transforming how
+                    students learn and collaborate.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="py-12 sm:py-16 lg:py-20 relative section-padding-mobile">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Mission Content -->
+                <div>
+                    <div
+                        class="inline-flex items-center px-4 py-2 rounded-full glass-panel text-sm font-medium text-purple-300 mb-6">
+                        <i class="fas fa-bullseye mr-2"></i>
+                        Our Mission
+                    </div>
+                    <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+                        <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                            Breaking Down Barriers
+                        </span>
+                        <br>
+                        <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            Building Bridges
+                        </span>
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                        StudyShare was born from a simple yet powerful idea: knowledge grows when shared. We believe
+                        that every student has something valuable to contribute, and every learner deserves access to
+                        quality educational resources.
+                    </p>
+                    <p class="text-lg text-gray-400 mb-8 leading-relaxed">
+                        Our mission is to create a global community of learners who support each other's academic
+                        journey. We're not just building a platform; we're fostering a culture of collaboration, mutual
+                        support, and academic excellence.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="glass-card p-6 rounded-2xl">
+                            <div
+                                class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4">
+                                <i class="fas fa-users text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Community First</h3>
+                            <p class="text-gray-300">Building connections between students worldwide</p>
+                        </div>
+                        <div class="glass-card p-6 rounded-2xl">
+                            <div
+                                class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4">
+                                <i class="fas fa-lightbulb text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Innovation</h3>
+                            <p class="text-gray-300">Cutting-edge technology for better learning</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission Visual -->
+                <div class="relative">
+                    <div class="glass-panel p-8 rounded-3xl shadow-2xl">
+                        <div class="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl p-8 text-center">
+                            <div
+                                class="w-32 h-32 mx-auto mb-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl">
+                                <i class="fas fa-heart text-white text-4xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-4">Our Vision</h3>
+                            <p class="text-gray-300">A world where every student has access to quality education and
+                                collaborative learning opportunities.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-12 sm:py-16 lg:py-20 relative section-padding-mobile">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <div
+                    class="inline-flex items-center px-4 py-2 rounded-full glass-panel text-sm font-medium text-purple-300 mb-6">
+                    <i class="fas fa-users mr-2"></i>
+                    Meet Our Team
+                </div>
+                <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                        The People Behind
+                    </span>
+                    <br>
+                    <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        StudyShare
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    A passionate team of educators, developers, and designers working together to revolutionize
+                    education.
+                </p>
+            </div>
+
+            <!-- Team Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 grid-mobile-1">
+                <div
+                    class="glass-card p-6 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300">
+                    <div
+                        class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl font-bold">ND</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Nazim Ud Din</h3>
+                    <p class="text-gray-400 mb-3">Founder & CEO</p>
+                    <p class="text-gray-300 text-sm">Visionary leader passionate about educational technology and
+                        student success.</p>
+                </div>
+
+                <div
+                    class="glass-card p-6 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300">
+                    <div
+                        class="w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl font-bold">JS</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Nazim And Jawad</h3>
+                    <p class="text-gray-400 mb-3">Lead Developer</p>
+                    <p class="text-gray-300 text-sm">Full-stack developer crafting innovative solutions for seamless
+                        user experiences.</p>
+                </div>
+
+                <div
+                    class="glass-card p-6 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300">
+                    <div
+                        class="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl font-bold">JH</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Jawad Hassan</h3>
+                    <p class="text-gray-400 mb-3">UI/UX Designer</p>
+                    <p class="text-gray-300 text-sm">Creative designer focused on intuitive and beautiful user
+                        interfaces.</p>
+                </div>
+
+                <div
+                    class="glass-card p-6 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300">
+                    <div
+                        class="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl font-bold">CF</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Classfellows</h3>
+                    <p class="text-gray-400 mb-3">Product Managers</p>
+                    <p class="text-gray-300 text-sm">Dedicated team members ensuring the platform meets student needs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="py-12 sm:py-16 lg:py-20 relative section-padding-mobile">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <div
+                    class="inline-flex items-center px-4 py-2 rounded-full glass-panel text-sm font-medium text-purple-300 mb-6">
+                    <i class="fas fa-star mr-2"></i>
+                    Our Values
+                </div>
+                <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                        What Drives Us
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    The principles that guide everything we do at StudyShare.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 grid-mobile-1 grid-tablet-2">
+                <div
+                    class="glass-card p-8 rounded-2xl hover:transform hover:scale-105 transition-all duration-300 group">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-share-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Collaboration</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        We believe that learning is enhanced when students work together, share knowledge, and support
+                        each other's growth.
+                    </p>
+                </div>
+
+                <div
+                    class="glass-card p-8 rounded-2xl hover:transform hover:scale-105 transition-all duration-300 group">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-lock text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Privacy & Security</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Your data and privacy are our top priority. We implement enterprise-grade security to protect
+                        your information.
+                    </p>
+                </div>
+
+                <div
+                    class="glass-card p-8 rounded-2xl hover:transform hover:scale-105 transition-all duration-300 group">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Excellence</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        We strive for excellence in everything we do, from user experience to educational content
+                        quality.
+                    </p>
+                </div>
+
+                <div
+                    class="glass-card p-8 rounded-2xl hover:transform hover:scale-105 transition-all duration-300 group">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-globe text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Accessibility</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Education should be accessible to everyone, regardless of location, background, or
+                        circumstances.
+                    </p>
+                </div>
+
+                <div
+                    class="glass-card p-8 rounded-2xl hover:transform hover:scale-105 transition-all duration-300 group">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-lightbulb text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Innovation</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        We continuously innovate to provide cutting-edge tools and features that enhance the learning
+                        experience.
+                    </p>
+                </div>
+
+                <div
+                    class="glass-card p-8 rounded-2xl hover:transform hover:scale-105 transition-all duration-300 group">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-heart text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Community</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        We foster a supportive community where every student feels valued and empowered to succeed.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="py-12 sm:py-16 lg:py-20 relative section-padding-mobile">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <div
+                    class="inline-flex items-center px-4 py-2 rounded-full glass-panel text-sm font-medium text-purple-300 mb-6">
+                    <i class="fas fa-book-open mr-2"></i>
+                    Our Journey
+                </div>
+                <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                        From Idea to Impact
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    The story of how StudyShare came to be and our vision for the future of education.
+                </p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-3xl font-bold text-white mb-6">The Beginning</h3>
+                        <p class="text-lg text-gray-300 mb-6 leading-relaxed">
+                            StudyShare started as a simple idea during a late-night study session. Our founder, Nazim Ud
+                            Din, realized that students were struggling to share and access quality study materials
+                            effectively. The existing solutions were either too complex or lacked the collaborative
+                            features students needed.
+                        </p>
+                        <p class="text-lg text-gray-300 mb-6 leading-relaxed">
+                            What began as a personal project to help classmates share notes quickly evolved into a
+                            comprehensive platform designed to revolutionize how students learn and collaborate.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button
+                                class="glass-button px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105">
+                                Join Our Community
+                            </button>
+                            <a href="index.html#contact"
+                                class="glass-button px-8 py-4 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 transform hover:scale-105 text-center">
+                                Get In Touch
+                            </a>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl p-8 text-center">
+                            <div
+                                class="w-32 h-32 mx-auto mb-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl">
+                                <i class="fas fa-rocket text-white text-4xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-4">The Future</h3>
+                            <p class="text-gray-300">Continuing to innovate and expand our platform to serve students
+                                worldwide with cutting-edge educational technology.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-graduation-cap text-white text-lg"></i>
+                        </div>
+                        <span
+                            class="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                            StudyShare
+                        </span>
+                    </div>
+                    <p class="text-gray-300 mb-6 max-w-md">
+                        The ultimate platform for collaborative learning. Share notes, collaborate in real-time, and
+                        excel together.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 glass-panel rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors duration-300"
+                            aria-label="Follow us on Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 glass-panel rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors duration-300"
+                            aria-label="Follow us on Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 glass-panel rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors duration-300"
+                            aria-label="Follow us on LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 glass-panel rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors duration-300"
+                            aria-label="Follow us on Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Product</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#features"
+                                class="text-gray-300 hover:text-white transition-colors duration-300">Features</a></li>
+                        <li><a href="#"
+                                class="text-gray-300 hover:text-white transition-colors duration-300">Pricing</a></li>
+                        <li><a href="#"
+                                class="text-gray-300 hover:text-white transition-colors duration-300">Security</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">API</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Help
+                                Center</a></li>
+                        <li><a href="index.html#contact"
+                                class="text-gray-300 hover:text-white transition-colors duration-300">Contact
+                                Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Status</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-300 hover:text-white transition-colors duration-300">Community</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 mt-8 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2024 StudyShare. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/923068564997?text=Hello%20I%20need%20help%20with%20StudyShare"
+        class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-2xl hover:shadow-green-500/25 transition-all duration-300 transform hover:scale-110 z-50"
+        target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp text-white text-2xl"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="supabaseClient.js"></script>
+    <script src="script.js"></script>
+    <script src="navigation.js"></script>
+    <script src="animations.js"></script>
+    <script>
+        // Session-aware UI: show email, signout, and authorized Upload link
+        (async () => {
+            try {
+                const supabase = window.getSupabaseClient();
+
+                const { data: { session } } = await supabase.auth.getSession();
+
+                const nav = document.getElementById('navbar');
+                if (!nav) return;
+
+                const container = nav.querySelector('.hidden.md\\:flex.items-center.space-x-8');
+                if (!container) return;
+
+                const authArea = container.querySelector('#authArea');
+                if (!authArea) return;
+                const uploadLink = document.getElementById('uploadLink');
+
+                if (session && session.user) {
+                    // Hide auth buttons and show user menu
+                    const authButtons = authArea.querySelector('a[href="login.html"], a[href="signup.html"]');
+                    const userMenu = document.getElementById('userMenu');
+
+                    if (authButtons) authButtons.style.display = 'none';
+                    if (userMenu) userMenu.classList.remove('hidden');
+
+                    // Update mobile menu
+                    const mobileUserMenu = document.getElementById('mobileUserMenu');
+                    const mobileAuthMenu = document.getElementById('mobileAuthMenu');
+
+                    if (mobileUserMenu) mobileUserMenu.classList.remove('hidden');
+                    if (mobileAuthMenu) mobileAuthMenu.classList.add('hidden');
+
+                    // Check role for Upload link
+                    const { data: authRow } = await supabase
+                        .from('authorized_uploaders')
+                        .select('is_active')
+                        .eq('user_id', session.user.id)
+                        .maybeSingle();
+                    if (authRow?.is_active) {
+                        document.getElementById('uploadLink')?.classList.remove('hidden');
+                        document.getElementById('mobileUploadLink')?.classList.remove('hidden');
+                    }
+                }
+            } catch { }
+        })();
+    </script>
+
+    <script>
+        // Enhanced Mobile Responsiveness and Touch Interactions
+        document.addEventListener('DOMContentLoaded', function () {
+            // Detect device type
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+            // Add device-specific classes
+            if (isMobile) {
+                document.body.classList.add('mobile-device');
+            }
+            if (isTouch) {
+                document.body.classList.add('touch-device');
+            }
+
+            // Enhanced mobile menu interactions
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (mobileMenuButton && mobileMenu) {
+                // Touch-friendly menu toggle
+                mobileMenuButton.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    mobileMenu.classList.toggle('hidden');
+
+                    // Add haptic feedback on supported devices
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+
+                // Close menu on escape key
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Navigation links should work naturally without interference
+
+            // Mobile menu interactions only - no smooth scrolling needed on about page
+
+            // Optimize animations for mobile
+            if (isMobile || window.innerWidth < 768) {
+                // Reduce animation complexity on mobile
+                const animatedElements = document.querySelectorAll('.animate-gradient-shift, .animate-float-particle-1, .animate-float-particle-2, .animate-float-particle-3, .animate-float-particle-4, .animate-pulse-glow');
+                animatedElements.forEach(el => {
+                    el.style.animationDuration = '0.01ms';
+                    el.style.animationIterationCount = '1';
+                });
+            }
+
+            // Handle orientation changes
+            window.addEventListener('orientationchange', function () {
+                setTimeout(function () {
+                    // Recalculate viewport height for mobile browsers
+                    const vh = window.innerHeight * 0.01;
+                    document.documentElement.style.setProperty('--vh', `${vh}px`);
+                }, 100);
+            });
+
+            // Set initial viewport height
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+            // Prevent zoom on double tap for iOS
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+
+            // Enhanced touch feedback for buttons
+            const buttons = document.querySelectorAll('.glass-button, .nav-link');
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', function () {
+                    this.style.transform = 'scale(0.98)';
+                });
+
+                button.addEventListener('touchend', function () {
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Optimize scroll performance
+            let ticking = false;
+            function updateScrollEffects() {
+                // Add scroll-based optimizations here
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', function () {
+                if (!ticking) {
+                    requestAnimationFrame(updateScrollEffects);
+                    ticking = true;
+                }
+            });
+
+            // Ensure Browse Notes links work properly
+            const browseNotesLink = document.getElementById('browseNotesLink');
+            const mobileBrowseNotesLink = document.getElementById('mobileBrowseNotesLink');
+
+            if (browseNotesLink) {
+                browseNotesLink.addEventListener('click', function (e) {
+                    console.log('Browse Notes clicked - navigating to browse.html');
+                    // Ensure navigation works
+                    window.location.href = 'browse.html';
+                });
+            }
+
+            if (mobileBrowseNotesLink) {
+                mobileBrowseNotesLink.addEventListener('click', function (e) {
+                    console.log('Mobile Browse Notes clicked - navigating to browse.html');
+                    // Close mobile menu after clicking
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                    // Ensure navigation works
+                    window.location.href = 'browse.html';
+                });
+            }
+        });
+
+        // Simple navigation fix for Home button
+        document.addEventListener('DOMContentLoaded', function () {
+            // Fix Home button navigation
+            const homeLink = document.getElementById('homeLink');
+            if (homeLink) {
+                homeLink.addEventListener('click', function (e) {
+                    console.log('Home button clicked - navigating to index.html');
+                    e.preventDefault();
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // Also fix mobile home link
+            const mobileHomeLinks = document.querySelectorAll('a[href="index.html"]');
+            mobileHomeLinks.forEach(link => {
+                if (!link.id) { // Don't double-handle the desktop link
+                    link.addEventListener('click', function (e) {
+                        console.log('Mobile Home button clicked - navigating to index.html');
+                        e.preventDefault();
+                        window.location.href = 'index.html';
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

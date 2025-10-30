@@ -1,28 +1,51 @@
-// StudyShare - Supabase Integration
-// This file handles all database operations and user authentication
+// StudyShare - Modern Supabase Integration
+// This file handles all database operations and user authentication with glassmorphism UI
 
 // Supabase client initialization
 let supabase;
 
 // Initialize Supabase when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
-    // Check if Supabase credentials are configured
-    if (!checkSupabaseConfig()) {
-        showNotification('Please configure your Supabase credentials first!', 'error');
-        showSetupInstructions();
-        return;
-    }
+    // Wait for Supabase to be available
+    const initSupabase = () => {
+        try {
+            if (window.supabase && window.getSupabaseClient) {
+                // Initialize shared Supabase client
+                supabase = window.getSupabaseClient();
+                console.log('✅ Supabase client initialized successfully');
 
-    try {
-        // Initialize Supabase client
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase client initialized successfully');
+                // Initialize the application
+                initializeApp();
+            } else {
+                console.error('❌ Supabase not available');
+                showModernNotification('Failed to connect to database. Please check your credentials.', 'error');
+            }
+        } catch (error) {
+            console.error('❌ Failed to initialize Supabase:', error);
+            showModernNotification('Failed to connect to database. Please check your credentials.', 'error');
+        }
+    };
 
-        // Initialize the application
-        initializeApp();
-    } catch (error) {
-        console.error('❌ Failed to initialize Supabase:', error);
-        showNotification('Failed to connect to database. Please check your credentials.', 'error');
+    // Check if Supabase is already loaded
+    if (window.supabase && window.getSupabaseClient) {
+        initSupabase();
+    } else {
+        // Wait for Supabase to load
+        const checkSupabase = setInterval(() => {
+            if (window.supabase && window.getSupabaseClient) {
+                clearInterval(checkSupabase);
+                initSupabase();
+            }
+        }, 100);
+
+        // Timeout after 5 seconds
+        setTimeout(() => {
+            clearInterval(checkSupabase);
+            if (!window.supabase) {
+                console.error('❌ Supabase failed to load');
+                showModernNotification('Failed to load Supabase. Please refresh the page.', 'error');
+            }
+        }, 5000);
     }
 });
 
@@ -88,6 +111,7 @@ function setupEventListeners() {
 
     // Contact form
     document.getElementById('contactForm')?.addEventListener('submit', handleContactForm);
+
 
     // Listen for auth state changes
     supabase?.auth.onAuthStateChange((event, session) => {
@@ -270,17 +294,38 @@ function handleUserLogin(user) {
         link.style.display = 'block';
     });
 
-    // Hide auth buttons
-    document.querySelector('.nav-auth').style.display = 'none';
+    // Hide auth buttons (Login and Sign Up)
+    const loginLink = document.querySelector('a[href="login.html"]');
+    const signupLink = document.querySelector('a[href="signup.html"]');
 
-    // Add logout button
-    if (!document.getElementById('logoutBtn')) {
-        const logoutBtn = document.createElement('button');
-        logoutBtn.id = 'logoutBtn';
-        logoutBtn.className = 'btn-secondary';
-        logoutBtn.textContent = 'Logout';
-        logoutBtn.addEventListener('click', handleLogout);
-        document.querySelector('.nav-menu').appendChild(logoutBtn);
+    if (loginLink) {
+        loginLink.style.display = 'none';
+    }
+    if (signupLink) {
+        signupLink.style.display = 'none';
+    }
+
+    // Show user menu and upload link
+    const userMenu = document.getElementById('userMenu');
+    const uploadLink = document.getElementById('uploadLink');
+
+    if (userMenu) {
+        userMenu.classList.remove('hidden');
+        userMenu.classList.add('flex');
+    }
+    if (uploadLink) {
+        uploadLink.classList.remove('hidden');
+    }
+
+    // Hide mobile auth menu and show mobile user menu
+    const mobileAuthMenu = document.getElementById('mobileAuthMenu');
+    const mobileUserMenu = document.getElementById('mobileUserMenu');
+
+    if (mobileAuthMenu) {
+        mobileAuthMenu.style.display = 'none';
+    }
+    if (mobileUserMenu) {
+        mobileUserMenu.classList.remove('hidden');
     }
 
     // Update profile information
@@ -296,13 +341,38 @@ function handleUserLogout() {
         link.style.display = 'none';
     });
 
-    // Show auth buttons
-    document.querySelector('.nav-auth').style.display = 'flex';
+    // Show auth buttons (Login and Sign Up)
+    const loginLink = document.querySelector('a[href="login.html"]');
+    const signupLink = document.querySelector('a[href="signup.html"]');
 
-    // Remove logout button
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.remove();
+    if (loginLink) {
+        loginLink.style.display = 'block';
+    }
+    if (signupLink) {
+        signupLink.style.display = 'block';
+    }
+
+    // Hide user menu and upload link
+    const userMenu = document.getElementById('userMenu');
+    const uploadLink = document.getElementById('uploadLink');
+
+    if (userMenu) {
+        userMenu.classList.add('hidden');
+        userMenu.classList.remove('flex');
+    }
+    if (uploadLink) {
+        uploadLink.classList.add('hidden');
+    }
+
+    // Show mobile auth menu and hide mobile user menu
+    const mobileAuthMenu = document.getElementById('mobileAuthMenu');
+    const mobileUserMenu = document.getElementById('mobileUserMenu');
+
+    if (mobileAuthMenu) {
+        mobileAuthMenu.style.display = 'block';
+    }
+    if (mobileUserMenu) {
+        mobileUserMenu.classList.add('hidden');
     }
 
     // Clear user data
@@ -322,12 +392,16 @@ async function updateProfileDisplay(user) {
             .single();
 
         if (profile) {
-            document.getElementById('profileName').textContent = profile.full_name || user.email;
-            document.getElementById('profileEmail').textContent = user.email;
+            // Use email from profiles table, fallback to auth user email
+            const displayEmail = profile.email || user.email;
+            const displayName = profile.full_name || displayEmail;
+
+            document.getElementById('profileName').textContent = displayName;
+            document.getElementById('profileEmail').textContent = displayEmail;
             document.getElementById('profileNameInput').value = profile.full_name || '';
-            document.getElementById('profileEmailInput').value = user.email;
+            document.getElementById('profileEmailInput').value = displayEmail;
             document.getElementById('profileBio').value = profile.bio || '';
-            document.getElementById('profileAvatar').textContent = (profile.full_name || user.email).charAt(0).toUpperCase();
+            document.getElementById('profileAvatar').textContent = displayName.charAt(0).toUpperCase();
         }
     } catch (error) {
         console.error('Error loading profile:', error);
@@ -340,6 +414,7 @@ async function saveProfile() {
 
     const fullName = document.getElementById('profileNameInput').value;
     const bio = document.getElementById('profileBio').value;
+    const email = document.getElementById('profileEmailInput').value;
 
     try {
         const { error } = await supabase
@@ -347,6 +422,7 @@ async function saveProfile() {
             .upsert({
                 id: user.id,
                 full_name: fullName,
+                email: email || user.email, // Use provided email or fallback to auth user email
                 bio: bio
             });
 
@@ -683,22 +759,86 @@ function formatDate(dateString) {
     });
 }
 
-function filterNotes() {
+// Initialize semantic search for main app
+let mainSemanticSearch = null;
+
+async function initializeMainSemanticSearch() {
+    if (!mainSemanticSearch) {
+        mainSemanticSearch = new SemanticSearchEngine();
+        await mainSemanticSearch.initialize();
+    }
+    return mainSemanticSearch;
+}
+
+async function filterNotes() {
     const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const categoryFilter = document.getElementById('categoryFilter')?.value || '';
 
-    const noteCards = document.querySelectorAll('.note-card');
+    // If no search term, just filter by category
+    if (!searchTerm) {
+        const noteCards = document.querySelectorAll('.note-card');
+        noteCards.forEach(card => {
+            const category = card.querySelector('.note-category')?.textContent.toLowerCase() || '';
+            const matchesCategory = !categoryFilter || category.includes(categoryFilter);
+            card.style.display = matchesCategory ? 'block' : 'none';
+        });
+        return;
+    }
 
-    noteCards.forEach(card => {
-        const title = card.querySelector('.note-title').textContent.toLowerCase();
-        const content = card.querySelector('.note-content').textContent.toLowerCase();
-        const category = card.querySelector('.note-category')?.textContent.toLowerCase() || '';
+    // Use semantic search for better results
+    try {
+        const searchEngine = await initializeMainSemanticSearch();
 
-        const matchesSearch = title.includes(searchTerm) || content.includes(searchTerm);
-        const matchesCategory = !categoryFilter || category.includes(categoryFilter);
+        // Get all notes from the current page
+        const noteCards = Array.from(document.querySelectorAll('.note-card'));
+        const notes = noteCards.map(card => ({
+            id: card.dataset.noteId || Math.random().toString(),
+            title: card.querySelector('.note-title')?.textContent || '',
+            content: card.querySelector('.note-content')?.textContent || '',
+            category: card.querySelector('.note-category')?.textContent || '',
+            description: card.querySelector('.note-description')?.textContent || ''
+        }));
 
-        card.style.display = (matchesSearch && matchesCategory) ? 'block' : 'none';
-    });
+        // Add notes to search index
+        for (const note of notes) {
+            await searchEngine.addToIndex(note);
+        }
+
+        // Perform semantic search
+        const semanticResults = await searchEngine.semanticSearch(searchTerm, {
+            limit: 50,
+            threshold: 0.2,
+            searchFields: ['title', 'content', 'description', 'category']
+        });
+
+        // Show/hide cards based on semantic results
+        const resultIds = new Set(semanticResults.map(result => result.id));
+
+        noteCards.forEach(card => {
+            const noteId = card.dataset.noteId || '';
+            const category = card.querySelector('.note-category')?.textContent.toLowerCase() || '';
+            const matchesCategory = !categoryFilter || category.includes(categoryFilter);
+            const matchesSearch = resultIds.has(noteId);
+
+            card.style.display = (matchesSearch && matchesCategory) ? 'block' : 'none';
+        });
+
+    } catch (error) {
+        console.error('Semantic search failed, falling back to regular search:', error);
+
+        // Fallback to regular search
+        const noteCards = document.querySelectorAll('.note-card');
+        noteCards.forEach(card => {
+            const title = card.querySelector('.note-title').textContent.toLowerCase();
+            const content = card.querySelector('.note-content').textContent.toLowerCase();
+            const category = card.querySelector('.note-category')?.textContent.toLowerCase() || '';
+
+            const matchesSearch = title.includes(searchTerm) || content.includes(searchTerm);
+            const matchesCategory = !categoryFilter || category.includes(categoryFilter);
+
+            card.style.display = (matchesSearch && matchesCategory) ? 'block' : 'none';
+        });
+    }
 }
 
 function clearUserData() {
@@ -799,11 +939,10 @@ function switchAuthModal(type) {
 }
 
 function toggleMobileMenu() {
-    const navMenu = document.getElementById('nav-menu');
-    const navToggle = document.getElementById('nav-toggle');
-
-    navMenu.classList.toggle('active');
-    navToggle.classList.toggle('active');
+    // Mobile menu is now handled by UnifiedMobileMenu class in index.html
+    // This prevents conflicts with multiple event listeners
+    console.log('Mobile menu handled by UnifiedMobileMenu');
+    return;
 }
 
 function showLoading(show) {
@@ -813,27 +952,74 @@ function showLoading(show) {
     }
 }
 
-function showNotification(message, type = 'info') {
+// Modern notification system with glassmorphism design
+function showModernNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
+    notification.className = `notification notification-${type} glass-panel`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        color: white;
+        font-weight: 500;
+        z-index: 2000;
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        max-width: 400px;
+    `;
+
+    // Add icon based on type
+    let icon = '';
+    switch (type) {
+        case 'success':
+            icon = '<i class="fas fa-check-circle mr-2"></i>';
+            notification.style.background = 'rgba(34, 197, 94, 0.9)';
+            notification.style.border = '1px solid rgba(34, 197, 94, 0.3)';
+            break;
+        case 'error':
+            icon = '<i class="fas fa-exclamation-circle mr-2"></i>';
+            notification.style.background = 'rgba(239, 68, 68, 0.9)';
+            notification.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+            break;
+        case 'warning':
+            icon = '<i class="fas fa-exclamation-triangle mr-2"></i>';
+            notification.style.background = 'rgba(245, 158, 11, 0.9)';
+            notification.style.border = '1px solid rgba(245, 158, 11, 0.3)';
+            break;
+        default:
+            icon = '<i class="fas fa-info-circle mr-2"></i>';
+            notification.style.background = 'rgba(59, 130, 246, 0.9)';
+            notification.style.border = '1px solid rgba(59, 130, 246, 0.3)';
+    }
+
+    notification.innerHTML = `${icon}${message}`;
 
     // Add to page
     document.body.appendChild(notification);
 
     // Show notification
     setTimeout(() => {
-        notification.classList.add('show');
+        notification.style.transform = 'translateX(0)';
     }, 100);
 
     // Remove notification after 5 seconds
     setTimeout(() => {
-        notification.classList.remove('show');
+        notification.style.transform = 'translateX(100%)';
         setTimeout(() => {
             notification.remove();
         }, 300);
     }, 5000);
+}
+
+// Legacy notification function for backward compatibility
+function showNotification(message, type = 'info') {
+    showModernNotification(message, type);
 }
 
 // Close modals when clicking outside

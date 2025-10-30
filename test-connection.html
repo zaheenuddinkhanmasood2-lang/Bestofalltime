@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Connection Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #4ade80;
+        }
+        .test-item.error {
+            border-left-color: #ef4444;
+        }
+        .test-item.warning {
+            border-left-color: #f59e0b;
+        }
+        .status {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .success { color: #4ade80; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+        .info { color: #3b82f6; }
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        pre {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Supabase Connection Test</h1>
+        <p>This page will test your direct connection to your Supabase database.</p>
+        
+        <div style="margin: 20px 0;">
+            <button onclick="runConnectionTest()" id="testBtn">Run Connection Test</button>
+            <button onclick="clearResults()" id="clearBtn">Clear Results</button>
+        </div>
+        
+        <div id="results" class="results"></div>
+    </div>
+
+    <script>
+        // Your Supabase credentials
+        const SUPABASE_URL = 'https://dbpmgzgeevgotfxsldjh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRicG1nemdlZXZnb3RmeHNsZGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NjA2NDksImV4cCI6MjA3NTEzNjY0OX0.TLYH19D6jH0-g4OfbwI_XYPy8flk54JFDeZW05CirdU';
+        
+        // Create Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        function addResult(title, status, message, data = null) {
+            const resultsDiv = document.getElementById('results');
+            const testItem = document.createElement('div');
+            testItem.className = `test-item ${status}`;
+            
+            const statusClass = status === 'success' ? 'success' : status === 'error' ? 'error' : 'warning';
+            const statusText = status === 'success' ? '✅' : status === 'error' ? '❌' : '⚠️';
+            
+            testItem.innerHTML = `
+                <div>
+                    <span class="status ${statusClass}">${statusText}</span>
+                    <strong>${title}</strong>
+                </div>
+                <div style="margin-top: 8px;">${message}</div>
+                ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+            `;
+            
+            resultsDiv.appendChild(testItem);
+        }
+        
+        async function runConnectionTest() {
+            const testBtn = document.getElementById('testBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            testBtn.disabled = true;
+            testBtn.textContent = 'Testing...';
+            clearResults();
+            
+            try {
+                addResult('Connection Test Started', 'info', 'Testing your Supabase connection...');
+                
+                // Test 1: Basic connection
+                addResult('Basic Connection', 'info', 'Testing basic connection to Supabase...');
+                
+                const { data: healthCheck, error: healthError } = await supabase
+                    .from('profiles')
+                    .select('count')
+                    .limit(1);
+                
+                if (healthError) {
+                    addResult('Basic Connection', 'error', `Connection failed: ${healthError.message}`);
+                    return;
+                }
+                
+                addResult('Basic Connection', 'success', 'Successfully connected to Supabase!');
+                
+                // Test 2: Check tables
+                addResult('Database Tables', 'info', 'Checking available tables...');
+                
+                const tables = ['profiles', 'notes', 'categories', 'note_shares', 'comments', 'tags'];
+                let accessibleTables = 0;
+                
+                for (const table of tables) {
+                    try {
+                        const { data, error } = await supabase
+                            .from(table)
+                            .select('*')
+                            .limit(1);
+                        
+                        if (error) {
+                            addResult(`Table: ${table}`, 'error', `Not accessible: ${error.message}`);
+                        } else {
+                            addResult(`Table: ${table}`, 'success', 'Table is accessible');
+                            accessibleTables++;
+                        }
+                    } catch (err) {
+                        addResult(`Table: ${table}`, 'error', `Error: ${err.message}`);
+                    }
+                }
+                
+                // Test 3: Categories data
+                addResult('Categories Data', 'info', 'Checking categories...');
+                
+                const { data: categories, error: categoriesError } = await supabase
+                    .from('categories')
+                    .select('*');
+                
+                if (categoriesError) {
+                    addResult('Categories Data', 'error', `Failed to fetch categories: ${categoriesError.message}`);
+                } else {
+                    addResult('Categories Data', 'success', 
+                        `Found ${categories.length} categories: ${categories.map(c => c.name).join(', ')}`, 
+                        categories
+                    );
+                }
+                
+                // Test 4: Notes data
+                addResult('Notes Data', 'info', 'Checking notes...');
+                
+                const { data: notes, error: notesError } = await supabase
+                    .from('notes')
+                    .select('id, title, created_at, is_public')
+                    .limit(10);
+                
+                if (notesError) {
+                    addResult('Notes Data', 'error', `Failed to fetch notes: ${notesError.message}`);
+                } else {
+                    addResult('Notes Data', 'success', 
+                        `Found ${notes.length} notes in database`, 
+                        notes.length > 0 ? notes : null
+                    );
+                }
+                
+                // Test 5: Authentication
+                addResult('Authentication', 'info', 'Checking authentication status...');
+                
+                const { data: { user }, error: authError } = await supabase.auth.getUser();
+                
+                if (authError) {
+                    addResult('Authentication', 'warning', `Auth check failed: ${authError.message}`);
+                } else if (user) {
+                    addResult('Authentication', 'success', `User authenticated: ${user.email}`, user);
+                } else {
+                    addResult('Authentication', 'info', 'No user currently authenticated (this is normal)');
+                }
+                
+                // Summary
+                addResult('Connection Summary', 'success', 
+                    `✅ Connection successful!<br>
+                     📊 Accessible tables: ${accessibleTables}/${tables.length}<br>
+                     🗂️ Categories: ${categories?.length || 0}<br>
+                     📝 Notes: ${notes?.length || 0}<br>
+                     🔗 URL: ${SUPABASE_URL}<br>
+                     <br>
+                     <strong>Your Supabase database is ready to use!</strong>`
+                );
+                
+            } catch (error) {
+                addResult('Connection Test', 'error', `Test failed: ${error.message}`);
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = 'Run Connection Test';
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        // Auto-run test on page load
+        window.addEventListener('load', () => {
+            setTimeout(runConnectionTest, 1000);
+        });
+    </script>
+</body>
+</html>
+

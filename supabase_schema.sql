@@ -33,6 +33,16 @@ CREATE TABLE public.notes (
     is_public BOOLEAN DEFAULT FALSE,
     is_shared BOOLEAN DEFAULT FALSE,
     share_code TEXT UNIQUE,
+    -- Additional fields for file-based notes
+    filename TEXT,
+    file_url TEXT,
+    subject TEXT,
+    description TEXT,
+    uploader_email TEXT,
+    file_size BIGINT,
+    is_approved BOOLEAN DEFAULT FALSE,
+    download_count INT DEFAULT 0,
+    thumbnail_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -236,6 +246,16 @@ INSERT INTO public.categories (name, description, color) VALUES
 ('Literature', 'Language arts and literature notes', '#8b5cf6'),
 ('History', 'Historical studies and social sciences', '#f59e0b'),
 ('General', 'General study notes', '#6b7280');
+
+-- Update existing notes to populate missing fields and make them approved for display
+UPDATE public.notes 
+SET 
+    subject = COALESCE(subject, title),
+    description = COALESCE(description, content),
+    filename = COALESCE(filename, CONCAT(title, '.txt')),
+    uploader_email = COALESCE(uploader_email, 'user@example.com'),
+    is_approved = true
+WHERE subject IS NULL OR description IS NULL OR filename IS NULL OR uploader_email IS NULL OR is_approved IS NULL;
 
 -- Insert default tags
 INSERT INTO public.tags (name, color) VALUES

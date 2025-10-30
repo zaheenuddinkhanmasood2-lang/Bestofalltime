@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Notes - StudyShare</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="favicon-16.svg" sizes="16x16">
+    <link rel="icon" type="image/svg+xml" href="favicon-32.svg" sizes="32x32">
+    <link rel="apple-touch-icon" href="favicon-32.svg">
+    <link rel="shortcut icon" href="favicon.svg">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="font-inter bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-x-hidden">
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <span
+                        class="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">StudyShare</span>
+                </a>
+                <a href="index.html"
+                    class="glass-button px-6 py-2 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-20 px-4">
+        <div class="max-w-3xl mx-auto">
+            <div class="glass-card p-8 rounded-2xl shadow-2xl">
+                <h1 class="text-3xl font-bold text-white mb-2">Upload Handwritten Notes</h1>
+                <p class="text-gray-300 mb-6">Only authorized uploaders can submit files. PDFs or images up to 10 MB.
+                </p>
+
+                <div id="authStatus" class="mb-6 text-gray-300"></div>
+
+                <form id="uploadForm" class="space-y-6" novalidate>
+                    <div>
+                        <label for="subject" class="block text-gray-300 mb-2 font-medium">Subject</label>
+                        <div class="space-y-3">
+                            <select id="subject" name="subject" aria-label="Subject"
+                                class="w-full px-4 py-3 rounded-xl glass-input text-white bg-transparent border border-white/20">
+                                <option value="" class="bg-slate-900">Select a subject</option>
+                                <option value="Mathematics" class="bg-slate-900">Mathematics</option>
+                                <option value="Physics" class="bg-slate-900">Physics</option>
+                                <option value="Chemistry" class="bg-slate-900">Chemistry</option>
+                                <option value="Biology" class="bg-slate-900">Biology</option>
+                                <option value="Computer Science" class="bg-slate-900">Computer Science</option>
+                                <option value="English" class="bg-slate-900">English</option>
+                                <option value="custom" class="bg-slate-900">+ Add Custom Subject</option>
+                            </select>
+
+                            <!-- Custom subject input (hidden by default) -->
+                            <div id="customSubjectContainer" class="hidden">
+                                <label for="customSubject" class="block text-gray-300 mb-2 font-medium">Custom Subject
+                                    Name</label>
+                                <input id="customSubject" name="customSubject" type="text"
+                                    placeholder="Enter your custom subject name"
+                                    class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300" />
+                                <p class="text-gray-400 text-sm mt-2">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Enter a unique subject name that best describes your notes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="title" class="block text-gray-300 mb-2 font-medium">Title</label>
+                        <input id="title" name="title" type="text" placeholder="Give your upload a clear title"
+                            class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300" />
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-medium">Description <span
+                                class="text-gray-400 text-sm">(max 300 chars)</span></label>
+                        <textarea id="description" maxlength="300" rows="3"
+                            class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                            placeholder="Briefly describe the content and topic"></textarea>
+                        <div class="text-gray-400 text-sm mt-1"><span id="descCount">0</span>/300</div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-medium">File</label>
+                        <div id="dropZone"
+                            class="border-2 border-dashed border-white/20 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500 transition-colors">
+                            <i class="fas fa-cloud-upload-alt text-3xl text-purple-400"></i>
+                            <p class="text-gray-300 mt-2">Drag & drop your PDF or image here</p>
+                            <p class="text-gray-500 text-sm">Accepted: PDF, PNG, JPG, JPEG. Max 10 MB</p>
+                            <input id="fileInput" type="file" accept="application/pdf,image/png,image/jpeg"
+                                class="hidden" aria-label="Upload file input" title="Upload file input" />
+                            <button type="button" id="browseBtn"
+                                class="mt-4 glass-button px-4 py-2 rounded-full border border-white/20 text-white">Browse
+                                Files</button>
+                        </div>
+                        <div id="fileInfo" class="mt-3 text-gray-300 hidden"></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-medium">Thumbnail (Optional)</label>
+                        <div id="thumbnailDropZone"
+                            class="border-2 border-dashed border-white/20 rounded-xl p-6 text-center cursor-pointer hover:border-purple-500 transition-colors">
+                            <i class="fas fa-image text-2xl text-purple-400"></i>
+                            <p class="text-gray-300 mt-2">Drag & drop thumbnail image here</p>
+                            <p class="text-gray-500 text-sm">Accepted: PNG, JPG, JPEG. Max 2 MB</p>
+                            <input id="thumbnailInput" type="file" accept="image/png,image/jpeg" class="hidden"
+                                aria-label="Upload thumbnail input" title="Upload thumbnail input" />
+                            <button type="button" id="thumbnailBrowseBtn"
+                                class="mt-3 glass-button px-4 py-2 rounded-full border border-white/20 text-white">Browse
+                                Thumbnail</button>
+                        </div>
+                        <div id="thumbnailInfo" class="mt-3 text-gray-300 hidden"></div>
+                        <div id="thumbnailPreview" class="mt-3 hidden">
+                            <img id="thumbnailPreviewImg"
+                                class="w-32 h-32 object-cover rounded-lg border border-white/20" />
+                            <button type="button" id="removeThumbnail"
+                                class="mt-2 text-red-400 hover:text-red-300 text-sm">
+                                <i class="fas fa-trash mr-1"></i>Remove thumbnail
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="hidden" id="progressWrap">
+                        <div class="flex justify-between text-gray-300 text-sm mb-1">
+                            <span id="progressText">Uploading...</span>
+                            <span id="progressEta">--s</span>
+                        </div>
+                        <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                            <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full"
+                                data-progress="0"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button id="uploadBtn" type="submit"
+                            class="glass-button px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fas fa-upload mr-2"></i> Upload
+                        </button>
+                        <a href="#" id="requestAccessLink" class="text-purple-400 hover:text-purple-300">Request upload
+                            access</a>
+                    </div>
+
+                    <div id="messageArea" class="mt-4"></div>
+                </form>
+
+                <div id="requestAccess" class="hidden mt-8">
+                    <h2 class="text-xl font-semibold text-white mb-2">Request Upload Access</h2>
+                    <form id="requestForm" class="space-y-4">
+                        <input id="reqName"
+                            class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder-gray-400"
+                            placeholder="Your name" />
+                        <input id="reqEmail"
+                            class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder-gray-400"
+                            placeholder="Your email" />
+                        <textarea id="reqReason" rows="3"
+                            class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder-gray-400"
+                            placeholder="Why do you need upload access?"></textarea>
+                        <button id="reqSubmit" type="button"
+                            class="glass-button px-6 py-3 rounded-full border border-white/20 text-white">Submit
+                            Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="supabaseClient.js"></script>
+    <script src="upload.js"></script>
+</body>
+
+</html>

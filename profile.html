@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - StudyShare</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="favicon-16.svg" sizes="16x16">
+    <link rel="icon" type="image/svg+xml" href="favicon-32.svg" sizes="32x32">
+    <link rel="apple-touch-icon" href="favicon-32.svg">
+    <link rel="shortcut icon" href="favicon.svg">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="font-inter bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-x-hidden">
+
+    <!-- Animated Background Elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <!-- Floating Orbs -->
+        <div
+            class="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob">
+        </div>
+        <div
+            class="absolute top-40 right-10 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000">
+        </div>
+        <div
+            class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000">
+        </div>
+
+        <!-- Grid Pattern -->
+        <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+
+        <!-- Floating Particles -->
+        <div class="particles-container"></div>
+    </div>
+
+    <!-- Modern Glassmorphism Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <span
+                        class="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                        StudyShare
+                    </span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        Home
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="index.html#features"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        Features
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="browse.html"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        Browse Notes
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="index.html#about"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        About
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="index.html#contact"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        Contact
+                        <span
+                            class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+
+                    <!-- Auth Buttons -->
+                    <div class="flex items-center space-x-3 ml-8" id="authArea">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <a href="profile.html"
+                                class="text-gray-300 hover:text-white transition-colors duration-200 font-medium">
+                                Profile
+                            </a>
+                        </div>
+                        <button id="signOutBtn"
+                            class="glass-button px-4 py-2 rounded-full border border-white/20 text-white font-medium hover:bg-white/10 transition-all duration-300">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-white p-2" id="mobile-menu-button" aria-label="Open mobile menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="md:hidden glass-panel mt-2 mx-4 rounded-2xl p-6 hidden" id="mobile-menu">
+            <div class="flex flex-col space-y-4">
+                <a href="index.html"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/5">Home</a>
+                <a href="index.html#features"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/5">Features</a>
+                <a href="browse.html"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/5">Browse
+                    Notes</a>
+                <a href="index.html#about"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/5">About</a>
+                <a href="index.html#contact"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-white/5">Contact</a>
+
+                <div class="pt-4 border-t border-gray-700 space-y-3">
+                    <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5">
+                        <div
+                            class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </div>
+                        <a href="profile.html"
+                            class="text-gray-300 hover:text-white transition-colors duration-200 font-medium">Profile</a>
+                    </div>
+                    <button id="mobileSignOutBtn"
+                        class="w-full glass-button px-6 py-3 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 px-4 pb-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Page Header -->
+            <div class="text-center mb-12">
+                <div class="relative inline-block">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-3xl blur-2xl opacity-20 animate-pulse">
+                    </div>
+                    <div
+                        class="relative bg-gradient-to-br from-white/5 to-purple-900/20 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+                        <div class="flex justify-center mb-6">
+                            <div class="relative">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-lg opacity-50 animate-ping">
+                                </div>
+                                <div
+                                    class="relative w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-2xl">
+                                    <i class="fas fa-user text-white text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <h1 class="text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
+                            <span
+                                class="bg-gradient-to-r from-white via-purple-200 via-pink-200 to-white bg-clip-text text-transparent">
+                                User Profile
+                            </span>
+                        </h1>
+                        <p class="text-xl text-gray-300">
+                            Manage your account information and settings
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Profile Information -->
+                <div class="lg:col-span-2">
+                    <div class="glass-card p-8 rounded-2xl shadow-2xl">
+                        <div class="flex items-center justify-between mb-8">
+                            <h2 class="text-2xl font-bold text-white">Profile Information</h2>
+                            <div
+                                class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+                                <i class="fas fa-user text-white text-3xl"></i>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Email -->
+                            <div
+                                class="bg-gradient-to-r from-white/5 to-purple-900/10 rounded-xl p-6 border border-white/10">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-envelope text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Email Address</h3>
+                                        <p id="userEmail" class="text-gray-300">Loading...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- User ID -->
+                            <div
+                                class="bg-gradient-to-r from-white/5 to-purple-900/10 rounded-xl p-6 border border-white/10">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-id-card text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">User ID</h3>
+                                        <p id="userId" class="text-gray-300 font-mono text-sm">Loading...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Account Created -->
+                            <div
+                                class="bg-gradient-to-r from-white/5 to-purple-900/10 rounded-xl p-6 border border-white/10">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-calendar-alt text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Account Created</h3>
+                                        <p id="userCreatedAt" class="text-gray-300">Loading...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Last Sign In -->
+                            <div
+                                class="bg-gradient-to-r from-white/5 to-purple-900/10 rounded-xl p-6 border border-white/10">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-clock text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Last Sign In</h3>
+                                        <p id="userLastSignIn" class="text-gray-300">Loading...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Actions -->
+                <div class="space-y-6">
+                    <!-- Account Statistics -->
+                    <div class="glass-card p-6 rounded-2xl shadow-2xl">
+                        <h3 class="text-xl font-bold text-white mb-6">Account Statistics</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-300">Notes Uploaded</span>
+                                <span id="notesCount" class="text-white font-semibold">Loading...</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-300">Upload Access</span>
+                                <span id="uploadAccess" class="text-white font-semibold">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="glass-card p-6 rounded-2xl shadow-2xl border border-red-500/20">
+                        <h3 class="text-xl font-bold text-red-400 mb-6">Danger Zone</h3>
+                        <p class="text-gray-300 mb-6">
+                            Once you delete your account, there is no going back. Please be certain.
+                        </p>
+                        <button id="deleteAccountBtn"
+                            class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-trash mr-2"></i>
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Delete Account Modal -->
+    <div id="deleteModal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card p-8 rounded-2xl shadow-2xl max-w-md w-full">
+            <div class="text-center">
+                <div
+                    class="w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4">Delete Account</h3>
+                <p class="text-gray-300 mb-6">
+                    Are you absolutely sure you want to delete your account? This action cannot be undone.
+                    All your notes and data will be permanently removed.
+                </p>
+                <div class="space-y-4">
+                    <input id="deleteConfirmInput" type="text" placeholder="Type 'DELETE' to confirm"
+                        class="w-full px-4 py-3 rounded-xl glass-input text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300">
+                    <div class="flex space-x-4">
+                        <button id="cancelDeleteBtn"
+                            class="flex-1 glass-button px-6 py-3 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300">
+                            Cancel
+                        </button>
+                        <button id="confirmDeleteBtn" disabled
+                            class="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                            <i class="fas fa-trash mr-2"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="supabaseClient.js"></script>
+    <script src="navigation.js"></script>
+    <script>
+        // Profile Management Script
+        (async function () {
+            const supabase = window.getSupabaseClient();
+
+            // Check authentication
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            if (sessionError || !session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = session.user;
+
+            // Load user information
+            async function loadUserInfo() {
+                try {
+                    // Get profile information including email from profiles table
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('email, full_name')
+                        .eq('id', user.id)
+                        .single();
+
+                    // Use email from profiles table, fallback to auth user email
+                    const displayEmail = profile?.email || user.email || 'Not available';
+
+                    document.getElementById('userEmail').textContent = displayEmail;
+                    document.getElementById('userId').textContent = user.id;
+                    document.getElementById('userCreatedAt').textContent = new Date(user.created_at).toLocaleDateString();
+                    document.getElementById('userLastSignIn').textContent = new Date(user.last_sign_in_at).toLocaleDateString();
+                } catch (error) {
+                    console.error('Error loading profile info:', error);
+                    // Fallback to auth user data
+                    document.getElementById('userEmail').textContent = user.email || 'Not available';
+                    document.getElementById('userId').textContent = user.id;
+                    document.getElementById('userCreatedAt').textContent = new Date(user.created_at).toLocaleDateString();
+                    document.getElementById('userLastSignIn').textContent = new Date(user.last_sign_in_at).toLocaleDateString();
+                }
+            }
+
+            // Load account statistics
+            async function loadAccountStats() {
+                try {
+                    // Count user's notes
+                    const { count: notesCount, error: notesError } = await supabase
+                        .from('notes')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('user_id', user.id);
+
+                    if (!notesError) {
+                        document.getElementById('notesCount').textContent = notesCount || 0;
+                    }
+
+                    // Check upload access
+                    const { data: uploadAccess, error: uploadError } = await supabase
+                        .from('authorized_uploaders')
+                        .select('is_active')
+                        .eq('user_id', user.id)
+                        .maybeSingle();
+
+                    if (!uploadError) {
+                        document.getElementById('uploadAccess').textContent = uploadAccess?.is_active ? 'Authorized' : 'Not Authorized';
+                    }
+                } catch (error) {
+                    console.error('Error loading account stats:', error);
+                }
+            }
+
+            // Delete account functionality
+            const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+            const deleteModal = document.getElementById('deleteModal');
+            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const deleteConfirmInput = document.getElementById('deleteConfirmInput');
+
+            deleteAccountBtn.addEventListener('click', () => {
+                deleteModal.classList.remove('hidden');
+                deleteConfirmInput.focus();
+            });
+
+            cancelDeleteBtn.addEventListener('click', () => {
+                deleteModal.classList.add('hidden');
+                deleteConfirmInput.value = '';
+                confirmDeleteBtn.disabled = true;
+            });
+
+            deleteConfirmInput.addEventListener('input', () => {
+                confirmDeleteBtn.disabled = deleteConfirmInput.value !== 'DELETE';
+            });
+
+            confirmDeleteBtn.addEventListener('click', async () => {
+                if (deleteConfirmInput.value !== 'DELETE') return;
+
+                try {
+                    confirmDeleteBtn.disabled = true;
+                    confirmDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Deleting...';
+
+                    // Delete user's notes first
+                    const { error: notesError } = await supabase
+                        .from('notes')
+                        .delete()
+                        .eq('user_id', user.id);
+
+                    if (notesError) {
+                        console.warn('Notes deletion error:', notesError);
+                        // Don't throw error, continue with cleanup
+                    }
+
+                    // Delete user's profile
+                    const { error: profileError } = await supabase
+                        .from('profiles')
+                        .delete()
+                        .eq('id', user.id);
+
+                    if (profileError) {
+                        console.warn('Profile deletion error:', profileError);
+                        // Don't throw error, continue with cleanup
+                    }
+
+                    // Delete user's authorized uploader record
+                    const { error: uploaderError } = await supabase
+                        .from('authorized_uploaders')
+                        .delete()
+                        .eq('user_id', user.id);
+
+                    if (uploaderError) {
+                        console.warn('Uploader deletion error:', uploaderError);
+                        // Don't throw error, continue with cleanup
+                    }
+
+                    // Delete user's upload requests
+                    const { error: requestError } = await supabase
+                        .from('upload_requests')
+                        .delete()
+                        .eq('user_email', user.email);
+
+                    if (requestError) {
+                        console.warn('Request deletion error:', requestError);
+                        // Don't throw error, continue with cleanup
+                    }
+
+                    // Delete user's note shares
+                    const { error: sharesError } = await supabase
+                        .from('note_shares')
+                        .delete()
+                        .or(`shared_by.eq.${user.id},shared_with.eq.${user.id}`);
+
+                    if (sharesError) {
+                        console.warn('Note shares deletion error:', sharesError);
+                        // Don't throw error, continue with cleanup
+                    }
+
+                    // Delete user's comments
+                    const { error: commentsError } = await supabase
+                        .from('comments')
+                        .delete()
+                        .eq('user_id', user.id);
+
+                    if (commentsError) {
+                        console.warn('Comments deletion error:', commentsError);
+                        // Don't throw error, continue with cleanup
+                    }
+
+                    // Sign out the user (this is the best we can do client-side)
+                    const { error: signOutError } = await supabase.auth.signOut();
+
+                    if (signOutError) {
+                        console.warn('Sign out error:', signOutError);
+                        // Even if sign out fails, redirect to home
+                    }
+
+                    alert('Account data deleted successfully. You have been signed out.');
+                    window.location.href = 'index.html';
+
+                } catch (error) {
+                    console.error('Error during account deletion:', error);
+                    alert('Error deleting account. Please try again or contact support.');
+                    confirmDeleteBtn.disabled = false;
+                    confirmDeleteBtn.innerHTML = '<i class="fas fa-trash mr-2"></i>Delete';
+                }
+            });
+
+            // Sign out functionality
+            const signOutBtn = document.getElementById('signOutBtn');
+            const mobileSignOutBtn = document.getElementById('mobileSignOutBtn');
+
+            [signOutBtn, mobileSignOutBtn].forEach(btn => {
+                btn?.addEventListener('click', async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = 'index.html';
+                });
+            });
+
+            // Initialize page
+            await loadUserInfo();
+            await loadAccountStats();
+
+        })();
+    </script>
+</body>
+
+</html>

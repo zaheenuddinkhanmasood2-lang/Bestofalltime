@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -217,7 +218,7 @@
 
 <body>
     <div class="auth-container">
-        <button class="back-btn" onclick="goBack()">
+        <button class="back-btn" onclick="goBack()" title="Go back">
             <i class="fas fa-arrow-left"></i>
         </button>
 
@@ -253,14 +254,9 @@
 
     <!-- Supabase Configuration -->
     <script>
-        // Replace these with your actual Supabase project credentials
-        // Get these from your Supabase project dashboard
-        const SUPABASE_URL = 'https://dbpmgzgeevgotfxsldjh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRicG1nemdlZXZnb3RmeHNsZGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NjA2NDksImV4cCI6MjA3NTEzNjY0OX0.TLYH19D6jH0-g4OfbwI_XYPy8flk54JFDeZW05CirdU';
-
         // Check if credentials are configured
         function checkSupabaseConfig() {
-            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+            if (typeof window.SUPABASE_URL === 'undefined' || typeof window.SUPABASE_ANON_KEY === 'undefined') {
                 console.error('❌ Supabase credentials not configured!');
                 showNotification('Please configure your Supabase credentials first!', 'error');
                 return false;
@@ -279,7 +275,7 @@
             }
 
             try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                supabase = window.getSupabaseClient();
                 console.log('✅ Supabase client initialized');
 
                 // Check if user is already logged in

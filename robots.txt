@@ -1,0 +1,37 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://studyshare.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Disallow admin areas (if any)
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+
+# Allow all other content
+Allow: /browse.html
+Allow: /index.html
+Allow: /login.html
+Allow: /signup.html
+Allow: /upload.html
+Allow: /styles.css
+Allow: /script.js
+Allow: /browse.js
+Allow: /upload.js
+Allow: /navigation.js
+Allow: /animations.js
+Allow: /semantic-search.js
+Allow: /semantic-search-interface.js
+Allow: /supabaseClient.js
+Allow: /favicon.svg
+Allow: /favicon-16.svg
+Allow: /favicon-32.svg
+Allow: /og-image.jpg
+Allow: /twitter-card.jpg
+Allow: /browse-og-image.jpg
+Allow: /browse-twitter-card.jpg
+Allow: /logo.png
