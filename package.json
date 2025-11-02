@@ -6,7 +6,12 @@
   "scripts": {
     "dev": "npx live-server --port=5500 --open=./index.html",
     "start": "npx live-server --port=5500 --open=./index.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "git:status": "powershell -ExecutionPolicy Bypass -File sync.ps1 -Status",
+    "git:pull": "powershell -ExecutionPolicy Bypass -File sync.ps1 -Pull",
+    "git:push": "powershell -ExecutionPolicy Bypass -File sync.ps1 -Push",
+    "git:sync": "powershell -ExecutionPolicy Bypass -File sync.ps1 -Auto",
+    "sync": "powershell -ExecutionPolicy Bypass -File sync.ps1 -Auto"
   },
   "repository": {
     "type": "git",
