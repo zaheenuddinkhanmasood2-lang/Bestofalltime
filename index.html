@@ -1139,12 +1139,16 @@
 
                 if (error) {
                     console.error('Error fetching notes:', error);
+                    // Clear the loading spinner
+                    grid.innerHTML = '';
                     empty && empty.classList.remove('hidden');
                     return;
                 }
 
                 if (!notes || notes.length === 0) {
                     console.log('No approved notes found, showing empty state');
+                    // Clear the loading spinner
+                    grid.innerHTML = '';
                     empty && empty.classList.remove('hidden');
 
                     // Add a helpful message for debugging
@@ -1180,6 +1184,9 @@
                 }
 
                 console.log(`Found ${notes.length} approved notes, rendering...`);
+
+                // Clear the loading spinner before rendering notes
+                grid.innerHTML = '';
 
                 const humanSize = (n) => {
                     const u = ['B', 'KB', 'MB', 'GB']; let i = 0; let x = n || 0;
@@ -1300,6 +1307,10 @@
                 console.error('Error details:', e.message, e.stack);
                 // Show empty state on any error
                 const empty = document.getElementById('notesEmptyState');
+                const grid = document.getElementById('notesGridPublic');
+                if (grid) {
+                    grid.innerHTML = '';
+                }
                 if (empty) {
                     empty.classList.remove('hidden');
                 }
