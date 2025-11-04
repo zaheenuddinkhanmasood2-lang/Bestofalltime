@@ -7,6 +7,40 @@
     const q = document.getElementById('q');
     const subjectFilter = document.getElementById('subjectFilter');
 
+    // Lightweight toast message utility
+    function showToast(message, options) {
+        const opts = Object.assign({ duration: 2200 }, options || {});
+        // Reuse existing toast if present
+        let toast = document.getElementById('ss-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'ss-toast';
+            toast.className = 'fixed inset-x-0 bottom-6 z-50 flex justify-center px-4 pointer-events-none';
+            const inner = document.createElement('div');
+            inner.className = 'pointer-events-auto glass-panel border border-white/20 rounded-xl px-4 py-2 text-sm text-white shadow-lg backdrop-blur-xl bg-white/10';
+            inner.id = 'ss-toast-inner';
+            toast.appendChild(inner);
+            document.body.appendChild(toast);
+        }
+        const inner = document.getElementById('ss-toast-inner');
+        inner.textContent = message;
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 200ms ease';
+        // Fade in
+        requestAnimationFrame(() => { toast.style.opacity = '1'; });
+        // Auto-hide
+        const hide = () => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 220);
+        };
+        if (opts.duration > 0) {
+            setTimeout(hide, opts.duration);
+        }
+        return { hide };
+    }
+
     function renderCard(row) {
         const kb = (row.file_size || 0) / 1024;
         return `
@@ -297,14 +331,20 @@
                     return;
                 }
 
+                // Inform user that download/view is starting
+                const toast = showToast(download ? 'Your download is starting…' : 'Opening note…', { duration: 2000 });
+
                 const path = row.file_url;
                 const downloadName = download ? (row.filename || row.title || 'file') : undefined;
                 const result = await createSignedUrlWithFallback(supabase, STORAGE_BUCKET, path, 60 * 60, downloadName, row.filename, row.uploader_id, row.user_id);
                 if (!result.signedUrl) {
+                    toast.hide && toast.hide();
                     alert('This file is currently unavailable.');
                     return;
                 }
                 window.open(result.signedUrl, '_blank', 'noopener');
+                // Ensure toast is removed shortly after
+                setTimeout(() => { toast.hide && toast.hide(); }, 800);
             };
 
             viewBtn.addEventListener('click', () => openSigned(false));
