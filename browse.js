@@ -7,34 +7,89 @@
     const q = document.getElementById('q');
     const subjectFilter = document.getElementById('subjectFilter');
 
-    // Lightweight toast message utility
+    // High-contrast toast message utility with variants
     function showToast(message, options) {
-        const opts = Object.assign({ duration: 2200 }, options || {});
+        const opts = Object.assign({ duration: 2200, variant: 'info' }, options || {});
+        const variantToClasses = {
+            info:    'bg-indigo-600',
+            success: 'bg-emerald-600',
+            warning: 'bg-amber-600',
+            error:   'bg-rose-600'
+        };
+
         // Reuse existing toast if present
         let toast = document.getElementById('ss-toast');
         if (!toast) {
             toast = document.createElement('div');
             toast.id = 'ss-toast';
-            toast.className = 'fixed inset-x-0 bottom-6 z-50 flex justify-center px-4 pointer-events-none';
+            toast.className = 'fixed inset-x-0 bottom-6 z-[100] flex justify-center px-4 pointer-events-none';
+
             const inner = document.createElement('div');
-            inner.className = 'pointer-events-auto glass-panel border border-white/20 rounded-xl px-4 py-2 text-sm text-white shadow-lg backdrop-blur-xl bg-white/10';
             inner.id = 'ss-toast-inner';
+            inner.setAttribute('role', 'status');
+            inner.setAttribute('aria-live', 'polite');
+            inner.className = [
+                'pointer-events-auto text-white shadow-2xl ring-1 ring-white/20',
+                'rounded-2xl px-4 py-2 text-sm font-medium',
+                'transform transition duration-200 ease-out translate-y-2 opacity-0'
+            ].join(' ');
+
+            const content = document.createElement('div');
+            content.id = 'ss-toast-content';
+            content.className = 'flex items-center gap-2';
+
+            const icon = document.createElement('span');
+            icon.id = 'ss-toast-icon';
+            icon.className = 'inline-flex items-center justify-center w-4 h-4';
+            icon.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+
+            const text = document.createElement('span');
+            text.id = 'ss-toast-text';
+
+            content.appendChild(icon);
+            content.appendChild(text);
+            inner.appendChild(content);
             toast.appendChild(inner);
             document.body.appendChild(toast);
         }
+
         const inner = document.getElementById('ss-toast-inner');
-        inner.textContent = message;
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 200ms ease';
-        // Fade in
-        requestAnimationFrame(() => { toast.style.opacity = '1'; });
-        // Auto-hide
+        const text = document.getElementById('ss-toast-text');
+        const icon = document.getElementById('ss-toast-icon');
+
+        // Apply variant color
+        const base = 'bg-indigo-600 bg-emerald-600 bg-amber-600 bg-rose-600';
+        base.split(' ').forEach(c => inner.classList.remove(c));
+        inner.classList.add(variantToClasses[opts.variant] || variantToClasses.info);
+
+        // Set icon based on variant
+        const variantToIcon = {
+            info:    '<i class="fas fa-info-circle"></i>',
+            success: '<i class="fas fa-check-circle"></i>',
+            warning: '<i class="fas fa-exclamation-triangle"></i>',
+            error:   '<i class="fas fa-times-circle"></i>'
+        };
+        icon.innerHTML = variantToIcon[opts.variant] || variantToIcon.info;
+
+        // Set message
+        text.textContent = message;
+
+        // Animate in
+        requestAnimationFrame(() => {
+            inner.classList.remove('translate-y-2', 'opacity-0');
+            inner.classList.add('translate-y-0', 'opacity-100');
+        });
+
+        // Hide function
         const hide = () => {
-            toast.style.opacity = '0';
+            inner.classList.add('translate-y-2');
+            inner.classList.remove('opacity-100');
+            inner.classList.add('opacity-0');
             setTimeout(() => {
                 if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
             }, 220);
         };
+
         if (opts.duration > 0) {
             setTimeout(hide, opts.duration);
         }
@@ -332,7 +387,7 @@
                 }
 
                 // Inform user that download/view is starting
-                const toast = showToast(download ? 'Your download is starting…' : 'Opening note…', { duration: 2000 });
+                const toast = showToast(download ? 'Your download is starting…' : 'Opening note…', { duration: 2200, variant: 'success' });
 
                 const path = row.file_url;
                 const downloadName = download ? (row.filename || row.title || 'file') : undefined;
