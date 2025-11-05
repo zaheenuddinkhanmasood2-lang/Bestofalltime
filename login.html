@@ -242,6 +242,12 @@
             <button type="submit" class="btn-primary">Sign In</button>
         </form>
 
+        <div style="margin: 16px 0; text-align:center; color:#9ca3af;">or</div>
+        <button id="googleLoginBtn" class="btn-primary" type="button" style="display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#ef4444,#f59e0b);">
+            <i class="fab fa-google"></i>
+            Continue with Google
+        </button>
+
         <p class="auth-switch">
             Don't have an account? <a href="signup.html">Sign up</a>
         </p>
@@ -287,6 +293,7 @@
 
             // Set up form handler
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('googleLoginBtn')?.addEventListener('click', handleGoogleOAuth);
         });
 
         async function checkAuthState() {
@@ -365,6 +372,24 @@
 
         function goBack() {
             window.history.back();
+        }
+
+        async function handleGoogleOAuth() {
+            try {
+                showLoading(true);
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + '/index.html'
+                    }
+                });
+                if (error) throw error;
+            } catch (err) {
+                console.error('Google OAuth error:', err);
+                showNotification('Google sign-in failed. Please try again.', 'error');
+            } finally {
+                showLoading(false);
+            }
         }
 
         function showLoading(show) {
