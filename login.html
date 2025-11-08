@@ -375,22 +375,26 @@
         }
 
         async function handleGoogleOAuth() {
-            try {
-                showLoading(true);
-                const { error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: 'https://studyshared.vercel.app/index.html'
-                    }
-                });
-                if (error) throw error;
-            } catch (err) {
-                console.error('Google OAuth error:', err);
-                showNotification('Google sign-in failed. Please try again.', 'error');
-            } finally {
-                showLoading(false);
-            }
+  try {
+    showLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: 'https://sharedstudy.vercel.app/index.html',
+        queryParams: {
+          prompt: 'select_account'   // <-- forces account chooser
         }
+      }
+    });
+    if (error) throw error;
+  } catch (err) {
+    console.error('Google OAuth error:', err);
+    showNotification('Google sign-in failed. Please try again.', 'error');
+  } finally {
+    showLoading(false);
+  }
+}
+
 
         function showLoading(show) {
             const loadingOverlay = document.getElementById('loadingOverlay');
