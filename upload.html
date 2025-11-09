@@ -4,6 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Upload your study notes to StudyShare - Share handwritten notes, PDFs, and study materials with classmates. Help others excel in their academic journey.">
+    <meta name="keywords"
+        content="upload notes, share study materials, academic resources, student notes, education platform">
+    <meta name="robots" content="noindex, follow">
+    <meta name="author" content="StudyShare">
+    <meta name="language" content="English">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Upload Notes - StudyShare">
+    <meta property="og:description"
+        content="Upload your study notes to StudyShare - Share handwritten notes, PDFs, and study materials with classmates.">
+    <meta property="og:url" content="https://sharedstudy.vercel.app/upload.html">
+    <meta property="og:site_name" content="StudyShare">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sharedstudy.vercel.app/upload.html">
+
     <title>Upload Notes - StudyShare</title>
 
     <!-- Favicon -->
@@ -57,12 +78,15 @@
                             <select id="subject" name="subject" aria-label="Subject"
                                 class="w-full px-4 py-3 rounded-xl glass-input text-white bg-transparent border border-white/20">
                                 <option value="" class="bg-slate-900">Select a subject</option>
-                                <option value="Programming Languages" class="bg-slate-900">Programming Languages</option>
+                                <option value="Programming Languages" class="bg-slate-900">Programming Languages
+                                </option>
                                 <option value="Database Systems" class="bg-slate-900">Database Systems</option>
                                 <option value="Computer Networks" class="bg-slate-900">Computer Networks</option>
                                 <option value="Software Engineering" class="bg-slate-900">Software Engineering</option>
-                                <option value="Mathematics in Computing" class="bg-slate-900">Mathematics in Computing</option>
-                                <option value="Cybersecurity and Information Assurance" class="bg-slate-900">Cybersecurity and Information Assurance</option>
+                                <option value="Mathematics in Computing" class="bg-slate-900">Mathematics in Computing
+                                </option>
+                                <option value="Cybersecurity and Information Assurance" class="bg-slate-900">
+                                    Cybersecurity and Information Assurance</option>
                                 <option value="custom" class="bg-slate-900">+ Add Custom Subject</option>
                             </select>
 
@@ -128,7 +152,8 @@
                         <div id="thumbnailInfo" class="mt-3 text-gray-300 hidden"></div>
                         <div id="thumbnailPreview" class="mt-3 hidden">
                             <img id="thumbnailPreviewImg"
-                                class="w-32 h-32 object-cover rounded-lg border border-white/20" />
+                                class="w-32 h-32 object-cover rounded-lg border border-white/20"
+                                alt="Note thumbnail preview" />
                             <button type="button" id="removeThumbnail"
                                 class="mt-2 text-red-400 hover:text-red-300 text-sm">
                                 <i class="fas fa-trash mr-1"></i>Remove thumbnail

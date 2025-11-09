@@ -25,9 +25,9 @@
     <meta property="og:title" content="StudyShare - Premium Learning Platform">
     <meta property="og:description"
         content="The ultimate platform for sharing and discovering study materials. Access premium notes, collaborate with students, and excel in your academic journey.">
-    <meta property="og:url" content="https://studyshare.com">
+    <meta property="og:url" content="https://sharedstudy.vercel.app/">
     <meta property="og:site_name" content="StudyShare">
-    <meta property="og:image" content="https://studyshare.com/og-image.jpg">
+    <meta property="og:image" content="https://sharedstudy.vercel.app/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
@@ -37,12 +37,12 @@
     <meta name="twitter:title" content="StudyShare - Premium Learning Platform">
     <meta name="twitter:description"
         content="The ultimate platform for sharing and discovering study materials. Access premium notes, collaborate with students, and excel in your academic journey.">
-    <meta name="twitter:image" content="https://studyshare.com/twitter-card.jpg">
-    <meta name="twitter:site" content="@StudyShare">
-    <meta name="twitter:creator" content="@StudyShare">
+    <meta name="twitter:image" content="https://sharedstudy.vercel.app/twitter-card.jpg">
+    <meta name="twitter:site" content="@sharedstudy">
+    <meta name="twitter:creator" content="@sharedstudy">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://studyshare.com">
+    <link rel="canonical" href="https://sharedstudy.vercel.app/">
 
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -76,33 +76,88 @@
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "StudyShare",
+        "alternateName": "SharedStudy",
         "description": "The ultimate platform for sharing and discovering study materials. Access premium notes, collaborate with students, and excel in your academic journey.",
-        "url": "https://studyshare.com",
+        "url": "https://sharedstudy.vercel.app",
         "potentialAction": {
             "@type": "SearchAction",
-            "target": "https://studyshare.com/browse.html?q={search_term_string}",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://sharedstudy.vercel.app/browse.html?q={search_term_string}"
+            },
             "query-input": "required name=search_term_string"
         },
         "publisher": {
             "@type": "Organization",
+            "@id": "https://sharedstudy.vercel.app/#organization",
             "name": "StudyShare",
-            "url": "https://studyshare.com",
+            "url": "https://sharedstudy.vercel.app",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://studyshare.com/logo.png"
-            }
+                "url": "https://sharedstudy.vercel.app/logo.png",
+                "width": 512,
+                "height": 512
+            },
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "email": "nazimuddinkhanmasood@gmail.com",
+                "contactType": "customer service",
+                "areaServed": "Worldwide",
+                "availableLanguage": "English"
+            },
+            "sameAs": [
+                "https://twitter.com/sharedstudy",
+                "https://facebook.com/sharedstudy",
+                "https://linkedin.com/company/sharedstudy"
+            ]
         },
         "mainEntity": {
             "@type": "EducationalOrganization",
             "name": "StudyShare",
-            "description": "Premium learning platform for students to share and discover study materials",
-            "url": "https://studyshare.com",
-            "sameAs": [
-                "https://twitter.com/StudyShare",
-                "https://facebook.com/StudyShare",
-                "https://linkedin.com/company/studyshare"
-            ]
+            "description": "Premium learning platform for students to share and discover study materials. Collaborative note-sharing platform for academic success.",
+            "url": "https://sharedstudy.vercel.app",
+            "educationalCredentialAwarded": "Study Notes and Materials",
+            "knowsAbout": ["Education", "Study Notes", "Academic Collaboration", "Learning Materials", "Student Resources"]
         }
+    }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://sharedstudy.vercel.app/#organization",
+        "name": "StudyShare",
+        "alternateName": "SharedStudy",
+        "url": "https://sharedstudy.vercel.app",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://sharedstudy.vercel.app/logo.png",
+            "width": 512,
+            "height": 512
+        },
+        "description": "StudyShare is a modern, intuitive platform designed to revolutionize how students collaborate and share knowledge. We make learning more collaborative, accessible, and effective.",
+        "foundingDate": "2024",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "nazimuddinkhanmasood@gmail.com",
+            "telephone": "+92-306-856-4997",
+            "contactType": "customer service",
+            "areaServed": "Worldwide",
+            "availableLanguage": ["English"]
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Dera Ismail Khan",
+            "addressRegion": "Khyber Pakhtunkhwa",
+            "addressCountry": "PK"
+        },
+        "sameAs": [
+            "https://twitter.com/sharedstudy",
+            "https://facebook.com/sharedstudy",
+            "https://linkedin.com/company/sharedstudy"
+        ]
     }
     </script>
 </head>
@@ -1320,7 +1375,7 @@
         // Share functionality for index page
         function shareNoteFromIndex(noteId, noteTitle) {
             const shareUrl = `${window.location.origin}/browse.html?noteId=${noteId}`;
-            const shareText = `Check out this amazing note: "${noteTitle}" on StudyShare!`;
+            const shareText = `Check out this amazing note: "${noteTitle}" on SharedStudy!`;
 
             // Create share modal
             const modal = document.createElement('div');

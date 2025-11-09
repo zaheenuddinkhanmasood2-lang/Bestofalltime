@@ -4,6 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Sign in to StudyShare - Access your account to upload, browse, and share study notes with classmates. Join thousands of students collaborating on academic success.">
+    <meta name="keywords" content="login, sign in, study notes, student account, academic platform, education">
+    <meta name="robots" content="noindex, follow">
+    <meta name="author" content="StudyShare">
+    <meta name="language" content="English">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Sign In - StudyShare">
+    <meta property="og:description"
+        content="Sign in to StudyShare - Access your account to upload, browse, and share study notes with classmates.">
+    <meta property="og:url" content="https://sharedstudy.vercel.app/login.html">
+    <meta property="og:site_name" content="StudyShare">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sharedstudy.vercel.app/login.html">
+
     <title>Sign In - StudyShare</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -243,7 +263,8 @@
         </form>
 
         <div style="margin: 16px 0; text-align:center; color:#9ca3af;">or</div>
-        <button id="googleLoginBtn" class="btn-primary" type="button" style="display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#ef4444,#f59e0b);">
+        <button id="googleLoginBtn" class="btn-primary" type="button"
+            style="display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#ef4444,#f59e0b);">
             <i class="fab fa-google"></i>
             Continue with Google
         </button>
@@ -375,25 +396,25 @@
         }
 
         async function handleGoogleOAuth() {
-  try {
-    showLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: 'https://sharedstudy.vercel.app/index.html',
-        queryParams: {
-          prompt: 'select_account'   // <-- forces account chooser
+            try {
+                showLoading(true);
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: 'https://sharedstudy.vercel.app/index.html',
+                        queryParams: {
+                            prompt: 'select_account'   // <-- forces account chooser
+                        }
+                    }
+                });
+                if (error) throw error;
+            } catch (err) {
+                console.error('Google OAuth error:', err);
+                showNotification('Google sign-in failed. Please try again.', 'error');
+            } finally {
+                showLoading(false);
+            }
         }
-      }
-    });
-    if (error) throw error;
-  } catch (err) {
-    console.error('Google OAuth error:', err);
-    showNotification('Google sign-in failed. Please try again.', 'error');
-  } finally {
-    showLoading(false);
-  }
-}
 
 
         function showLoading(show) {
