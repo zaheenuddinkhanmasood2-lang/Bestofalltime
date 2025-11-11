@@ -5051,3 +5051,125 @@ img {
 .badge {
     transform: translateZ(0);
 }
+
+/* ========================================
+   BROWSE DROPDOWN COMPONENT
+   ======================================== */
+
+.browse-dropdown {
+    position: fixed;
+    min-width: 200px;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    overflow: visible;
+    max-height: none;
+}
+
+.browse-dropdown.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.browse-dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: #e2e8f0;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+    min-height: 44px;
+}
+
+.browse-dropdown-item:hover,
+.browse-dropdown-item.focused {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    transform: translateX(4px);
+}
+
+.browse-dropdown-item:first-child {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.browse-dropdown-item:last-child {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.browse-dropdown-item i {
+    width: 20px;
+    text-align: center;
+    margin-right: 12px;
+    color: #8b5cf6;
+}
+
+.browse-dropdown-item:hover i,
+.browse-dropdown-item.focused i {
+    color: #a78bfa;
+}
+
+/* Backdrop for mobile */
+.browse-dropdown-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.browse-dropdown-backdrop.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+/* Only show backdrop on mobile */
+@media (min-width: 769px) {
+    .browse-dropdown-backdrop {
+        display: none !important;
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .browse-dropdown {
+        position: fixed;
+        top: 64px;
+        left: 50%;
+        transform: translate(-50%, -10px);
+        min-width: 280px;
+        max-width: 90vw;
+    }
+
+    .browse-dropdown.open {
+        transform: translate(-50%, 0);
+    }
+}
+
+/* Ensure trigger button has relative positioning */
+.browse-dropdown-trigger {
+    position: relative;
+}

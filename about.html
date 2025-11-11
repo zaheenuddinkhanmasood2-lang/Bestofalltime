@@ -101,12 +101,17 @@
                         Features
                         <span class="holo-underline"></span>
                     </a>
-                    <a href="browse.html"
-                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group"
-                        id="browseNotesLink">
-                        Browse Notes
-                        <span class="holo-underline"></span>
-                    </a>
+                    <div class="browse-dropdown-trigger relative" id="browseDropdownTrigger">
+                        <button
+                            class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group flex items-center"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            id="browseDropdownButton">
+                            Browse
+                            <i class="fas fa-chevron-down ml-1 text-xs transition-transform duration-200"></i>
+                            <span class="holo-underline"></span>
+                        </button>
+                    </div>
                     <a href="about.html" class="nav-link text-white transition-colors duration-200 relative group">
                         About
                         <span class="holo-underline"></span>
@@ -163,9 +168,11 @@
                     onclick="window.location.href='index.html'; return false;">Home</a>
                 <a href="index.html#features"
                     class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center">Features</a>
-                <a href="browse.html"
-                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center"
-                    id="mobileBrowseNotesLink">Browse Notes</a>
+                <button
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center w-full text-left"
+                    id="mobileBrowseDropdownTrigger"
+                    aria-haspopup="true"
+                    aria-expanded="false">Browse</button>
                 <a href="about.html"
                     class="text-white py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center">About</a>
                 <a href="index.html#contact"
@@ -717,6 +724,7 @@
     <script src="supabaseClient.js"></script>
     <script src="script.js"></script>
     <script src="navigation.js"></script>
+    <script src="browse-dropdown.js"></script>
     <script src="animations.js"></script>
     <script>
         // Session-aware UI: show email, signout, and authorized Upload link

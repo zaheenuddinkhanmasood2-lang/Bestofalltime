@@ -217,12 +217,17 @@
                         Features
                         <span class="holo-underline"></span>
                     </a>
-                    <a href="browse.html"
-                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group"
-                        id="browseNotesLink">
-                        Browse Notes
-                        <span class="holo-underline"></span>
-                    </a>
+                    <div class="browse-dropdown-trigger relative" id="browseDropdownTrigger">
+                        <button
+                            class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group flex items-center"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            id="browseDropdownButton">
+                            Browse
+                            <i class="fas fa-chevron-down ml-1 text-xs transition-transform duration-200"></i>
+                            <span class="holo-underline"></span>
+                        </button>
+                    </div>
                     <a href="about.html"
                         class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group"
                         id="aboutLink" onclick="window.location.href='about.html'; return false;">
@@ -278,13 +283,13 @@
                     </a>
 
                     <!-- Browse Icon -->
-                    <a href="browse.html" class="mobile-nav-icon" aria-label="Browse Notes">
+                    <button class="mobile-nav-icon" aria-label="Browse" id="mobileBrowseDropdownTrigger" aria-haspopup="true" aria-expanded="false">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         <span class="mobile-nav-label">Browse</span>
-                    </a>
+                    </button>
 
                     <!-- Upload Icon -->
                     <a href="upload.html" class="mobile-nav-icon" aria-label="Upload Notes">
@@ -1098,6 +1103,7 @@
     <script src="supabaseClient.js"></script>
     <script src="script.js"></script>
     <script src="navigation.js"></script>
+    <script src="browse-dropdown.js"></script>
     <script src="animations.js"></script>
     <script src="semantic-search.js"></script>
     <script src="semantic-search-interface.js"></script>

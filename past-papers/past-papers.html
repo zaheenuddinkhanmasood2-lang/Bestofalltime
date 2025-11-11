@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>Past Papers - StudyShare</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Browse and access University past papers by course code, subject, semester, and paper type. Smart search optimized for BS students.">
+    <meta name="keywords" content="past papers, exam papers, study materials, academic resources, exam preparation">
+    <meta name="author" content="StudyShare">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Past Papers - StudyShare">
+    <meta property="og:description"
+        content="Browse and access Gomal University past papers by course code, subject, semester, and paper type.">
+    <meta property="og:url" content="https://sharedstudy.vercel.app/past-papers/past-papers.html">
+    <meta property="og:site_name" content="StudyShare">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Past Papers - StudyShare">
+    <meta name="twitter:description"
+        content="Browse and access Gomal University past papers with smart filters for course code, semester, and paper type.">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sharedstudy.vercel.app/past-papers/past-papers.html">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="past-papers.css">
+</head>
+
+<body class="past-papers-page">
+    <!-- Particle Background Canvas -->
+    <canvas class="pp-particle-canvas" id="particleCanvas"></canvas>
+
+    <!-- Modern Glassmorphism Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 navbar-holo" id="navbar"
+        style="pointer-events: auto;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="holo-logo">
+                        <div class="logo-core">
+                            <i class="fas fa-graduation-cap text-white text-lg"></i>
+                        </div>
+                        <div class="logo-orbit">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    <a href="../index.html" class="text-xl font-bold brand-holo">
+                        StudyShare
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="../index.html"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group"
+                        id="homeLink" onclick="window.location.href='../index.html'; return false;">
+                        Home
+                        <span class="holo-underline"></span>
+                    </a>
+                    <a href="../index.html#features"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        Features
+                        <span class="holo-underline"></span>
+                    </a>
+                    <div class="browse-dropdown-trigger relative" id="browseDropdownTrigger">
+                        <button
+                            class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group flex items-center"
+                            aria-haspopup="true" aria-expanded="false" id="browseDropdownButton">
+                            Browse
+                            <i class="fas fa-chevron-down ml-1 text-xs transition-transform duration-200"></i>
+                            <span class="holo-underline"></span>
+                        </button>
+                    </div>
+                    <a href="../about.html"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        About
+                        <span class="holo-underline"></span>
+                    </a>
+                    <a href="../index.html#contact"
+                        class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group">
+                        Contact
+                        <span class="holo-underline"></span>
+                    </a>
+
+                    <!-- Auth Buttons -->
+                    <div class="flex items-center space-x-3 ml-8" id="authArea">
+                        <a href="../login.html"
+                            class="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-3 py-2 rounded-lg hover:bg-white/5">
+                            Login
+                        </a>
+                        <a href="../signup.html"
+                            class="glass-button liquid shimmer px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105">
+                            Sign Up
+                        </a>
+                        <a href="../upload-past-papers.html" id="uploadLink"
+                            class="hidden glass-button px-6 py-2 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 transform hover:scale-105">
+                            <i class="fas fa-upload mr-2"></i>Upload Papers
+                        </a>
+                        <div class="hidden flex items-center space-x-3" id="userMenu">
+                            <div class="flex items-center space-x-3">
+                                <div
+                                    class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                <a href="../profile.html" id="profileLink"
+                                    class="text-gray-300 hover:text-white transition-colors duration-200 font-medium">
+                                    Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button
+                    class="md:hidden text-white p-3 rounded-lg hover:bg-white/10 transition-colors duration-200 touch-manipulation"
+                    id="mobile-menu-button" aria-label="Open mobile menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="md:hidden glass-panel mt-2 mx-2 sm:mx-4 rounded-2xl p-4 sm:p-6 hidden" id="mobile-menu">
+            <div class="flex flex-col space-y-4">
+                <a href="../index.html"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center"
+                    onclick="window.location.href='../index.html'; return false;">Home</a>
+                <a href="../index.html#features"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center">Features</a>
+                <button
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center w-full text-left"
+                    id="mobileBrowseDropdownTrigger" aria-haspopup="true" aria-expanded="false">Browse</button>
+                <a href="../about.html"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center">About</a>
+                <a href="../index.html#contact"
+                    class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center">Contact</a>
+
+                <div class="pt-4 border-t border-gray-700 space-y-3">
+                    <!-- User Menu for logged in users -->
+                    <div id="mobileUserMenu" class="hidden space-y-3">
+                        <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/5">
+                            <div
+                                class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <a href="../profile.html" id="mobileProfileLink"
+                                class="text-gray-300 hover:text-white transition-colors duration-200 font-medium">Profile</a>
+                        </div>
+                        <a href="../upload-past-papers.html" id="mobileUploadLink"
+                            class="hidden flex items-center space-x-3 p-3 rounded-lg bg-white/5 text-gray-300 hover:text-white transition-colors duration-200">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload Papers</span>
+                        </a>
+                    </div>
+
+                    <!-- Auth buttons for logged out users -->
+                    <div id="mobileAuthMenu" class="space-y-3">
+                        <a href="../login.html" id="mobileLoginLink"
+                            class="block text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5">Login</a>
+                        <a href="../signup.html" id="mobileGetStartedBtn"
+                            class="block w-full glass-button liquid shimmer px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-lg text-center">
+                            Get Started
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-holo-overlay"></div>
+        </div>
+        <div class="lensflare"></div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="pp-layout" style="padding-top: 64px;">
+        <!-- Filter Sidebar -->
+        <aside class="pp-sidebar" id="filterSidebar" role="complementary" aria-label="Filter options">
+            <!-- Filter sidebar will be populated by filter-sidebar.js -->
+        </aside>
+
+        <!-- Main Content -->
+        <main class="pp-main-content" role="main">
+            <!-- Floating Search Bar -->
+            <div class="pp-search-bar" id="searchBar">
+                <div class="relative">
+                    <input type="text" id="searchInput" class="pp-search-input"
+                        placeholder="Search by course code, subject, semester, or type..."
+                        aria-label="Search past papers" autocomplete="off">
+                    <div class="pp-search-suggestions" id="searchSuggestions" role="listbox"></div>
+                </div>
+            </div>
+
+            <!-- Page Header -->
+            <header class="mb-6">
+                <h1 class="pp-fade-in">Past Papers</h1>
+                <p class="pp-text-tertiary mt-2">Find course-specific past papers with smart filters for subject, course
+                    code, semester, and paper type.</p>
+            </header>
+
+            <!-- Filter Chips (Active Filters) -->
+            <div class="pp-filter-chips" id="filterChips" role="group" aria-label="Active filters"></div>
+
+            <!-- Papers Grid -->
+            <div class="pp-grid" id="papersGrid" role="grid" aria-label="Past papers">
+                <!-- Papers will be populated by past-papers.js -->
+            </div>
+
+            <!-- Loading State -->
+            <div class="pp-loading-container hidden" id="loadingContainer">
+                <div class="pp-loading-spinner"></div>
+                <p class="pp-text-tertiary">Loading papers...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div class="pp-empty-state hidden" id="emptyState">
+                <div class="pp-empty-state-icon">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <h2>No papers found</h2>
+                <p>Try adjusting your filters or search query</p>
+            </div>
+
+            <!-- Infinite Scroll Sentinel -->
+            <div id="infiniteScrollSentinel" class="h-4"></div>
+        </main>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div class="pp-fab-container">
+        <button class="pp-fab pp-mobile-sidebar-toggle" id="filterToggleBtn" aria-label="Toggle filters"
+            title="Toggle filters">
+            <i class="fas fa-filter"></i>
+        </button>
+        <button class="pp-fab" id="scrollToTopBtn" aria-label="Scroll to top" title="Scroll to top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Bottom Sheet (for filters on mobile) -->
+    <div class="pp-mobile-backdrop" id="mobileBackdrop"></div>
+    <div class="pp-bottom-sheet" id="mobileBottomSheet" role="dialog" aria-label="Filter options">
+        <div class="pp-bottom-sheet-handle"></div>
+        <div id="mobileFilterContent">
+            <!-- Mobile filter content will be populated by filter-sidebar.js -->
+        </div>
+    </div>
+
+    <!-- PDF Viewer Modal -->
+    <div class="pp-pdf-viewer hidden" id="pdfViewer" role="dialog" aria-label="PDF viewer" aria-modal="true">
+        <!-- PDF viewer will be populated by pdf-viewer.js -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="../supabaseClient.js"></script>
+    <script src="../script.js"></script>
+    <script src="../navigation.js"></script>
+    <script src="../browse-dropdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="components/filter-sidebar.js"></script>
+    <script src="components/paper-card.js"></script>
+    <script src="components/pdf-viewer.js"></script>
+    <script src="past-papers.js"></script>
+
+    <script>
+        // Particle Background Animation
+        (function () {
+            const canvas = document.getElementById('particleCanvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const particleCount = 30;
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.radius = Math.random() * 2 + 1;
+                    this.opacity = Math.random() * 0.3 + 0.1;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(59, 130, 246, ${this.opacity})`;
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        })();
+    </script>
+
+    <script>
+        // Session-aware UI: show email, signout, and authorized Upload link
+        (async () => {
+            try {
+                const supabase = window.getSupabaseClient();
+
+                const { data: { session } } = await supabase.auth.getSession();
+
+                const nav = document.getElementById('navbar');
+                if (!nav) return;
+
+                const container = nav.querySelector('.hidden.md\\:flex.items-center.space-x-8');
+                if (!container) return;
+
+                const authArea = container.querySelector('#authArea');
+                if (!authArea) return;
+                const uploadLink = document.getElementById('uploadLink');
+
+                if (session && session.user) {
+                    // Hide auth buttons and show user menu
+                    const authButtons = authArea.querySelector('a[href="../login.html"], a[href="../signup.html"]');
+                    const userMenu = document.getElementById('userMenu');
+
+                    if (authButtons) authButtons.style.display = 'none';
+                    if (userMenu) userMenu.classList.remove('hidden');
+
+                    // Update mobile menu
+                    const mobileUserMenu = document.getElementById('mobileUserMenu');
+                    const mobileAuthMenu = document.getElementById('mobileAuthMenu');
+
+                    if (mobileUserMenu) mobileUserMenu.classList.remove('hidden');
+                    if (mobileAuthMenu) mobileAuthMenu.classList.add('hidden');
+
+                    // Check role for Upload link
+                    const { data: authRow } = await supabase
+                        .from('authorized_uploaders')
+                        .select('is_active')
+                        .eq('user_id', session.user.id)
+                        .maybeSingle();
+                    if (authRow?.is_active) {
+                        document.getElementById('uploadLink')?.classList.remove('hidden');
+                        document.getElementById('mobileUploadLink')?.classList.remove('hidden');
+                    }
+                }
+            } catch { }
+        })();
+    </script>
+</body>
+
+</html>

@@ -113,18 +113,12 @@ if (-not (Test-Path ".env.example")) {
     Write-Host "📝 Creating environment template..." -ForegroundColor Blue
     @"
 # Supabase Configuration
-SUPABASE_URL=https://your-project-id.supabase.co
-SUPABASE_ANON_KEY=your-anon-key-here
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
-SUPABASE_PROJECT_ID=your-project-id-here
-SUPABASE_DB_URL=postgres://user:pass@host:port/dbname
+SUPABASE_URL='https://dbpmgzgeevgotfxsldjh.supabase.co'
+SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRicG1nemdlZXZnb3RmeHNsZGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NjA2NDksImV4cCI6MjA3NTEzNjY0OX0.TLYH19D6jH0-g4OfbwI_XYPy8flk54JFDeZW05CirdU'
+SUPABASE_SERVICE_ROLE_KEY='your-service-role-key-here'
+SUPABASE_PROJECT_ID='your-project-id-here'
+SUPABASE_DB_URL='postgres://user:pass@host:port/dbname'
 
-# MCP Configuration
-MCP_ENDPOINT=https://your-mcp-server.com/api/mcp
-MCP_TOKEN=your-mcp-token-here
-
-# GitHub Configuration
-GITHUB_REPO=git@github.com:username/repository.git
 "@ | Out-File -FilePath ".env.example" -Encoding UTF8
     Write-Host "  ✅ Created .env.example" -ForegroundColor Green
 }

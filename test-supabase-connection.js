@@ -91,7 +91,7 @@ async function testConnection() {
         
         console.log('\n🎉 Supabase connection test completed successfully!');
         console.log('\n📊 Connection Summary:');
-        console.log(`   • URL: ${SUPABASE_URL}`);
+        console.log(`   • URL: ${'https://dbpmgzgeevgotfxsldjh.supabase.co'}`);
         console.log(`   • Status: Connected`);
         console.log(`   • Tables: Accessible`);
         console.log(`   • Ready for use: Yes`);
