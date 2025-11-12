@@ -321,8 +321,23 @@
             try {
                 const { data: { user } } = await supabase.auth.getUser();
                 if (user) {
-                    // User is already logged in, redirect to main page
-                    window.location.href = 'index.html';
+                    // User is already logged in, check for return URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const returnUrl = urlParams.get('returnUrl');
+                    
+                    if (returnUrl) {
+                        // Decode and redirect to return URL
+                        try {
+                            const decodedUrl = decodeURIComponent(returnUrl);
+                            window.location.href = decodedUrl;
+                        } catch (e) {
+                            console.error('Invalid return URL:', e);
+                            window.location.href = 'index.html';
+                        }
+                    } else {
+                        // No return URL, redirect to main page
+                        window.location.href = 'index.html';
+                    }
                 }
             } catch (error) {
                 console.error('Error checking auth state:', error);
@@ -357,9 +372,26 @@
                 console.log('✅ Login successful:', data.user);
                 showNotification('Login successful! Redirecting...', 'success');
 
-                // Redirect to main page after 1 second
+                // Get return URL from query parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const returnUrl = urlParams.get('returnUrl');
+
+                // Redirect after 1 second
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    if (returnUrl) {
+                        try {
+                            // Decode and redirect to return URL
+                            const decodedUrl = decodeURIComponent(returnUrl);
+                            window.location.href = decodedUrl;
+                        } catch (e) {
+                            console.error('Invalid return URL:', e);
+                            // Fallback to index if return URL is invalid
+                            window.location.href = 'index.html';
+                        }
+                    } else {
+                        // No return URL, redirect to main page
+                        window.location.href = 'index.html';
+                    }
                 }, 1000);
 
             } catch (error) {
@@ -398,10 +430,24 @@
         async function handleGoogleOAuth() {
             try {
                 showLoading(true);
+                
+                // Get return URL from query parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const returnUrl = urlParams.get('returnUrl');
+                
+                // Build redirect URL - preserve return URL if present
+                let redirectTo = 'https://sharedstudy.vercel.app/index.html';
+                if (returnUrl) {
+                    // If we have a return URL, redirect back to login page with return URL
+                    // so it can be preserved through OAuth flow
+                    const loginUrl = window.location.origin + window.location.pathname;
+                    redirectTo = `${loginUrl}?returnUrl=${encodeURIComponent(returnUrl)}`;
+                }
+                
                 const { error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: 'https://sharedstudy.vercel.app/index.html',
+                        redirectTo: redirectTo,
                         queryParams: {
                             prompt: 'select_account'   // <-- forces account chooser
                         }

@@ -357,9 +357,19 @@
                 console.log('✅ Registration successful:', data);
                 showNotification('Registration successful! Please check your email to verify your account.', 'success');
 
-                // Redirect to login page after 2 seconds
+                // Get return URL from query parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const returnUrl = urlParams.get('returnUrl');
+
+                // Redirect to login page after 2 seconds, preserving return URL if present
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    if (returnUrl) {
+                        // Preserve return URL when redirecting to login
+                        window.location.href = `login.html?returnUrl=${encodeURIComponent(returnUrl)}`;
+                    } else {
+                        // No return URL, redirect to login page
+                        window.location.href = 'login.html';
+                    }
                 }, 2000);
 
             } catch (error) {
@@ -421,25 +431,39 @@
         }
 
         async function handleGoogleOAuth() {
-  try {
-    showLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: 'https://sharedstudy.vercel.app/index.html',
-        queryParams: {
-          prompt: 'select_account'  // 👈 forces account selection
+            try {
+                showLoading(true);
+                
+                // Get return URL from query parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const returnUrl = urlParams.get('returnUrl');
+                
+                // Build redirect URL - preserve return URL if present
+                let redirectTo = 'https://sharedstudy.vercel.app/index.html';
+                if (returnUrl) {
+                    // If we have a return URL, redirect back to login page with return URL
+                    // so it can be preserved through OAuth flow
+                    const loginUrl = window.location.origin + '/login.html';
+                    redirectTo = `${loginUrl}?returnUrl=${encodeURIComponent(returnUrl)}`;
+                }
+                
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: redirectTo,
+                        queryParams: {
+                            prompt: 'select_account'  // 👈 forces account selection
+                        }
+                    }
+                });
+                if (error) throw error;
+            } catch (err) {
+                console.error('Google OAuth error:', err);
+                showNotification('Google sign-in failed. Please try again.', 'error');
+            } finally {
+                showLoading(false);
+            }
         }
-      }
-    });
-    if (error) throw error;
-  } catch (err) {
-    console.error('Google OAuth error:', err);
-    showNotification('Google sign-in failed. Please try again.', 'error');
-  } finally {
-    showLoading(false);
-  }
-}
     </script>
 </body>
 

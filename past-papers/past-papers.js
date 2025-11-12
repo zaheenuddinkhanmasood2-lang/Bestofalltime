@@ -55,7 +55,6 @@ class PastPapersApp {
             filterSidebar: null,
             mobileFilterSidebar: null,
             paperCard: null,
-            pdfViewer: null,
         };
 
         this.supabase = null;
@@ -145,16 +144,6 @@ class PastPapersApp {
                     }
                 );
             }
-        }
-
-        // Initialize PDF viewer
-        if (window.PDFViewer) {
-            this.components.pdfViewer = new window.PDFViewer(
-                document.getElementById('pdfViewer'),
-                {
-                    onClose: () => this.handlePDFViewerClose(),
-                }
-            );
         }
     }
 
@@ -1035,9 +1024,16 @@ class PastPapersApp {
         return card;
     }
 
-    handleCardAction(paper, action) {
+    async handleCardAction(paper, action) {
         switch (action) {
             case 'preview':
+                // Check authentication before opening PDF
+                const isAuthenticated = await this.checkAuthentication();
+                if (!isAuthenticated) {
+                    this.redirectToLogin(paper);
+                    return;
+                }
+                // User is authenticated, proceed to open PDF
                 this.openPDFViewer(paper);
                 this.addToRecentViews(paper);
                 break;
@@ -1059,16 +1055,58 @@ class PastPapersApp {
         }
     }
 
-    async openPDFViewer(paper) {
-        if (!this.components.pdfViewer) return;
-
-        const resolvedUrl = await this.resolvePdfUrl(paper);
-        const payload = { ...paper, file_url: resolvedUrl };
-        this.components.pdfViewer.open(payload);
+    /**
+     * Check if user is authenticated
+     * @returns {Promise<boolean>} true if user is authenticated, false otherwise
+     */
+    async checkAuthentication() {
+        try {
+            if (!this.supabase) {
+                return false;
+            }
+            const { data: { session }, error } = await this.supabase.auth.getSession();
+            if (error) {
+                console.error('Error checking authentication:', error);
+                return false;
+            }
+            return !!session?.user;
+        } catch (error) {
+            console.error('Failed to check authentication:', error);
+            return false;
+        }
     }
 
-    handlePDFViewerClose() {
-        // Any cleanup needed
+    /**
+     * Redirect to login page with return URL
+     * @param {Object} paper - Paper object (for potential future use)
+     */
+    redirectToLogin(paper) {
+        try {
+            // Get current URL with any query parameters
+            const currentUrl = window.location.href;
+            // Encode the return URL to preserve it in the query string
+            const returnUrl = encodeURIComponent(currentUrl);
+            // Redirect to login page with return URL
+            window.location.href = `../login.html?returnUrl=${returnUrl}`;
+        } catch (error) {
+            console.error('Failed to redirect to login:', error);
+            // Fallback: redirect to login without return URL
+            window.location.href = '../login.html';
+        }
+    }
+
+    async openPDFViewer(paper) {
+        // Open PDF directly in Chrome's native PDF viewer (new tab)
+        const resolvedUrl = await this.resolvePdfUrl(paper);
+        
+        if (!resolvedUrl) {
+            console.error('Failed to resolve PDF URL for paper:', paper);
+            alert('Failed to load PDF. The PDF link may be invalid or unavailable.');
+            return;
+        }
+
+        // Open PDF in new tab - Chrome will use its native PDF viewer
+        window.open(resolvedUrl, '_blank');
     }
 
     /**
