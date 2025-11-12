@@ -53,6 +53,7 @@ class PastPapersApp {
 
         this.components = {
             filterSidebar: null,
+            mobileFilterSidebar: null,
             paperCard: null,
             pdfViewer: null,
         };
@@ -120,14 +121,30 @@ class PastPapersApp {
     }
 
     async initComponents() {
-        // Initialize filter sidebar
+        // Initialize filter sidebar for desktop
+        const desktopSidebar = document.getElementById('filterSidebar');
+        const mobileFilters = document.getElementById('mobileFiltersTop');
+        
         if (window.FilterSidebar) {
-            this.components.filterSidebar = new window.FilterSidebar(
-                document.getElementById('filterSidebar'),
-                {
-                    onFilterChange: (filters) => this.handleFilterChange(filters),
-                }
-            );
+            // Initialize desktop sidebar (hidden on mobile via CSS)
+            if (desktopSidebar) {
+                this.components.filterSidebar = new window.FilterSidebar(
+                    desktopSidebar,
+                    {
+                        onFilterChange: (filters) => this.handleFilterChange(filters),
+                    }
+                );
+            }
+
+            // Initialize mobile filters at top (shown on mobile via CSS)
+            if (mobileFilters) {
+                this.components.mobileFilterSidebar = new window.FilterSidebar(
+                    mobileFilters,
+                    {
+                        onFilterChange: (filters) => this.handleFilterChange(filters),
+                    }
+                );
+            }
         }
 
         // Initialize PDF viewer
@@ -1346,6 +1363,9 @@ class PastPapersApp {
         if (this.components.filterSidebar) {
             this.components.filterSidebar.updateFilters(this.config.filters);
         }
+        if (this.components.mobileFilterSidebar) {
+            this.components.mobileFilterSidebar.updateFilters(this.config.filters);
+        }
 
         this.handleFilterChange(this.config.filters);
     }
@@ -1355,6 +1375,9 @@ class PastPapersApp {
         // Update filter count display if component exists
         if (this.components.filterSidebar) {
             this.components.filterSidebar.updateCount(count);
+        }
+        if (this.components.mobileFilterSidebar) {
+            this.components.mobileFilterSidebar.updateCount(count);
         }
     }
 
@@ -1436,6 +1459,9 @@ class PastPapersApp {
 
             if (this.components.filterSidebar) {
                 this.components.filterSidebar.updateFilters(this.config.filters);
+            }
+            if (this.components.mobileFilterSidebar) {
+                this.components.mobileFilterSidebar.updateFilters(this.config.filters);
             }
 
             const searchInput = document.getElementById('searchInput');

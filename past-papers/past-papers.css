@@ -10,65 +10,83 @@
     --pp-bg-secondary: #1a1a1a;
     --pp-bg-tertiary: #252525;
     --pp-bg-elevated: #2a2a2a;
-    
+
     /* Accent Colors - Subtle Blue & Violet Glows */
     --pp-accent-blue: #3b82f6;
     --pp-accent-blue-glow: rgba(59, 130, 246, 0.1);
     --pp-accent-violet: #8b5cf6;
     --pp-accent-violet-glow: rgba(139, 92, 246, 0.1);
-    
+
     /* Text Colors */
     --pp-text-primary: #ffffff;
     --pp-text-secondary: #e5e7eb;
     --pp-text-tertiary: #9ca3af;
     --pp-text-muted: #6b7280;
-    
+
     /* Glassmorphism */
     --pp-glass-bg: rgba(255, 255, 255, 0.05);
     --pp-glass-bg-hover: rgba(255, 255, 255, 0.08);
     --pp-glass-border: rgba(255, 255, 255, 0.1);
     --pp-glass-blur: blur(12px);
     --pp-glass-saturate: saturate(180%);
-    
+
     /* Glow Levels - Use Sparingly */
     --pp-glow-subtle: rgba(59, 130, 246, 0.1);
     --pp-glow-medium: rgba(59, 130, 246, 0.2);
     --pp-glow-strong: rgba(59, 130, 246, 0.3);
-    
+
     /* Typography Scale */
     --pp-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --pp-font-size-xs: 0.75rem;    /* 12px */
-    --pp-font-size-sm: 0.875rem;   /* 14px */
-    --pp-font-size-base: 1rem;      /* 16px */
-    --pp-font-size-lg: 1.125rem;    /* 18px */
-    --pp-font-size-xl: 1.25rem;     /* 20px */
-    --pp-font-size-2xl: 1.5rem;     /* 24px */
-    --pp-font-size-3xl: 2rem;       /* 32px */
-    --pp-font-size-4xl: 3rem;       /* 48px */
-    
+    --pp-font-size-xs: 0.75rem;
+    /* 12px */
+    --pp-font-size-sm: 0.875rem;
+    /* 14px */
+    --pp-font-size-base: 1rem;
+    /* 16px */
+    --pp-font-size-lg: 1.125rem;
+    /* 18px */
+    --pp-font-size-xl: 1.25rem;
+    /* 20px */
+    --pp-font-size-2xl: 1.5rem;
+    /* 24px */
+    --pp-font-size-3xl: 2rem;
+    /* 32px */
+    --pp-font-size-4xl: 3rem;
+    /* 48px */
+
     /* Spacing - 8px Base Unit */
-    --pp-space-1: 0.5rem;   /* 8px */
-    --pp-space-2: 1rem;     /* 16px */
-    --pp-space-3: 1.5rem;   /* 24px */
-    --pp-space-4: 2rem;     /* 32px */
-    --pp-space-6: 3rem;     /* 48px */
-    --pp-space-8: 4rem;     /* 64px */
-    
+    --pp-space-1: 0.5rem;
+    /* 8px */
+    --pp-space-2: 1rem;
+    /* 16px */
+    --pp-space-3: 1.5rem;
+    /* 24px */
+    --pp-space-4: 2rem;
+    /* 32px */
+    --pp-space-6: 3rem;
+    /* 48px */
+    --pp-space-8: 4rem;
+    /* 64px */
+
     /* Border Radius */
-    --pp-radius-sm: 0.5rem;   /* 8px */
-    --pp-radius-md: 0.75rem;   /* 12px */
-    --pp-radius-lg: 1rem;      /* 16px */
-    --pp-radius-xl: 1.5rem;    /* 24px */
-    
+    --pp-radius-sm: 0.5rem;
+    /* 8px */
+    --pp-radius-md: 0.75rem;
+    /* 12px */
+    --pp-radius-lg: 1rem;
+    /* 16px */
+    --pp-radius-xl: 1.5rem;
+    /* 24px */
+
     /* Animation Durations */
     --pp-duration-fast: 150ms;
     --pp-duration-normal: 300ms;
     --pp-duration-slow: 500ms;
-    
+
     /* Easing Functions */
     --pp-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
     --pp-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     /* Shadows */
     --pp-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
     --pp-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
@@ -177,6 +195,7 @@
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -188,6 +207,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -198,6 +218,7 @@
     0% {
         background-position: -1000px 0;
     }
+
     100% {
         background-position: 1000px 0;
     }
@@ -213,12 +234,10 @@
 
 /* Loading Skeleton */
 .pp-skeleton {
-    background: linear-gradient(
-        90deg,
-        var(--pp-bg-secondary) 0%,
-        var(--pp-bg-tertiary) 50%,
-        var(--pp-bg-secondary) 100%
-    );
+    background: linear-gradient(90deg,
+            var(--pp-bg-secondary) 0%,
+            var(--pp-bg-tertiary) 50%,
+            var(--pp-bg-secondary) 100%);
     background-size: 200% 100%;
     animation: pp-shimmer 1.5s infinite;
     border-radius: var(--pp-radius-md);
@@ -246,11 +265,11 @@
     .past-papers-page h1 {
         font-size: var(--pp-font-size-3xl);
     }
-    
+
     .past-papers-page h2 {
         font-size: var(--pp-font-size-2xl);
     }
-    
+
     .past-papers-page h3 {
         font-size: var(--pp-font-size-xl);
     }
@@ -258,6 +277,7 @@
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -432,12 +452,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        135deg,
-        var(--pp-accent-blue-glow) 0%,
-        transparent 50%,
-        var(--pp-accent-violet-glow) 100%
-    );
+    background: linear-gradient(135deg,
+            var(--pp-accent-blue-glow) 0%,
+            transparent 50%,
+            var(--pp-accent-violet-glow) 100%);
     opacity: 0;
     transition: opacity var(--pp-duration-normal) var(--pp-ease-out);
     pointer-events: none;
@@ -557,18 +575,17 @@
     0% {
         background-position: -200% 0;
     }
+
     100% {
         background-position: 200% 0;
     }
 }
 
 .pp-paper-card:hover .pp-card-title {
-    background: linear-gradient(
-        90deg,
-        var(--pp-text-primary) 0%,
-        var(--pp-accent-blue) 50%,
-        var(--pp-accent-violet) 100%
-    );
+    background: linear-gradient(90deg,
+            var(--pp-text-primary) 0%,
+            var(--pp-accent-blue) 50%,
+            var(--pp-accent-violet) 100%);
     background-size: 200% 100%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1124,23 +1141,94 @@
     display: none;
 }
 
+/* Mobile Filter Section (Top) */
+.pp-mobile-filters {
+    display: none;
+}
+
 @media (max-width: 768px) {
+
+    /* Hide desktop sidebar on mobile */
     .pp-sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 100vh;
-        z-index: 201;
-        transform: translateX(-100%);
-        transition: transform var(--pp-duration-normal) var(--pp-ease-out);
+        display: none;
     }
 
-    .pp-sidebar.open {
-        transform: translateX(0);
-    }
-
-    .pp-mobile-sidebar-toggle {
+    /* Show mobile filters at top */
+    .pp-mobile-filters {
         display: block;
+        width: 100%;
+        background: var(--pp-bg-secondary);
+        border-bottom: 1px solid var(--pp-glass-border);
+        padding: var(--pp-space-3);
+        margin-bottom: var(--pp-space-4);
+        border-radius: var(--pp-radius-lg);
+    }
+
+    .pp-mobile-filters .pp-filter-section {
+        margin-bottom: var(--pp-space-3);
+    }
+
+    .pp-mobile-filters .pp-filter-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .pp-mobile-filters .pp-filter-title {
+        font-size: var(--pp-font-size-lg);
+        margin-bottom: var(--pp-space-3);
+        padding-bottom: var(--pp-space-2);
+        border-bottom: 1px solid var(--pp-glass-border);
+    }
+
+    .pp-mobile-filters .pp-filter-heading {
+        font-size: var(--pp-font-size-sm);
+        margin-bottom: var(--pp-space-2);
+    }
+
+    .pp-mobile-filters .pp-chip-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--pp-space-2);
+    }
+
+    .pp-mobile-filters .pp-chip {
+        font-size: var(--pp-font-size-sm);
+        padding: var(--pp-space-1) var(--pp-space-2);
+    }
+
+    .pp-mobile-filters .pp-token-input {
+        flex-direction: column;
+        gap: var(--pp-space-2);
+    }
+
+    .pp-mobile-filters .pp-token-input-field {
+        width: 100%;
+    }
+
+    .pp-mobile-filters .pp-token-add {
+        width: 100%;
+    }
+
+    .pp-mobile-filters .pp-multiselect-trigger {
+        width: 100%;
+    }
+
+    .pp-mobile-filters .pp-filter-count {
+        font-size: var(--pp-font-size-sm);
+        padding: var(--pp-space-2);
+        margin-top: var(--pp-space-2);
+        border-top: 1px solid var(--pp-glass-border);
+    }
+
+    .pp-mobile-filters .pp-clear-filters {
+        width: 100%;
+        margin-top: var(--pp-space-2);
+        padding: var(--pp-space-2);
+        font-size: var(--pp-font-size-sm);
+    }
+
+    /* Hide filter toggle button since filters are always visible */
+    .pp-mobile-sidebar-toggle {
+        display: none;
     }
 
     .pp-search-bar {
@@ -1154,6 +1242,16 @@
     .pp-fab-container {
         bottom: var(--pp-space-4);
         right: var(--pp-space-4);
+    }
+
+    /* Adjust layout for mobile */
+    .pp-layout {
+        flex-direction: column;
+    }
+
+    .pp-main-content {
+        width: 100%;
+        padding: var(--pp-space-3);
     }
 }
 
@@ -1297,4 +1395,3 @@
         height: 150px;
     }
 }
-
