@@ -112,6 +112,9 @@ class PastPapersApp {
             // Load favorites and recent views
             this.loadUserData();
 
+            // Show search notification on first visit
+            this.showSearchNotification();
+
             console.log('Past Papers App initialized');
         } catch (error) {
             console.error('Failed to initialize Past Papers App:', error);
@@ -123,7 +126,7 @@ class PastPapersApp {
         // Initialize filter sidebar for desktop
         const desktopSidebar = document.getElementById('filterSidebar');
         const mobileFilters = document.getElementById('mobileFiltersTop');
-        
+
         if (window.FilterSidebar) {
             // Initialize desktop sidebar (hidden on mobile via CSS)
             if (desktopSidebar) {
@@ -1098,7 +1101,7 @@ class PastPapersApp {
     async openPDFViewer(paper) {
         // Open PDF directly in Chrome's native PDF viewer (new tab)
         const resolvedUrl = await this.resolvePdfUrl(paper);
-        
+
         if (!resolvedUrl) {
             console.error('Failed to resolve PDF URL for paper:', paper);
             alert('Failed to load PDF. The PDF link may be invalid or unavailable.');
@@ -1570,6 +1573,54 @@ class PastPapersApp {
     showNotification(message) {
         // You can implement a toast notification here
         console.log(message);
+    }
+
+    /**
+     * Show a simple notification about searching papers
+     */
+    showSearchNotification() {
+        // Check if notification was already shown in this session
+        const notificationShown = sessionStorage.getItem('pp_search_notification_shown');
+        if (notificationShown) {
+            return;
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'pp-simple-notification';
+        notification.innerHTML = `
+            <div class="pp-simple-notification-box">
+                For getting papers, please search for a subject or course code
+            </div>
+        `;
+
+        // Append to body
+        document.body.appendChild(notification);
+
+        // Show notification with animation
+        setTimeout(() => {
+            const box = notification.querySelector('.pp-simple-notification-box');
+            if (box) {
+                box.classList.add('show');
+            }
+        }, 100);
+
+        // Hide and remove after 4 seconds
+        setTimeout(() => {
+            const box = notification.querySelector('.pp-simple-notification-box');
+            if (box) {
+                box.classList.remove('show');
+                box.classList.add('hide');
+            }
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
+
+        // Mark as shown in session storage
+        sessionStorage.setItem('pp_search_notification_shown', 'true');
     }
 
     loadUserData() {

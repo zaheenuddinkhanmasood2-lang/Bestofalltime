@@ -185,24 +185,31 @@ class BrowseDropdown {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
 
-        // Position dropdown below trigger (fixed positioning is relative to viewport, not document)
-        let top = triggerRect.bottom + 4; // 4px gap below trigger
-        let left = triggerRect.left;
+        // Calculate dropdown dimensions
         const dropdownWidth = Math.max(triggerRect.width, 200);
+        const dropdownHeight = 120; // Approximate height for two items
+        const padding = 16; // Minimum padding from viewport edges
+
+        // Calculate center position of trigger button
+        const triggerCenterX = triggerRect.left + (triggerRect.width / 2);
+        
+        // Start with centered position (dropdown center aligns with trigger center)
+        let left = triggerCenterX - (dropdownWidth / 2);
+        let top = triggerRect.bottom + 4; // 4px gap below trigger
 
         // Check if dropdown would overflow right edge
-        if (left + dropdownWidth > viewportWidth - 16) {
-            // Align to right edge of trigger
-            left = triggerRect.right - dropdownWidth;
+        if (left + dropdownWidth > viewportWidth - padding) {
+            // Align to right edge with padding
+            left = viewportWidth - dropdownWidth - padding;
         }
 
         // Check if dropdown would overflow left edge
-        if (left < 16) {
-            left = 16;
+        if (left < padding) {
+            // Align to left edge with padding
+            left = padding;
         }
 
         // Check if dropdown would overflow bottom - position above if needed
-        const dropdownHeight = 120; // Approximate height for two items
         const spaceBelow = viewportHeight - triggerRect.bottom;
         const spaceAbove = triggerRect.top;
 
@@ -214,12 +221,21 @@ class BrowseDropdown {
             dropdown.classList.remove('dropdown-above');
         }
 
+        // Ensure dropdown doesn't go off-screen vertically
+        if (top + dropdownHeight > viewportHeight - padding) {
+            top = viewportHeight - dropdownHeight - padding;
+        }
+        if (top < padding) {
+            top = padding;
+        }
+
         // Apply positioning (fixed position is relative to viewport, no scroll offset needed)
         dropdown.style.position = 'fixed';
         dropdown.style.top = `${top}px`;
         dropdown.style.left = `${left}px`;
         dropdown.style.minWidth = `${dropdownWidth}px`;
-        dropdown.style.maxWidth = `${Math.min(viewportWidth - left - 16, 300)}px`;
+        dropdown.style.maxWidth = `${Math.min(viewportWidth - padding * 2, 300)}px`;
+        dropdown.style.width = 'auto';
     }
 
     close() {

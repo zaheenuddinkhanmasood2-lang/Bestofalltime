@@ -5067,7 +5067,9 @@ img {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
     overflow: visible;
     max-height: none;
@@ -5156,16 +5158,13 @@ img {
 /* Mobile adjustments */
 @media (max-width: 768px) {
     .browse-dropdown {
-        position: fixed;
-        top: 64px;
-        left: 50%;
-        transform: translate(-50%, -10px);
-        min-width: 280px;
-        max-width: 90vw;
+        /* Position will be set dynamically by JavaScript */
+        min-width: 200px;
+        max-width: calc(100vw - 32px);
     }
 
     .browse-dropdown.open {
-        transform: translate(-50%, 0);
+        /* Transform is handled by the open class, position is set by JS */
     }
 }
 

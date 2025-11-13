@@ -368,7 +368,7 @@
                         window.location.href = `login.html?returnUrl=${encodeURIComponent(returnUrl)}`;
                     } else {
                         // No return URL, redirect to login page
-                        window.location.href = 'login.html';
+                    window.location.href = 'login.html';
                     }
                 }, 2000);
 
@@ -431,8 +431,8 @@
         }
 
         async function handleGoogleOAuth() {
-            try {
-                showLoading(true);
+  try {
+    showLoading(true);
                 
                 // Get return URL from query parameters
                 const urlParams = new URLSearchParams(window.location.search);
@@ -447,23 +447,23 @@
                     redirectTo = `${loginUrl}?returnUrl=${encodeURIComponent(returnUrl)}`;
                 }
                 
-                const { error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
                         redirectTo: redirectTo,
-                        queryParams: {
-                            prompt: 'select_account'  // 👈 forces account selection
-                        }
-                    }
-                });
-                if (error) throw error;
-            } catch (err) {
-                console.error('Google OAuth error:', err);
-                showNotification('Google sign-in failed. Please try again.', 'error');
-            } finally {
-                showLoading(false);
-            }
+        queryParams: {
+          prompt: 'select_account'  // 👈 forces account selection
         }
+      }
+    });
+    if (error) throw error;
+  } catch (err) {
+    console.error('Google OAuth error:', err);
+    showNotification('Google sign-in failed. Please try again.', 'error');
+  } finally {
+    showLoading(false);
+  }
+}
     </script>
 </body>
 
