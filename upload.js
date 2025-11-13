@@ -64,8 +64,8 @@
         if (!file) return { ok: false, msg: 'Please choose a file.' };
         const allowed = ['application/pdf', 'image/png', 'image/jpeg'];
         if (!allowed.includes(file.type)) return { ok: false, msg: 'Only PDF, PNG, JPG, JPEG are allowed.' };
-        const max = 10 * 1024 * 1024; // 10MB
-        if (file.size > max) return { ok: false, msg: 'File exceeds 10MB limit.' };
+        const max = 28 * 1024 * 1024; // 28MB
+        if (file.size > max) return { ok: false, msg: 'File exceeds 28MB limit.' };
         return { ok: true };
     }
 
