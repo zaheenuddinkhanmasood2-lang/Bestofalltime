@@ -1,4 +1,4 @@
--- Create thumbnails bucket and policies for StudyShare
+-- Create thumbnails bucket and policies for SharedStudy
 -- Run this in your Supabase SQL Editor
 
 -- Create thumbnails bucket if it doesn't exist

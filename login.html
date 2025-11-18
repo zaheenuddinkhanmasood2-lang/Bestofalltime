@@ -3,35 +3,46 @@
 
 <head>
     <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-NDD6F2PQ');</script>
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NDD6F2PQ');</script>
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO Meta Tags -->
     <meta name="description"
-        content="Sign in to StudyShare - Access your account to upload, browse, and share study notes with classmates. Join thousands of students collaborating on academic success.">
+        content="Sign in to SharedStudy - Access your account to upload, browse, and share study notes with classmates. Join thousands of students collaborating on academic success.">
     <meta name="keywords" content="login, sign in, study notes, student account, academic platform, education">
     <meta name="robots" content="noindex, follow">
-    <meta name="author" content="StudyShare">
+    <meta name="author" content="SharedStudy">
     <meta name="language" content="English">
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Sign In - StudyShare">
+    <meta property="og:title" content="Sign In - SharedStudy">
     <meta property="og:description"
-        content="Sign in to StudyShare - Access your account to upload, browse, and share study notes with classmates.">
+        content="Sign in to SharedStudy - Access your account to upload, browse, and share study notes with classmates.">
     <meta property="og:url" content="https://sharedstudy.vercel.app/login.html">
-    <meta property="og:site_name" content="StudyShare">
+    <meta property="og:site_name" content="SharedStudy">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://sharedstudy.vercel.app/login.html">
 
-    <title>Sign In - StudyShare</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="favicon-16.svg" sizes="16x16">
+    <link rel="icon" type="image/svg+xml" href="favicon-32.svg" sizes="32x32">
+    <link rel="icon" type="image/svg+xml" href="favicon-48.svg" sizes="48x48">
+    <link rel="apple-touch-icon" href="favicon-48.svg">
+    <link rel="shortcut icon" href="favicon.svg">
+
+    <title>Sign In - SharedStudy</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
@@ -245,8 +256,8 @@
 
 <body>
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDD6F2PQ"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDD6F2PQ" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div class="auth-container">
         <button class="back-btn" onclick="goBack()" title="Go back">
@@ -255,7 +266,7 @@
 
         <div class="auth-header">
             <h1>Welcome Back</h1>
-            <p>Sign in to your StudyShare account</p>
+            <p>Sign in to your SharedStudy account</p>
         </div>
 
         <form id="loginForm">
@@ -335,7 +346,7 @@
                     // User is already logged in, check for return URL
                     const urlParams = new URLSearchParams(window.location.search);
                     const returnUrl = urlParams.get('returnUrl');
-                    
+
                     if (returnUrl) {
                         // Decode and redirect to return URL
                         try {
@@ -347,7 +358,7 @@
                         }
                     } else {
                         // No return URL, redirect to main page
-                    window.location.href = 'index.html';
+                        window.location.href = 'index.html';
                     }
                 }
             } catch (error) {
@@ -401,7 +412,7 @@
                         }
                     } else {
                         // No return URL, redirect to main page
-                    window.location.href = 'index.html';
+                        window.location.href = 'index.html';
                     }
                 }, 1000);
 
@@ -441,11 +452,11 @@
         async function handleGoogleOAuth() {
             try {
                 showLoading(true);
-                
+
                 // Get return URL from query parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 const returnUrl = urlParams.get('returnUrl');
-                
+
                 // Build redirect URL - preserve return URL if present
                 let redirectTo = 'https://sharedstudy.vercel.app/index.html';
                 if (returnUrl) {
@@ -454,7 +465,7 @@
                     const loginUrl = window.location.origin + window.location.pathname;
                     redirectTo = `${loginUrl}?returnUrl=${encodeURIComponent(returnUrl)}`;
                 }
-                
+
                 const { error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {

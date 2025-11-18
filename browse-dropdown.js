@@ -1,4 +1,4 @@
-// Browse Dropdown Component for StudyShare
+// Browse Dropdown Component for SharedStudy
 // Click-based dropdown with mobile support, keyboard navigation, and ARIA labels
 
 class BrowseDropdown {

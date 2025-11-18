@@ -1,4 +1,4 @@
--- StudyShare Database Schema for Supabase
+-- SharedStudy Database Schema for Supabase
 -- Run these SQL commands in your Supabase SQL Editor
 
 -- Enable Row Level Security (RLS)

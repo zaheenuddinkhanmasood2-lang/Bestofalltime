@@ -1,4 +1,4 @@
-// StudyShare - Modern Supabase Integration
+// SharedStudy - Modern Supabase Integration
 // This file handles all database operations and user authentication with glassmorphism UI
 
 // Supabase client initialization
@@ -130,7 +130,7 @@ function showSetupInstructions() {
                     background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
                     max-width: 500px; z-index: 10000; text-align: center;">
             <h2 style="color: #ef4444; margin-bottom: 20px;">🔧 Setup Required</h2>
-            <p style="margin-bottom: 20px;">To use StudyShare, you need to configure your Supabase credentials:</p>
+            <p style="margin-bottom: 20px;">To use SharedStudy, you need to configure your Supabase credentials:</p>
             <ol style="text-align: left; margin-bottom: 20px;">
                 <li>Go to <a href="https://supabase.com/dashboard" target="_blank">Supabase Dashboard</a></li>
                 <li>Create a new project or select existing one</li>

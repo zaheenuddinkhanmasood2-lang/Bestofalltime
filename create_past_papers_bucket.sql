@@ -1,4 +1,4 @@
--- Create past-papers bucket and policies for StudyShare
+-- Create past-papers bucket and policies for SharedStudy
 -- Run this in your Supabase SQL Editor
 
 -- Create past-papers bucket if it doesn't exist

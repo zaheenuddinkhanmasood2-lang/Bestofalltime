@@ -411,7 +411,7 @@
     // Share functionality
     function shareNote(note) {
         const shareUrl = `${window.location.origin}/browse.html?noteId=${note.id}`;
-        const shareText = `Check out this amazing note: "${note.title || note.subject}" on StudyShare!`;
+        const shareText = `Check out this amazing note: "${note.title || note.subject}" on sharedstudy.vercel.app!`;
 
         // Create share modal
         const modal = document.createElement('div');

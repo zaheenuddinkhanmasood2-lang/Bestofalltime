@@ -1,5 +1,5 @@
--- StudyShare Database Schema
--- This file contains all the necessary tables for the StudyShare application
+-- SharedStudy Database Schema
+-- This file contains all the necessary tables for the SharedStudy application
 
 -- Enable necessary extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

@@ -1,4 +1,4 @@
-// Modern Navigation System for StudyShare
+// Modern Navigation System for SharedStudy
 // Handles glassmorphism navigation, mobile menu, and smooth scrolling
 
 class ModernNavigation {

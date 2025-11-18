@@ -1,4 +1,4 @@
--- Past Papers Table Schema for StudyShare
+-- Past Papers Table Schema for SharedStudy
 -- Run this in Supabase SQL Editor
 
 -- Enable UUID extension if not already enabled

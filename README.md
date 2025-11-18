@@ -1,6 +1,6 @@
 # StudyShare - Premium Glassmorphism Learning Platform
 
-![StudyShare](https://img.shields.io/badge/StudyShare-Premium%20Learning%20Platform-purple?style=for-the-badge&logo=graduation-cap)
+![SharedStudy](https://img.shields.io/badge/SharedStudy-Premium%20Learning%20Platform-purple?style=for-the-badge&logo=graduation-cap)
 ![Glassmorphism](https://img.shields.io/badge/Design-Glassmorphism-blue?style=for-the-badge&logo=css3)
 ![Modern UI](https://img.shields.io/badge/UI-Modern%20Animated-green?style=for-the-badge&logo=react)
 

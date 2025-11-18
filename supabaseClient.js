@@ -22,7 +22,7 @@ function getSupabaseClient() {
                 persistSession: true,
                 autoRefreshToken: true,
                 detectSessionInUrl: true,
-                storageKey: 'studyshare-auth'
+                storageKey: 'sharedstudy-auth'
             }
         });
         return client;

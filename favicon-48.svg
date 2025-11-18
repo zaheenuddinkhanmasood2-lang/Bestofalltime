@@ -1,33 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
   <defs>
-    <linearGradient id="charcoal" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="charcoal48" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#080809"/>
       <stop offset="100%" stop-color="#19191d"/>
     </linearGradient>
-    <linearGradient id="pages" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="pages48" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#fff9e6"/>
       <stop offset="100%" stop-color="#f7edd4"/>
     </linearGradient>
   </defs>
 
-  <!-- Base tile -->
-  <rect x="3" y="3" width="42" height="42" rx="12" fill="url(#charcoal)" stroke="#262626" stroke-width="1.6"/>
+  <rect x="3" y="3" width="42" height="42" rx="12" fill="url(#charcoal48)" stroke="#262626" stroke-width="1.6"/>
   <rect x="4.8" y="4.8" width="38.4" height="38.4" rx="10.5" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
 
-  <!-- Stacked books -->
   <g stroke-linecap="round">
     <path d="M12 34.5h24" stroke="#f97316" stroke-width="2.4"/>
     <path d="M13.5 30h21" stroke="#fbbf24" stroke-width="2.2"/>
     <path d="M15 25.5h18" stroke="#fcd34d" stroke-width="2"/>
   </g>
 
-  <!-- Open book pages -->
   <path d="M10.5 16.5c3-2.2 6.4-3.2 10.5-2.4c1.1 0.2 2.1 0.4 3 0.7s1.9 0.5 3 0.7c4.1 0.8 7.5-0.2 10.5-2.4v12c-3 2.2-6.4 3.2-10.5 2.4c-1.1-0.2-2.1-0.4-3-0.7s-1.9-0.5-3-0.7c-4.1-0.8-7.5 0.2-10.5 2.4v-12z"
-        fill="url(#pages)" stroke="rgba(34,34,34,0.4)" stroke-width="1.2"/>
+        fill="url(#pages48)" stroke="rgba(34,34,34,0.4)" stroke-width="1.2"/>
   <path d="M11 17.5c3-2 6-2 9 0" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/>
   <path d="M26 17.5c3-2 6-2 9 0" stroke="#f97316" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/>
 
-  <!-- Graduation cap -->
   <path d="M12.5 16l11.5-6.5L35.5 16l-11.5 6.2z" fill="#070708" stroke="#facc15" stroke-width="1.4"/>
   <path d="M24 21.8v7.4" stroke="#facc15" stroke-width="1.6" stroke-linecap="round"/>
   <path d="M24 30l-1.5-2.4h3z" fill="#f97316"/>
@@ -35,6 +31,6 @@
   <circle cx="36.5" cy="15.5" r="1.6" fill="#fbbf24" stroke="#fde047" stroke-width="0.6"/>
   <path d="M36.5 15.5l3 4.5" stroke="#fde047" stroke-width="0.9" stroke-linecap="round"/>
 
-  <!-- Ground shadow -->
   <ellipse cx="24" cy="36.5" rx="14" ry="3" fill="rgba(250,204,21,0.18)"/>
 </svg>
+
