@@ -3,15 +3,29 @@
 
 <head>
     <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-NDD6F2PQ');</script>
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NDD6F2PQ');</script>
     <!-- End Google Tag Manager -->
+
+    <!-- Vercel Speed Insights -->
+    <script>
+        (function () {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.vercel.com/insights/script.js';
+            script.defer = true;
+            document.head.appendChild(script);
+        })();
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- SEO Meta Tags -->
     <meta name="description"
         content="Sign up for SharedStudy - Join the ultimate platform for sharing and discovering study materials. Create your account and start collaborating with students worldwide.">
@@ -20,7 +34,7 @@
     <meta name="robots" content="noindex, follow">
     <meta name="author" content="SharedStudy">
     <meta name="language" content="English">
-    
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Sign Up - SharedStudy">
@@ -28,10 +42,10 @@
         content="Sign up for SharedStudy - Join the ultimate platform for sharing and discovering study materials. Create your account and start collaborating.">
     <meta property="og:url" content="https://sharedstudy.vercel.app/signup.html">
     <meta property="og:site_name" content="SharedStudy">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://sharedstudy.vercel.app/signup.html">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/svg+xml" href="favicon-16.svg" sizes="16x16">
@@ -39,7 +53,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon-48.svg" sizes="48x48">
     <link rel="apple-touch-icon" href="favicon-48.svg">
     <link rel="shortcut icon" href="favicon.svg">
-    
+
     <title>Sign Up - SharedStudy</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -239,8 +253,8 @@
 
 <body>
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDD6F2PQ"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDD6F2PQ" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div class="auth-container">
         <button class="back-btn" onclick="goBack()" title="Go back">
@@ -273,7 +287,8 @@
         </form>
 
         <div style="margin: 16px 0; text-align:center; color:#9ca3af;">or</div>
-        <button id="googleSignupBtn" class="btn-primary" type="button" style="display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#ef4444,#f59e0b);">
+        <button id="googleSignupBtn" class="btn-primary" type="button"
+            style="display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#ef4444,#f59e0b);">
             <i class="fab fa-google"></i>
             Continue with Google
         </button>
@@ -387,7 +402,7 @@
                         window.location.href = `login.html?returnUrl=${encodeURIComponent(returnUrl)}`;
                     } else {
                         // No return URL, redirect to login page
-                    window.location.href = 'login.html';
+                        window.location.href = 'login.html';
                     }
                 }, 2000);
 
@@ -450,13 +465,13 @@
         }
 
         async function handleGoogleOAuth() {
-  try {
-    showLoading(true);
-                
+            try {
+                showLoading(true);
+
                 // Get return URL from query parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 const returnUrl = urlParams.get('returnUrl');
-                
+
                 // Build redirect URL - preserve return URL if present
                 let redirectTo = 'https://sharedstudy.vercel.app/index.html';
                 if (returnUrl) {
@@ -465,24 +480,24 @@
                     const loginUrl = window.location.origin + '/login.html';
                     redirectTo = `${loginUrl}?returnUrl=${encodeURIComponent(returnUrl)}`;
                 }
-                
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
+
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
                         redirectTo: redirectTo,
-        queryParams: {
-          prompt: 'select_account'  // 👈 forces account selection
+                        queryParams: {
+                            prompt: 'select_account'  // 👈 forces account selection
+                        }
+                    }
+                });
+                if (error) throw error;
+            } catch (err) {
+                console.error('Google OAuth error:', err);
+                showNotification('Google sign-in failed. Please try again.', 'error');
+            } finally {
+                showLoading(false);
+            }
         }
-      }
-    });
-    if (error) throw error;
-  } catch (err) {
-    console.error('Google OAuth error:', err);
-    showNotification('Google sign-in failed. Please try again.', 'error');
-  } finally {
-    showLoading(false);
-  }
-}
     </script>
 </body>
 

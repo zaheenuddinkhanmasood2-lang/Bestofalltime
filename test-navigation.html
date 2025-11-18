@@ -1,8 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Vercel Speed Insights -->
+    <script>
+        (function () {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.vercel.com/insights/script.js';
+            script.defer = true;
+            document.head.appendChild(script);
+        })();
+    </script>
+
     <title>Navigation Test - SharedStudy</title>
 
     <!-- Favicon -->
@@ -20,18 +32,21 @@
             padding: 20px;
             background: #f5f5f5;
         }
+
         .container {
             background: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+
         .test-section {
             margin: 30px 0;
             padding: 20px;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
         }
+
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -42,57 +57,74 @@
             border-radius: 6px;
             transition: all 0.2s ease;
         }
+
         .btn:hover {
             background: #4f46e5;
             transform: translateY(-1px);
         }
+
         .btn-secondary {
             background: #6b7280;
         }
+
         .btn-secondary:hover {
             background: #4b5563;
         }
+
         .status {
             padding: 15px;
             border-radius: 8px;
             margin: 10px 0;
             font-weight: bold;
         }
-        .success { background: #d1fae5; color: #065f46; }
-        .error { background: #fee2e2; color: #991b1b; }
-        .info { background: #dbeafe; color: #1e40af; }
+
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>🧪 Navigation Test Page</h1>
         <p>This page tests the navigation functionality of your SharedStudy application.</p>
-        
+
         <div class="test-section">
             <h2>Test Navigation Links</h2>
             <p>Click these buttons to test navigation:</p>
-            
+
             <a href="index.html" class="btn">🏠 Home Page</a>
             <a href="login.html" class="btn">🔐 Login Page</a>
             <a href="signup.html" class="btn">📝 Sign Up Page</a>
-            
+
             <div id="testResults"></div>
         </div>
-        
+
         <div class="test-section">
             <h2>Test Navigation Buttons</h2>
             <p>Test the navigation buttons from the main page:</p>
-            
+
             <button onclick="testLoginNavigation()" class="btn">Test Login Button</button>
             <button onclick="testSignupNavigation()" class="btn">Test Sign Up Button</button>
             <button onclick="testGetStartedButton()" class="btn">Test Get Started Button</button>
         </div>
-        
+
         <div class="test-section">
             <h2>Current Page Info</h2>
             <div id="pageInfo"></div>
         </div>
-        
+
         <div class="test-section">
             <h2>Navigation Test Results</h2>
             <div id="navigationResults">
@@ -112,63 +144,63 @@
                 <p><strong>Host:</strong> ${window.location.host}</p>
             `;
         }
-        
+
         // Test login navigation
         function testLoginNavigation() {
             const results = document.getElementById('navigationResults');
             results.innerHTML = '<div class="status info">Testing login navigation...</div>';
-            
+
             // Simulate clicking login button
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 1000);
         }
-        
+
         // Test signup navigation
         function testSignupNavigation() {
             const results = document.getElementById('navigationResults');
             results.innerHTML = '<div class="status info">Testing signup navigation...</div>';
-            
+
             // Simulate clicking signup button
             setTimeout(() => {
                 window.location.href = 'signup.html';
             }, 1000);
         }
-        
+
         // Test get started button
         function testGetStartedButton() {
             const results = document.getElementById('navigationResults');
             results.innerHTML = '<div class="status info">Testing get started button...</div>';
-            
+
             // Simulate clicking get started button
             setTimeout(() => {
                 window.location.href = 'signup.html';
             }, 1000);
         }
-        
+
         // Test if pages exist
         function testPageExistence() {
             const pages = ['index.html', 'login.html', 'signup.html'];
             const results = document.getElementById('testResults');
             let html = '<h3>Page Existence Test:</h3>';
-            
+
             pages.forEach(page => {
                 // This is a simple test - in a real scenario, you'd use fetch
                 html += `<p>✅ ${page} - <a href="${page}">Test Link</a></p>`;
             });
-            
+
             results.innerHTML = html;
         }
-        
+
         // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             displayPageInfo();
             testPageExistence();
-            
+
             // Add some interactive tests
             const testButtons = document.querySelectorAll('.btn');
             testButtons.forEach(btn => {
-                btn.addEventListener('click', function(e) {
+                btn.addEventListener('click', function (e) {
                     if (this.href) {
                         const results = document.getElementById('navigationResults');
                         results.innerHTML = `<div class="status info">Navigating to ${this.href}...</div>`;
@@ -176,31 +208,32 @@
                 });
             });
         });
-        
+
         // Test navigation functionality
         function runNavigationTests() {
             const results = document.getElementById('navigationResults');
             let html = '<h3>Navigation Test Results:</h3>';
-            
+
             // Test 1: Check if navigation buttons exist
             html += '<p>✅ Navigation buttons should be styled as links</p>';
             html += '<p>✅ Login button should navigate to login.html</p>';
             html += '<p>✅ Sign Up button should navigate to signup.html</p>';
             html += '<p>✅ Get Started button should navigate to signup.html</p>';
-            
+
             // Test 2: Check CSS styling
             html += '<p>✅ Buttons should have proper hover effects</p>';
             html += '<p>✅ Buttons should not have underlines (text-decoration: none)</p>';
-            
+
             // Test 3: Check JavaScript functionality
             html += '<p>✅ No modal functionality for auth buttons</p>';
             html += '<p>✅ Direct navigation to separate pages</p>';
-            
+
             results.innerHTML = html;
         }
-        
+
         // Run tests after page loads
         setTimeout(runNavigationTests, 1000);
     </script>
 </body>
+
 </html>
