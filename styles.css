@@ -399,6 +399,180 @@ section {
     box-shadow: var(--shadow-xl);
 }
 
+/* ========================================
+   MOBILE NAVBAR RESPONSIVE FIXES
+   Professional, targeted fixes for small screens only
+   ======================================== */
+
+/* Tablet and below - reduce navbar padding */
+@media (max-width: 1024px) {
+    #navbar>div {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}
+
+/* Mobile screens - optimize spacing */
+@media (max-width: 768px) {
+
+    /* Reduce navbar container padding */
+    #navbar>div {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    /* Reduce navbar height slightly */
+    #navbar .h-16 {
+        height: 3.5rem;
+        min-height: 3.5rem;
+    }
+
+    /* Reduce logo size */
+    .holo-logo {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 10px;
+    }
+
+    .holo-logo::before {
+        inset: 1.5px;
+        border-radius: 8px;
+    }
+
+    /* Adjust logo icon size */
+    .holo-logo .logo-core i {
+        font-size: 0.875rem;
+    }
+
+    /* Reduce orbit dots size */
+    .logo-orbit {
+        inset: -3px;
+    }
+
+    .logo-orbit .dot {
+        width: 4px;
+        height: 4px;
+        margin: -2px 0 0 -2px;
+    }
+
+    /* Reduce brand text size */
+    .brand-holo,
+    #navbar .text-xl {
+        font-size: 0.875rem;
+        letter-spacing: 0.1px;
+    }
+
+    /* Reduce spacing between logo and text */
+    #navbar .flex.items-center.space-x-3 {
+        gap: 0.5rem;
+    }
+
+    /* Ensure mobile icons fit */
+    #mobile-icon-nav {
+        gap: 0.125rem;
+        padding: 0.25rem 0;
+        max-width: calc(100vw - 8rem);
+    }
+}
+
+/* Small mobile screens - further optimization */
+@media (max-width: 480px) {
+
+    /* Further reduce navbar padding */
+    #navbar>div {
+        padding-left: 0.375rem;
+        padding-right: 0.375rem;
+    }
+
+    /* Further reduce navbar height */
+    #navbar .h-16 {
+        height: 3.25rem;
+        min-height: 3.25rem;
+    }
+
+    /* Smaller logo */
+    .holo-logo {
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 8px;
+    }
+
+    .holo-logo::before {
+        inset: 1px;
+        border-radius: 6px;
+    }
+
+    .holo-logo .logo-core i {
+        font-size: 0.75rem;
+    }
+
+    /* Smaller orbit */
+    .logo-orbit {
+        inset: -2.5px;
+    }
+
+    .logo-orbit .dot {
+        width: 3px;
+        height: 3px;
+        margin: -1.5px 0 0 -1.5px;
+    }
+
+    /* Hide brand text on very small screens to save space */
+    .brand-holo {
+        display: none;
+    }
+
+    /* Tighter spacing */
+    #navbar .flex.items-center.space-x-3 {
+        gap: 0.375rem;
+    }
+
+    /* Optimize mobile icons */
+    #mobile-icon-nav {
+        gap: 0.0625rem;
+        padding: 0.25rem 0;
+        max-width: calc(100vw - 6rem);
+    }
+}
+
+/* Extra small screens - maximum optimization */
+@media (max-width: 360px) {
+
+    /* Minimal padding */
+    #navbar>div {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+    }
+
+    /* Compact navbar height */
+    #navbar .h-16 {
+        height: 3rem;
+        min-height: 3rem;
+    }
+
+    /* Smallest logo */
+    .holo-logo {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .holo-logo .logo-core i {
+        font-size: 0.625rem;
+    }
+
+    /* Minimal spacing */
+    #navbar .flex.items-center.space-x-3 {
+        gap: 0.25rem;
+    }
+
+    /* Maximum space for mobile icons */
+    #mobile-icon-nav {
+        gap: 0.0625rem;
+        padding: 0.125rem 0;
+        max-width: calc(100vw - 4.5rem);
+    }
+}
+
 /* Typography */
 h1,
 h2,
@@ -5240,27 +5414,44 @@ img {
 /* Mobile adjustments - keep it small */
 @media (max-width: 768px) {
     .back-arrow-btn {
-        width: 30px;
-        height: 30px;
-        font-size: 12px;
-        border-radius: 7px;
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+        border-radius: 6px;
+        margin-right: 0.375rem;
     }
 
     .back-arrow-btn i {
-        font-size: 11px;
+        font-size: 10px;
     }
 }
 
 /* Extra small screens */
 @media (max-width: 480px) {
     .back-arrow-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 11px;
-        border-radius: 6px;
+        width: 26px;
+        height: 26px;
+        font-size: 10px;
+        border-radius: 5px;
+        margin-right: 0.25rem;
     }
 
     .back-arrow-btn i {
-        font-size: 10px;
+        font-size: 9px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+    .back-arrow-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 9px;
+        border-radius: 4px;
+        margin-right: 0.25rem;
+    }
+
+    .back-arrow-btn i {
+        font-size: 8px;
     }
 }
