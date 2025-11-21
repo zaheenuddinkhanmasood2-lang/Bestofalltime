@@ -535,6 +535,11 @@ section {
     }
 }
 
+/* Ensure brand label visible on past papers page */
+.past-papers-page .brand-holo {
+    display: inline-block !important;
+}
+
 /* Extra small screens - maximum optimization */
 @media (max-width: 360px) {
 
@@ -570,6 +575,44 @@ section {
         gap: 0.0625rem;
         padding: 0.125rem 0;
         max-width: calc(100vw - 4.5rem);
+    }
+}
+
+.past-papers-page .brand-holo {
+    display: inline-block !important;
+}
+
+/* ========================================
+   MID-SIZE DEVICES (problematic presets)
+   e.g. iPad Pro, Asus Zenbook Fold, Nest Hub
+   Only tweak spacing & font size, no behavior
+   ======================================== */
+
+@media (min-width: 800px) and (max-width: 1100px) {
+    /* Slightly tighter navbar padding */
+    #navbar > div {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* Reduce gaps between nav items */
+    #navbar .hidden.lg\:flex.items-center.space-x-8 {
+        column-gap: 1.5rem;
+    }
+
+    /* Make brand text and nav text a bit smaller */
+    .brand-holo,
+    #navbar .text-xl {
+        font-size: 1rem;
+    }
+
+    #navbar .nav-link {
+        font-size: 0.9rem;
+    }
+
+    /* Slightly shrink Upload / Pro buttons */
+    #navbar .glass-button {
+        padding-inline: 1.1rem;
     }
 }
 

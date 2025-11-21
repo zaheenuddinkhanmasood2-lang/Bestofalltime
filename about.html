@@ -22,7 +22,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1e293b">
-    <title>About Us - SharedStudy</title>
+    <title>About Us | StudyShare Platform for Notes, Past Papers and Study Materials</title>
 
     <!-- SEO Meta Tags -->
     <meta name="description"
@@ -98,7 +98,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Back Arrow Button -->
-                <button onclick="window.history.back();" class="back-arrow-btn mr-2" aria-label="Go back" title="Go back">
+                <button onclick="window.history.back();" class="back-arrow-btn mr-2" aria-label="Go back"
+                    title="Go back">
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <!-- Logo -->
@@ -179,17 +180,64 @@
                     </div>
                 </div>
 
-                <!-- Mobile Menu Button -->
-                <button
-                    class="md:hidden text-white p-3 rounded-lg hover:bg-white/10 transition-colors duration-200 touch-manipulation"
-                    id="mobile-menu-button" aria-label="Open mobile menu">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
+                <!-- Mobile Icon Navigation -->
+                <div class="lg:hidden flex items-center space-x-1" id="mobile-icon-nav">
+                    <!-- Home Icon -->
+                    <a href="index.html" class="mobile-nav-icon" aria-label="Home">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                            </path>
+                        </svg>
+                        <span class="mobile-nav-label">Home</span>
+                    </a>
+
+                    <!-- Browse Icon -->
+                    <button class="mobile-nav-icon" aria-label="Browse" id="mobileBrowseDropdownTrigger"
+                        aria-haspopup="true" aria-expanded="false">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <span class="mobile-nav-label">Browse</span>
+                    </button>
+
+                    <!-- Upload Icon -->
+                    <a href="upload.html" class="mobile-nav-icon" aria-label="Upload Notes">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                            </path>
+                        </svg>
+                        <span class="mobile-nav-label">Upload</span>
+                    </a>
+
+                    <!-- Profile Icon (shown when logged in) -->
+                    <a href="profile.html" class="mobile-nav-icon" id="mobileProfileIcon" aria-label="Profile"
+                        style="display: none;">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span class="mobile-nav-label">Profile</span>
+                    </a>
+
+                    <!-- Login Icon (shown when logged out) -->
+                    <a href="login.html" class="mobile-nav-icon" id="mobileLoginIcon" aria-label="Login">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
+                            </path>
+                        </svg>
+                        <span class="mobile-nav-label">Login</span>
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- Mobile Menu -->
-        <div class="md:hidden glass-panel mt-2 mx-2 sm:mx-4 rounded-2xl p-4 sm:p-6 hidden" id="mobile-menu">
+        <!-- Mobile Menu (hidden, not used) -->
+        <div class="md:hidden glass-panel mt-2 mx-2 sm:mx-4 rounded-2xl p-4 sm:p-6 hidden" id="mobile-menu"
+            style="display: none !important;">
             <div class="flex flex-col space-y-4">
                 <a href="index.html"
                     class="text-gray-300 hover:text-white transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/5 touch-manipulation min-h-[48px] flex items-center"
@@ -776,6 +824,7 @@
     <script src="navigation.js"></script>
     <script src="browse-dropdown.js"></script>
     <script src="animations.js"></script>
+    <script src="back-navigation.js"></script>
     <script>
         // Session-aware UI: show email, signout, and authorized Upload link
         (async () => {
@@ -783,6 +832,20 @@
                 const supabase = window.getSupabaseClient();
 
                 const { data: { session } } = await supabase.auth.getSession();
+
+                // Update mobile icon navigation based on auth state
+                const mobileProfileIcon = document.getElementById('mobileProfileIcon');
+                const mobileLoginIcon = document.getElementById('mobileLoginIcon');
+
+                if (session && session.user) {
+                    // User is logged in - show Profile, hide Login
+                    if (mobileProfileIcon) mobileProfileIcon.style.display = 'flex';
+                    if (mobileLoginIcon) mobileLoginIcon.style.display = 'none';
+                } else {
+                    // User is not logged in - show Login, hide Profile
+                    if (mobileProfileIcon) mobileProfileIcon.style.display = 'none';
+                    if (mobileLoginIcon) mobileLoginIcon.style.display = 'flex';
+                }
 
                 const nav = document.getElementById('navbar');
                 if (!nav) return;
@@ -819,6 +882,13 @@
                         document.getElementById('uploadLink')?.classList.remove('hidden');
                         document.getElementById('mobileUploadLink')?.classList.remove('hidden');
                     }
+                } else {
+                    // User not logged in - show Login, hide Profile
+                    const mobileProfileIcon = document.getElementById('mobileProfileIcon');
+                    const mobileLoginIcon = document.getElementById('mobileLoginIcon');
+
+                    if (mobileProfileIcon) mobileProfileIcon.style.display = 'none';
+                    if (mobileLoginIcon) mobileLoginIcon.style.display = 'flex';
                 }
             } catch { }
         })();
