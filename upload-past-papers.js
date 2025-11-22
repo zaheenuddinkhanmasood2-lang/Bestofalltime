@@ -345,6 +345,13 @@
                 throw new Error(dbErr.message || 'Failed to save paper record.');
             }
 
+            // Submit to IndexNow API for search engine indexing
+            if (window.indexNow) {
+                window.indexNow.submitPage('/past-papers/past-papers.html').catch(err => {
+                    console.warn('IndexNow submission failed (non-critical):', err);
+                });
+            }
+
             notify('Past paper uploaded successfully!', 'success');
             uploadForm.reset();
             selectedFile = null;

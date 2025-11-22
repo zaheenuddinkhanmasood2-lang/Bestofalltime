@@ -399,6 +399,13 @@
             });
             if (dbErr) throw dbErr;
 
+            // Submit to IndexNow API for search engine indexing
+            if (window.indexNow) {
+                window.indexNow.submitPage('/browse.html').catch(err => {
+                    console.warn('IndexNow submission failed (non-critical):', err);
+                });
+            }
+
             // Cleaner success message + short action link
             notify('Upload complete.', 'success');
             const linkWrap = document.createElement('div');
