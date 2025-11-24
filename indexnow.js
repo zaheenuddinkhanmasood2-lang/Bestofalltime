@@ -170,6 +170,8 @@ class IndexNowAPI {
             '/about.html',
             '/login.html',
             '/signup.html',
+            '/profile.html',
+            '/past-papers/past-papers.html',
             '/upload.html'
         ];
 
