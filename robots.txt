@@ -18,6 +18,9 @@ Allow: /browse.html
 Allow: /index.html
 Allow: /login.html
 Allow: /signup.html
+Allow: /profile.html
+Allow: /about.html
+Allow: /past-papers/past-papers.html
 Allow: /upload.html
 Allow: /styles.css
 Allow: /script.js
