@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A beautiful, modern web application for students to share notes with classmates",
   "main": "script.js",
+  "type": "module",
   "scripts": {
     "dev": "npx live-server --port=5500 --open=./index.html",
     "start": "npx live-server --port=5500 --open=./index.html",
@@ -20,7 +21,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/zaheenuddinkhanmasood2-lang/Bestofalltime.git/issues"
   },
