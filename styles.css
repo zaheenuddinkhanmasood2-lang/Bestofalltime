@@ -872,6 +872,26 @@ p {
     animation-delay: 0.5s;
 }
 
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.spin-duration-3 {
+  animation-duration: 3s;
+}
+
+.spin-duration-4 {
+  animation-duration: 4s;
+}
+
+.hidden-by-default {
+  display: none;
+}
+
 .animation-delay-2000 {
     animation-delay: 2s;
 }
