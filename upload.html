@@ -18,11 +18,11 @@
 
     <!-- Clarity tracking code for https://sharedstudy.vercel.app/ -->
     <script>
-    (function(c,l,a,r,i,t,y){
-    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
-    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "ua59wimvoi");
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i + "?ref=bwt";
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ua59wimvoi");
     </script>
 
     <meta charset="UTF-8">
@@ -33,7 +33,7 @@
         content="Upload your study notes to SharedStudy (Studyshare) - The ultimate study exchange platform. Share study materials, exchange academic notes, and contribute to our collaborative learning community. Help students excel through study notes sharing. Upload Gomal University notes, GU paper, and Gomal University past papers to help fellow students.">
     <meta name="keywords"
         content="shared study, studyshare, share study, study exchange, upload study notes, study notes sharing, academic notes exchange, student notes sharing, study materials sharing, notes sharing platform, upload notes, share study materials, academic resources, student notes, education platform, study community,education, study materials, notes sharing, student notes,study notes, academic resources, student collaboration, learning platform, education, study materials, notes sharing, student notes">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="noindex, follow">
     <meta name="author" content="SharedStudy">
     <meta name="language" content="English">
 
@@ -50,13 +50,17 @@
 
     <title>Upload Notes - SharedStudy</title>
 
-    <!-- Favicon -->
+                <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="icon" type="image/svg+xml" href="favicon-16.svg" sizes="16x16">
-    <link rel="icon" type="image/svg+xml" href="favicon-32.svg" sizes="32x32">
-    <link rel="icon" type="image/svg+xml" href="favicon-48.svg" sizes="48x48">
-    <link rel="apple-touch-icon" href="favicon-48.svg">
-    <link rel="shortcut icon" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon-192.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
@@ -75,7 +79,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Back Arrow Button -->
-                <button onclick="window.history.back();" class="back-arrow-btn mr-2" aria-label="Go back" title="Go back">
+                <button onclick="window.history.back();" class="back-arrow-btn mr-2" aria-label="Go back"
+                    title="Go back">
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <a href="index.html" class="flex items-center space-x-3">
@@ -98,7 +103,8 @@
         <div class="max-w-3xl mx-auto">
             <div class="glass-card p-8 rounded-2xl shadow-2xl">
                 <h1 class="text-3xl font-bold text-white mb-2">Upload Handwritten Notes</h1>
-                <p class="text-gray-300 mb-6">Only authorized uploaders can submit files. PDFs or images up to 28 MB. Share Gomal University notes, GU paper, and Gomal University past papers to help students succeed.
+                <p class="text-gray-300 mb-6">Only authorized uploaders can submit files. PDFs or images up to 28 MB.
+                    Share Gomal University notes, GU paper, and Gomal University past papers to help students succeed.
                 </p>
 
                 <div id="authStatus" class="mb-6 text-gray-300"></div>

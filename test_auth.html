@@ -10,110 +10,17 @@
     
     <title>Authentication Test</title>
 
-    <!-- Favicon -->
+            <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="icon" type="image/svg+xml" href="favicon-16.svg" sizes="16x16">
-    <link rel="icon" type="image/svg+xml" href="favicon-32.svg" sizes="32x32">
-    <link rel="icon" type="image/svg+xml" href="favicon-48.svg" sizes="48x48">
-    <link rel="apple-touch-icon" href="favicon-48.svg">
-    <link rel="shortcut icon" href="favicon.svg">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .test-section {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .note-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .note-card:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 16px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .button:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .button.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-    </style>
-</head>
-
-<body>
-    <h1>Authentication Test Page</h1>
-
-    <div class="test-section">
-        <h2>Test 1: Browse Notes Page Behavior</h2>
-        <p>This simulates the browse_notes page behavior for unauthenticated users:</p>
-        <div class="note-card">
-            <h3>Sample Note 1</h3>
-            <p>This is a sample note that unauthenticated users can see but cannot view/download without signing in.</p>
-            <button class="button disabled" onclick="testView()">Sign in to View</button>
-            <button class="button disabled" onclick="testDownload()">Sign in to Download</button>
-        </div>
-        <div class="note-card">
-            <h3>Sample Note 2</h3>
-            <p>Another sample note with the same behavior.</p>
-            <button class="button disabled" onclick="testView()">Sign in to View</button>
-            <button class="button disabled" onclick="testDownload()">Sign in to Download</button>
-        </div>
-    </div>
-
-    <div class="test-section">
-        <h2>Test 2: Freshly Approved Section Behavior</h2>
-        <p>This simulates the freshly approved section behavior for unauthenticated users:</p>
-        <div class="note-card" onclick="testCardClick()">
-            <h3>Freshly Approved Note 1</h3>
-            <p>Click on this card to test the authentication prompt.</p>
-        </div>
-        <div class="note-card" onclick="testCardClick()">
-            <h3>Freshly Approved Note 2</h3>
-            <p>Another card to test the authentication prompt.</p>
-        </div>
-    </div>
-
-    <div class="test-section">
-        <h2>Expected Behavior</h2>
-        <ul>
-            <li>✅ Unauthenticated users can see all notes in both sections</li>
-            <li>✅ View and Download buttons show "Sign in to View/Download" and are disabled</li>
-            <li>✅ Clicking View/Download buttons prompts user to sign in</li>
-            <li>✅ Clicking on note cards in freshly approved section prompts user to sign in</li>
-            <li>✅ If user confirms, they are redirected to login page</li>
-        </ul>
-    </div>
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon-192.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
     <script>
         function testView() {
