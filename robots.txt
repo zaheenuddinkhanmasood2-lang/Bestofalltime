@@ -31,6 +31,7 @@ Allow: /animations.js
 Allow: /semantic-search.js
 Allow: /semantic-search-interface.js
 Allow: /supabaseClient.js
+Allow: /indexnow.js
 Allow: /favicon.svg
 Allow: /favicon-16.svg
 Allow: /favicon-32.svg
