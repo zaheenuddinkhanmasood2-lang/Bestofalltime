@@ -18,11 +18,25 @@
 
     <!-- Clarity tracking code for https://sharedstudy.vercel.app/ -->
     <script>
-        (function (c, l, a, r, i, t, y) {
-            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
-            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i + "?ref=bwt";
-            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
-        })(window, document, "clarity", "script", "ua59wimvoi");
+        try {
+            (function (c, l, a, r, i, t, y) {
+                c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+                t = l.createElement(r);
+                t.async = 1;
+                t.src = "https://www.clarity.ms/tag/" + i + "?ref=bwt";
+                t.onerror = function () {
+                    // Silently handle tracking script errors
+                    console.debug('Clarity tracking script failed to load');
+                };
+                y = l.getElementsByTagName(r)[0];
+                if (y && y.parentNode) {
+                    y.parentNode.insertBefore(t, y);
+                }
+            })(window, document, "clarity", "script", "ua59wimvoi");
+        } catch (error) {
+            // Silently handle tracking initialization errors
+            console.debug('Clarity tracking initialization failed:', error);
+        }
     </script>
 
     <meta charset="UTF-8">
@@ -97,7 +111,8 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"
+        onerror="console.warn('Tailwind CDN failed to load, using fallback styles'); this.onerror=null;"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.12.2/intersection-observer.js"></script>
     <link rel="stylesheet" href="styles.css">
@@ -256,11 +271,9 @@
                     </a>
                     <!-- Browse Dropdown (Desktop/Laptop only) -->
                     <div id="browseDropdownTrigger" class="relative browse-dropdown-trigger hidden lg:block">
-                        <button
-                            id="browseDropdownButton"
+                        <button id="browseDropdownButton"
                             class="nav-link text-gray-300 hover:text-white transition-colors duration-200 relative group flex items-center"
-                            aria-haspopup="true"
-                            aria-expanded="false">
+                            aria-haspopup="true" aria-expanded="false">
                             Browse
                             <i class="fas fa-chevron-down ml-1 text-xs transition-transform duration-200"></i>
                             <span class="holo-underline"></span>
@@ -1156,8 +1169,10 @@
     <script src="navigation.js"></script>
     <script src="browse-dropdown.js"></script>
     <script src="animations.js"></script>
-    <script src="semantic-search.js"></script>
-    <script src="semantic-search-interface.js"></script>
+    <script src="semantic-search.js"
+        onerror="console.warn('semantic-search.js failed to load, search will use fallback'); this.onerror=null;"></script>
+    <script src="semantic-search-interface.js"
+        onerror="console.warn('semantic-search-interface.js failed to load'); this.onerror=null;"></script>
     <script>
         // Session-aware UI: show email, signout, and authorized Upload link
         (async () => {
