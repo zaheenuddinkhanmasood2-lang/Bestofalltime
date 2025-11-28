@@ -1,6 +1,13 @@
 (function () {
     const supabase = window.getSupabaseClient();
     const STORAGE_BUCKET = 'STORAGE_BUCKET';
+    const BADGE_META = {
+        bronze: { label: 'Bronze', color: '#cd7f32', icon: 'fa-medal' },
+        silver: { label: 'Silver', color: '#c0c0c0', icon: 'fa-medal' },
+        gold: { label: 'Gold', color: '#facc15', icon: 'fa-trophy' },
+        legendary: { label: 'Legendary', color: '#f97316', icon: 'fa-crown' }
+    };
+    let currentSession = null;
 
     const grid = document.getElementById('grid');
     const empty = document.getElementById('empty');
@@ -96,8 +103,34 @@
         return { hide };
     }
 
-    function renderCard(row) {
+    function getBadgeMeta(badgeId) {
+        return BADGE_META[badgeId] || BADGE_META.bronze;
+    }
+
+    function formatPoints(points) {
+        return new Intl.NumberFormat('en-US').format(points || 0);
+    }
+
+    async function refreshSession() {
+        const { data: { session } } = await supabase.auth.getSession();
+        currentSession = session || null;
+        return currentSession;
+    }
+
+    async function ensureAuthenticated(actionLabel) {
+        const session = currentSession || await refreshSession();
+        if (session?.user) return session;
+        const label = actionLabel || 'perform this action';
+        if (confirm(`You need to sign in to ${label}. Would you like to go to the login page?`)) {
+            window.location.href = 'login.html';
+        }
+        return null;
+    }
+
+    function renderCard(row, stats) {
         const kb = (row.file_size || 0) / 1024;
+        const points = stats?.total_points ?? 0;
+        const badgeMeta = getBadgeMeta(stats?.badge);
         return `
 			<div class="glass-panel rounded-xl p-4 flex flex-col gap-3">
 				<div class="flex items-start justify-between">
@@ -110,19 +143,212 @@
 							<span class="text-xs text-gray-300">${new Date(row.created_at).toLocaleDateString()}</span>
 						</div>
 					</div>
+                    <div class="text-right">
+                        <p class="text-[11px] uppercase tracking-wide text-gray-400 mb-1">Uploader Badge</p>
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full border text-xs font-semibold"
+                              style="border-color:${badgeMeta.color};color:${badgeMeta.color}"
+                              title="Badge earned by the uploader">
+                            <i class="fas ${badgeMeta.icon}"></i>${badgeMeta.label}
+                        </span>
+                        <div class="text-xs text-gray-200 mt-1 font-semibold"
+                             title="Total lifetime points earned by the uploader">
+                            Uploader Points: ${formatPoints(points)}
+                        </div>
+                    </div>
 				</div>
 				<div class="text-sm text-purple-200">${row.subject || 'General'}</div>
 				<p class="text-gray-300 text-sm line-clamp-3">${row.description || ''}</p>
-				<div class="text-xs text-gray-400">By ${row.uploader_email || 'anonymous'} • ${kb.toFixed(0)} KB</div>
+				<div class="text-xs text-gray-400">
+                    <span class="font-semibold text-gray-200">Uploader:</span>
+                    ${row.uploader_email || 'anonymous'}
+                    <span class="text-gray-500">• ${badgeMeta.label} • ${formatPoints(points)} pts total</span>
+                    <span class="text-gray-500 block sm:inline">• File size: ${kb.toFixed(0)} KB</span>
+                </div>
 				<div class="flex gap-2">
 					<button class="view glass-button px-3 py-2 rounded-lg border border-white/20 text-white">View</button>
 					<button class="download glass-button px-3 py-2 rounded-lg border border-white/20 text-white">Download</button>
+                    <button class="tip glass-button px-3 py-2 rounded-lg border border-white/20 text-white" title="Send an encouragement tip">
+                        <i class="fas fa-gift text-sm mr-1"></i>Tip +5/+10
+                    </button>
 					<button class="share glass-button px-3 py-2 rounded-lg border border-white/20 text-white" title="Share this note">
 						<i class="fas fa-share-alt text-sm"></i>
 					</button>
 				</div>
 			</div>
 		`;
+    }
+
+    function getOwnerId(row) {
+        return row.uploader_id || row.user_id || null;
+    }
+
+    async function fetchPointsForNotes(notes) {
+        const ids = Array.from(new Set(
+            (notes || []).map(getOwnerId).filter(Boolean)
+        ));
+        if (ids.length === 0) {
+            return new Map();
+        }
+        
+        try {
+            const { data, error } = await supabase
+                .from('user_points')
+                .select('user_id,total_points,badge')
+                .in('user_id', ids);
+            
+            if (error) {
+                console.warn('Failed to load user points:', error);
+                return new Map();
+            }
+            
+            const map = new Map();
+            (data || []).forEach(row => {
+                map.set(row.user_id, row);
+            });
+            return map;
+        } catch (error) {
+            console.warn('Exception loading user points:', error);
+            return new Map();
+        }
+    }
+
+    function getStatsForUser(pointsMap, userId) {
+        if (!userId) return { total_points: 0, badge: 'bronze' };
+        return pointsMap.get(userId) || { total_points: 0, badge: 'bronze' };
+    }
+
+    // Update already-rendered notes with points data when it arrives
+    function updateRenderedNotesWithPoints(pointsMap) {
+        if (!pointsMap || pointsMap.size === 0) return;
+        
+        const cards = grid.querySelectorAll('[data-note-id]');
+        cards.forEach(card => {
+            const noteId = card.getAttribute('data-note-id');
+            if (!noteId) return;
+            
+            // Find the note data from the card
+            const uploaderInfo = card.querySelector('.text-xs.text-gray-400');
+            const badgeElement = card.querySelector('[title*="Badge"]');
+            const pointsElement = card.querySelector('[title*="points"]');
+            
+            if (!uploaderInfo) return;
+            
+            // Extract user_id from the card (we need to store it)
+            // For now, we'll update what we can see
+            const text = uploaderInfo.textContent || '';
+            // Try to find user_id from data attribute if we stored it
+            const userId = card.getAttribute('data-user-id');
+            
+            if (userId) {
+                const stats = getStatsForUser(pointsMap, userId);
+                const badgeMeta = getBadgeMeta(stats.badge);
+                
+                // Update badge display
+                if (badgeElement) {
+                    badgeElement.innerHTML = `<i class="fas ${badgeMeta.icon}"></i>${badgeMeta.label}`;
+                    badgeElement.style.borderColor = badgeMeta.color;
+                    badgeElement.style.color = badgeMeta.color;
+                }
+                
+                // Update points display
+                if (pointsElement) {
+                    pointsElement.textContent = `Uploader Points: ${formatPoints(stats.total_points)}`;
+                }
+            }
+        });
+    }
+
+    async function recordDownloadEvent(noteRow) {
+        const session = currentSession || await refreshSession();
+        if (!session?.user?.id) return;
+        const ownerId = getOwnerId(noteRow);
+        try {
+            await supabase
+                .from('note_download_events')
+                .insert({
+                    note_id: noteRow.id,
+                    downloader_id: session.user.id,
+                    uploader_id: ownerId
+                });
+        } catch (error) {
+            console.warn('Download event logging failed:', error);
+        }
+    }
+
+    function promptTipAmount(note) {
+        return new Promise(resolve => {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4';
+            modal.innerHTML = `
+                <div class="glass-panel rounded-2xl p-6 max-w-sm w-full border border-white/20">
+                    <h3 class="text-white text-lg font-semibold mb-2">Tip ${note.title || 'this note'}?</h3>
+                    <p class="text-gray-300 text-sm mb-4">Choose a tip amount to thank the uploader.</p>
+                    <div class="flex gap-3 mb-4">
+                        <button data-tip-value="5" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:scale-[1.01] transition">
+                            +5 points
+                        </button>
+                        <button data-tip-value="10" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white font-semibold hover:scale-[1.01] transition">
+                            +10 points
+                        </button>
+                    </div>
+                    <button class="cancel w-full px-4 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 transition">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            const cleanup = (value = null) => {
+                if (modal.parentNode) modal.parentNode.removeChild(modal);
+                resolve(value);
+            };
+
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) cleanup();
+            });
+
+            modal.querySelector('.cancel').addEventListener('click', () => cleanup());
+            modal.querySelectorAll('[data-tip-value]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const val = parseInt(btn.dataset.tipValue, 10);
+                    cleanup(Number.isNaN(val) ? null : val);
+                });
+            });
+        });
+    }
+
+    async function handleTip(noteRow) {
+        const session = await ensureAuthenticated('send a tip');
+        if (!session?.user) return;
+
+        const ownerId = getOwnerId(noteRow);
+        if (session.user.id === ownerId) {
+            showToast('You cannot tip your own note.', { variant: 'warning' });
+            return;
+        }
+
+        const amount = await promptTipAmount(noteRow);
+        if (!amount) return;
+
+        const pendingToast = showToast('Sending tip…', { variant: 'info', duration: 0 });
+
+        const { error } = await supabase
+            .from('tip_transactions')
+            .insert({
+                note_id: noteRow.id,
+                uploader_id: ownerId,
+                tipper_id: session.user.id,
+                points: amount
+            });
+
+        pendingToast.hide && pendingToast.hide();
+
+        if (error) {
+            console.error('Tip failed:', error);
+            showToast(error.message || 'Unable to send tip.', { variant: 'error' });
+            return;
+        }
+
+        showToast(`Tip sent! (+${amount} points)`, { variant: 'success' });
+        fetchNotes();
     }
 
     // Normalize a stored object path and detect embedded bucket name
@@ -226,7 +452,7 @@
         }
 
         try {
-            // Build the query
+            // Build the query with timeout protection
             let query = supabase
                 .from('notes')
                 .select('id,title,subject,description,file_url,filename,file_size,uploader_email,uploader_id,user_id,created_at,is_approved,thumbnail_url')
@@ -245,7 +471,13 @@
                 query = query.or(`title.ilike.%${term}%,subject.ilike.%${term}%,uploader_email.ilike.%${term}%`);
             }
 
-            const { data, error } = await query;
+            // Add timeout to prevent hanging
+            const queryPromise = query;
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Query timeout after 10 seconds')), 10000)
+            );
+            
+            const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
             if (error) {
                 console.error('Database query error:', error);
@@ -302,16 +534,23 @@
 
         } catch (error) {
             console.error('Search failed:', error);
+            const isTimeout = error.message && error.message.includes('timeout');
             grid.innerHTML = `
                 <div class="text-center py-8">
                     <div class="text-red-400 mb-4">
                         <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-2">Search System Error</h3>
-                        <p class="text-sm">Unable to perform search. Please try again later.</p>
+                        <h3 class="text-xl font-semibold mb-2">${isTimeout ? 'Request Timeout' : 'Search System Error'}</h3>
+                        <p class="text-sm">${isTimeout ? 'The request took too long. This might be a database connection issue.' : 'Unable to perform search. Please try again later.'}</p>
+                        ${error.message ? `<p class="text-xs mt-2 text-gray-400">${error.message}</p>` : ''}
                     </div>
-                    <button onclick="location.reload()" class="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-colors text-sm">
-                        <i class="fas fa-refresh mr-2"></i>Reload Page
-                    </button>
+                    <div class="flex gap-3 justify-center">
+                        <button onclick="fetchNotes()" class="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-colors text-sm">
+                            <i class="fas fa-redo mr-2"></i>Retry
+                        </button>
+                        <button onclick="location.reload()" class="px-4 py-2 bg-purple-500/20 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-colors text-sm">
+                            <i class="fas fa-refresh mr-2"></i>Reload Page
+                        </button>
+                    </div>
                 </div>
             `;
         }
@@ -332,19 +571,41 @@
 
 
         // Check if user is authenticated once
-        const { data: { session } } = await supabase.auth.getSession();
+        const session = await refreshSession();
         const isAuthenticated = !!session?.user;
+        
+        // Start points fetch in background - don't block rendering
+        let pointsMap = new Map();
+        const pointsPromise = fetchPointsForNotes(notes).then(map => {
+            pointsMap = map;
+            // Update points for already rendered notes
+            updateRenderedNotesWithPoints(pointsMap);
+        }).catch(err => {
+            console.warn('Points fetch failed (non-blocking):', err);
+        });
 
-        // Render all notes at once
+        // Render all notes immediately without waiting for points
         notes.forEach((row) => {
             const wrap = document.createElement('div');
-            wrap.innerHTML = renderCard(row).trim();
+            const stats = getStatsForUser(pointsMap, getOwnerId(row)); // Will use default values initially
+            wrap.innerHTML = renderCard(row, stats).trim();
             const el = wrap.firstElementChild;
+            
+            // Store note ID and user ID for later points update
+            if (el) {
+                el.setAttribute('data-note-id', row.id);
+                const ownerId = getOwnerId(row);
+                if (ownerId) {
+                    el.setAttribute('data-user-id', ownerId);
+                }
+            }
+            
             grid.appendChild(el);
 
             const viewBtn = el.querySelector('.view');
             const downloadBtn = el.querySelector('.download');
             const shareBtn = el.querySelector('.share');
+            const tipBtn = el.querySelector('.tip');
 
             // Set up authentication-based button states
             if (!isAuthenticated) {
@@ -397,6 +658,9 @@
                     alert('This file is currently unavailable.');
                     return;
                 }
+                if (download) {
+                    await recordDownloadEvent(row);
+                }
                 window.open(result.signedUrl, '_blank', 'noopener');
                 // Ensure toast is removed shortly after
                 setTimeout(() => { toast.hide && toast.hide(); }, 800);
@@ -405,6 +669,15 @@
             viewBtn.addEventListener('click', () => openSigned(false));
             downloadBtn.addEventListener('click', () => openSigned(true));
             shareBtn.addEventListener('click', () => shareNote(row));
+            if (tipBtn) {
+                tipBtn.addEventListener('click', () => handleTip(row));
+
+                if (session?.user?.id && session.user.id === getOwnerId(row)) {
+                    tipBtn.disabled = true;
+                    tipBtn.title = 'You cannot tip your own note';
+                    tipBtn.classList.add('opacity-60', 'cursor-not-allowed');
+                }
+            }
         });
     }
 

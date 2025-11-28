@@ -382,7 +382,7 @@
                 .createSignedUrl(objectPath, 60 * 60); // 1 hour
             if (signedErr) throw signedErr;
 
-            // Insert metadata row
+            // Insert metadata row - All uploads require manual approval
             const { error: dbErr } = await supabase.from('notes').insert({
                 user_id: session.user.id, // for schemas that require user_id
                 title: derivedTitle,
@@ -394,8 +394,8 @@
                 uploader_email: session.user.email,
                 file_size: file.size,
                 thumbnail_url: thumbnailUrl,
-                is_approved: isAuthorizedUploader ? true : false,
-                is_public: isAuthorizedUploader ? true : false
+                is_approved: false,  // All uploads require manual approval
+                is_public: false     // Keep private until approved
             });
             if (dbErr) throw dbErr;
 
@@ -406,8 +406,8 @@
                 });
             }
 
-            // Cleaner success message + short action link
-            notify('Upload complete.', 'success');
+            // Success message - note pending approval
+            notify('Upload submitted successfully! Your note is pending approval and will be visible once reviewed by an admin.', 'success');
             const linkWrap = document.createElement('div');
             linkWrap.className = 'mt-2';
             const a = document.createElement('a');

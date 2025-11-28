@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NDD6F2PQ');</script>
+    <!-- End Google Tag Manager -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Approve Notes | SharedStudy</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon-192.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="font-inter bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-x-hidden">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDD6F2PQ" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <span
+                        class="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">SharedStudy</span>
+                </a>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html"
+                        class="glass-button px-4 py-2 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <button id="logoutBtn"
+                        class="glass-button px-4 py-2 rounded-full border border-red-500/50 text-red-300 font-semibold hover:bg-red-500/10 transition-all duration-300">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 px-4 pb-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="glass-card p-6 rounded-2xl shadow-2xl mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white mb-2">
+                            <i class="fas fa-shield-alt mr-3 text-purple-400"></i>Admin Panel
+                        </h1>
+                        <p class="text-gray-300">Review and approve pending notes</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <div class="text-sm text-gray-400">Pending Notes</div>
+                            <div id="pendingCount" class="text-2xl font-bold text-purple-400">0</div>
+                        </div>
+                        <button id="refreshBtn" class="glass-button px-4 py-2 rounded-full border border-white/20 text-white hover:bg-white/10 transition-all">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="glass-card p-4 rounded-2xl shadow-2xl mb-6">
+                <div class="flex space-x-2">
+                    <button id="tabPending" class="tab-button active px-6 py-2 rounded-lg font-medium transition-all">
+                        <i class="fas fa-clock mr-2"></i>Pending
+                    </button>
+                    <button id="tabApproved" class="tab-button px-6 py-2 rounded-lg font-medium transition-all">
+                        <i class="fas fa-check-circle mr-2"></i>Approved
+                    </button>
+                    <button id="tabRejected" class="tab-button px-6 py-2 rounded-lg font-medium transition-all">
+                        <i class="fas fa-times-circle mr-2"></i>Rejected
+                    </button>
+                </div>
+            </div>
+
+            <!-- Notes List -->
+            <div id="notesContainer" class="space-y-4">
+                <div class="glass-card p-8 rounded-2xl shadow-2xl text-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-purple-400 mb-4"></i>
+                    <p class="text-gray-300">Loading notes...</p>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden glass-card p-12 rounded-2xl shadow-2xl text-center">
+                <i class="fas fa-inbox text-6xl text-gray-600 mb-4"></i>
+                <h3 class="text-xl font-semibold text-white mb-2">No notes found</h3>
+                <p class="text-gray-400">There are no notes in this category.</p>
+            </div>
+
+            <!-- Audit Log -->
+            <div class="glass-card p-6 rounded-2xl shadow-2xl mt-8">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white">Audit Log</h2>
+                        <p class="text-gray-400 text-sm">Uploads, downloads, tips, badges, and suspicious events</p>
+                    </div>
+                    <button id="auditRefreshBtn"
+                        class="glass-button px-4 py-2 rounded-full border border-white/20 text-white hover:bg-white/10 transition-all">
+                        <i class="fas fa-sync-alt mr-2"></i>Refresh
+                    </button>
+                </div>
+                <div id="auditLogContainer" class="space-y-3 max-h-[32rem] overflow-y-auto pr-2">
+                    <div class="text-gray-400 text-sm">Loading audit events…</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Note Detail Modal -->
+    <div id="noteModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal()"></div>
+            <div class="relative glass-card p-6 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="supabaseClient.js"></script>
+    <script src="admin-approval.js"></script>
+</body>
+
+</html>
+

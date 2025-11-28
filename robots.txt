@@ -7,36 +7,44 @@ Sitemap: https://sharedstudy.vercel.app/sitemap.xml
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
 
-# Disallow admin areas (if any)
+# Disallow admin areas, test pages, and private content
 Disallow: /admin/
+Disallow: /admin-approval.html
 Disallow: /private/
 Disallow: /temp/
+Disallow: /test-*.html
+Disallow: /test_*.html
+Disallow: /google*.html
+Disallow: /*.sql
+Disallow: /*.md
+Disallow: /node_modules/
+Disallow: /.git/
 
-# Allow all other content
-Allow: /sitemap.xml
-Allow: /browse.html
+# Allow all main public pages
 Allow: /index.html
+Allow: /browse.html
+Allow: /about.html
 Allow: /login.html
 Allow: /signup.html
 Allow: /profile.html
-Allow: /about.html
-Allow: /past-papers/past-papers.html
 Allow: /upload.html
-Allow: /styles.css
-Allow: /script.js
-Allow: /browse.js
-Allow: /upload.js
-Allow: /navigation.js
-Allow: /animations.js
-Allow: /semantic-search.js
-Allow: /semantic-search-interface.js
-Allow: /supabaseClient.js
-Allow: /indexnow.js
-Allow: /favicon.svg
-Allow: /favicon-16.svg
-Allow: /favicon-32.svg
-Allow: /og-image.jpg
-Allow: /twitter-card.jpg
-Allow: /browse-og-image.jpg
-Allow: /browse-twitter-card.jpg
-Allow: /logo.png
+Allow: /upload-past-papers.html
+Allow: /past-papers/
+Allow: /past-papers/past-papers.html
+
+# Allow all static assets for better indexing
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.svg
+Allow: /*.ico
+Allow: /*.webp
+Allow: /*.gif
+Allow: /favicon.*
+Allow: /sitemap.xml
+Allow: /robots.txt
+
+# Allow IndexNow key file
+Allow: /8a44be3040e8d0082bebb260a6721525.txt

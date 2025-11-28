@@ -40,13 +40,13 @@ class BrowseDropdown {
         // Create menu items
         this.menuItems = [
             {
-                text: 'Browse Notes',
+                text: 'Notes',
                 href: 'browse.html',
                 icon: 'fa-file-alt',
                 role: 'menuitem'
             },
             {
-                text: 'Browse Past Papers',
+                text: 'Past Papers',
                 href: 'past-papers/past-papers.html',
                 icon: 'fa-file-pdf',
                 role: 'menuitem'
