@@ -464,69 +464,70 @@ class PastPapersApp {
 
     async fetchPapersFallback(payload, startTime) {
         try {
+            // Start with base query - fetch all active papers first
             let query = this.supabase
                 .from(this.config.api.table)
                 .select('*', { count: 'exact' })
                 .eq('is_active', true);
 
             const filters = payload.filters || {};
+            
+            // Build all OR conditions together (Supabase doesn't support chaining multiple .or() calls)
+            const allOrConditions = [];
 
+            // Course codes
             if (filters.course_codes?.length) {
-                const expressions = [];
                 filters.course_codes.forEach((code) => {
                     const normalized = this.normalizeCourseCode(code);
-                    if (!normalized) return;
-                    const withHyphen = normalized.replace(/([A-Z]+)(\d{2,3})/, (_, letters, numbers) => {
-                        return `${letters}-${numbers}`;
-                    });
-                    expressions.push(`course_code.ilike.%${normalized}%`);
-                    expressions.push(`paper_code.ilike.%${normalized}%`);
-                    if (withHyphen !== normalized) {
-                        expressions.push(`course_code.ilike.%${withHyphen}%`);
-                        expressions.push(`paper_code.ilike.%${withHyphen}%`);
+                    if (normalized) {
+                        allOrConditions.push(`course_code.ilike.%${normalized}%`);
+                        allOrConditions.push(`paper_code.ilike.%${normalized}%`);
                     }
                 });
-                if (expressions.length > 0) {
-                    query = query.or(expressions.join(','));
-                }
             }
 
+            // Paper types
+            if (filters.paper_types?.length) {
+                filters.paper_types.forEach((type) => {
+                    const normalized = this.normalizePaperType(type);
+                    if (normalized) {
+                        allOrConditions.push(`paper_type.ilike.%${normalized}%`);
+                        allOrConditions.push(`exam_type.ilike.%${normalized}%`);
+                    }
+                });
+            }
+
+            // Subjects
+            if (filters.subjects?.length) {
+                filters.subjects.forEach((token) => {
+                    allOrConditions.push(`subject.ilike.%${token}%`);
+                });
+            }
+
+            // Search query
+            if (payload.query && payload.query.trim()) {
+                const q = payload.query.trim();
+                allOrConditions.push(`subject.ilike.%${q}%`);
+                allOrConditions.push(`file_name.ilike.%${q}%`);
+                allOrConditions.push(`course_code.ilike.%${q}%`);
+                allOrConditions.push(`paper_code.ilike.%${q}%`);
+                allOrConditions.push(`paper_type.ilike.%${q}%`);
+                allOrConditions.push(`exam_type.ilike.%${q}%`);
+            }
+
+            // Apply OR conditions if any exist (this works with AND for other filters)
+            if (allOrConditions.length > 0) {
+                query = query.or(allOrConditions.join(','));
+            }
+
+            // Apply AND conditions (these work correctly with .in() and .eq())
             if (filters.semesters?.length) {
                 query = query.in('semester', filters.semesters);
             }
 
-            if (filters.paper_types?.length) {
-                const typeExpressions = filters.paper_types.map((type) => {
-                    const normalized = this.normalizePaperType(type);
-                    return `paper_type.ilike.${normalized}`;
-                });
-                const legacyExpressions = filters.paper_types.map((type) => {
-                    const normalized = this.normalizePaperType(type);
-                    return `exam_type.ilike.${normalized}`;
-                });
-                query = query.or([...typeExpressions, ...legacyExpressions].join(','));
-            }
-
-            const subjectTokens = filters.subjects || [];
-            if (subjectTokens.length > 0) {
-                const subjectExpressions = subjectTokens.map((token) => `subject.ilike.%${token}%`);
-                query = query.or(subjectExpressions.join(','));
-            }
-
-            if (payload.query && payload.query.trim()) {
-                const q = payload.query.trim();
-                query = query.or(
-                    [
-                        `subject.ilike.%${q}%`,
-                        `file_name.ilike.%${q}%`,
-                        `course_code.ilike.%${q}%`,
-                        `paper_code.ilike.%${q}%`,
-                        `paper_type.ilike.%${q}%`,
-                        `exam_type.ilike.%${q}%`,
-                    ].join(',')
-                );
-            }
-
+            // Order and paginate
+            query = query.order('created_at', { ascending: false });
+            
             const windowMultiplier = 3;
             const windowSize = payload.pageSize * windowMultiplier;
             const from = Math.max(0, (payload.page - 1) * payload.pageSize);
@@ -820,56 +821,74 @@ class PastPapersApp {
                 : Date.now();
 
         try {
-            const { data, error } = await this.supabase.rpc('search_past_papers', {
-                p_query: payload.query,
-                p_filters: payload.filters,
-                p_page: payload.page,
-                p_page_size: payload.pageSize,
-            });
+            // Try RPC first, fallback to direct query if it fails
+            try {
+                const { data, error } = await this.supabase.rpc('search_past_papers', {
+                    p_query: payload.query,
+                    p_filters: payload.filters,
+                    p_page: payload.page,
+                    p_page_size: payload.pageSize,
+                });
 
-            if (error) {
-                if (this.shouldFallbackToLegacySearch(error)) {
-                    await this.fetchPapersFallback(payload, startTime);
+                if (!error && data) {
+                    const normalizedRows = Array.isArray(data)
+                        ? data.map((row) => this.normalizePaperRecord(row))
+                        : [];
+
+                    const totalCount =
+                        normalizedRows.length > 0 && normalizedRows[0].total_count !== undefined
+                            ? Number(normalizedRows[0].total_count)
+                            : this.state.currentPage === 1
+                                ? normalizedRows.length
+                                : this.state.totalCount;
+
+                    const took =
+                        typeof performance !== 'undefined' && typeof performance.now === 'function'
+                            ? Math.round(performance.now() - startTime)
+                            : Math.round(Date.now() - startTime);
+
+                    if (this.state.currentPage === 1) {
+                        this.state.papers = normalizedRows;
+                    } else {
+                        this.state.papers = [...this.state.papers, ...normalizedRows];
+                    }
+
+                    this.state.totalCount = totalCount;
+                    this.state.hasMore = payload.page * payload.pageSize < totalCount;
+                    this.state.tookMs = took;
+                    this.state.lastFetchedAt = new Date().toISOString();
+
+                    this.renderPapers();
+                    this.updateFilterCount();
                     return;
                 }
-                throw error;
+            } catch (rpcError) {
+                // RPC failed, use fallback
+                console.log('RPC not available, using fallback query');
             }
-
-            const normalizedRows = Array.isArray(data)
-                ? data.map((row) => this.normalizePaperRecord(row))
-                : [];
-
-            const totalCount =
-                normalizedRows.length > 0 && normalizedRows[0].total_count !== undefined
-                    ? Number(normalizedRows[0].total_count)
-                    : this.state.currentPage === 1
-                        ? normalizedRows.length
-                        : this.state.totalCount;
-
-            const took =
-                typeof performance !== 'undefined' && typeof performance.now === 'function'
-                    ? Math.round(performance.now() - startTime)
-                    : Math.round(Date.now() - startTime);
-
-            if (this.state.currentPage === 1) {
-                this.state.papers = normalizedRows;
-            } else {
-                this.state.papers = [...this.state.papers, ...normalizedRows];
-            }
-
-            this.state.totalCount = totalCount;
-            this.state.hasMore = payload.page * payload.pageSize < totalCount;
-            this.state.tookMs = took;
-            this.state.lastFetchedAt = new Date().toISOString();
-
-            this.renderPapers();
-            this.updateFilterCount();
+            
+            // Use fallback query method (always works)
+            await this.fetchPapersFallback(payload, startTime);
         } catch (error) {
             console.error('Failed to fetch papers:', error);
             this.state.error = error.message;
             this.state.hasMore = false;
-            console.warn('Failed to load papers. Trying fallback search logic.');
-            await this.fetchPapersFallback(payload, startTime);
+            
+            // Try fallback on RPC errors
+            if (this.shouldFallbackToLegacySearch(error)) {
+                try {
+                    console.warn('RPC function not available, using fallback search.');
+                    await this.fetchPapersFallback(payload, startTime);
+                } catch (fallbackError) {
+                    console.error('Fallback search failed:', fallbackError);
+                    this.showError('Unable to load past papers. Please refresh the page.');
+                    this.renderPapers();
+                }
+            } else {
+                // For other errors, show error message
+                this.showError(error.message || 'Failed to load past papers. Please try again.');
+                this.renderPapers();
+            }
         } finally {
             this.setLoading(false);
         }
@@ -1566,8 +1585,34 @@ class PastPapersApp {
 
     showError(message) {
         console.error(message);
-        // You can implement a toast notification here
-        alert(message); // Temporary fallback
+        this.state.error = message;
+        
+        // Show error in empty state
+        const emptyState = document.getElementById('emptyState');
+        if (emptyState) {
+            emptyState.classList.remove('hidden');
+            const errorText = emptyState.querySelector('p');
+            if (errorText) {
+                errorText.textContent = message || 'Failed to load past papers. Please try again.';
+            }
+        }
+        
+        // Also show in grid area
+        const grid = document.getElementById('papersGrid');
+        if (grid && this.state.papers.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <div class="text-red-400 mb-4">
+                        <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Error Loading Papers</h3>
+                        <p class="text-sm">${message || 'Failed to load past papers.'}</p>
+                    </div>
+                    <button onclick="location.reload()" class="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-colors text-sm">
+                        <i class="fas fa-refresh mr-2"></i>Reload Page
+                    </button>
+                </div>
+            `;
+        }
     }
 
     showNotification(message) {

@@ -84,10 +84,32 @@ function setupEventListeners() {
     // Navigation links
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const page = link.getAttribute('data-page');
-            if (page) {
-                showPage(page);
+            // Skip if it's a button element (like Browse dropdown) - let its own handlers work
+            if (link.tagName === 'BUTTON') {
+                return true;
+            }
+
+            const href = link.getAttribute('href');
+            const dataPage = link.getAttribute('data-page');
+
+            // If it has a data-page attribute, use single-page app navigation
+            if (dataPage) {
+                e.preventDefault();
+                showPage(dataPage);
+            }
+            // If href points to another HTML file, allow normal navigation
+            else if (href && (href.endsWith('.html') || href.startsWith('http'))) {
+                // Allow normal navigation - don't prevent default
+                return true;
+            }
+            // If href is an anchor link (#section), allow normal anchor navigation
+            // navigation.js handles smooth scrolling for these
+            else if (href && href.startsWith('#')) {
+                return true;
+            }
+            // Otherwise, prevent default to avoid broken links
+            else {
+                e.preventDefault();
             }
         });
     });
