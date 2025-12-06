@@ -18,17 +18,26 @@
 
     <!-- Clarity tracking code for https://sharedstudy.vercel.app/ -->
     <script>
-    try {
-        (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
-        t.onerror=function(){console.debug('Clarity tracking script failed to load');};
-        y=l.getElementsByTagName(r)[0];
-        if(y&&y.parentNode){y.parentNode.insertBefore(t,y);}
-        })(window, document, "clarity", "script", "ua59wimvoi");
-    } catch(error) {
-        console.debug('Clarity tracking initialization failed:', error);
-    }
+        try {
+            (function (c, l, a, r, i, t, y) {
+                c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+                t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i + "?ref=bwt";
+                t.onerror = function () { console.debug('Clarity tracking script failed to load'); };
+                y = l.getElementsByTagName(r)[0];
+                if (y && y.parentNode) { y.parentNode.insertBefore(t, y); }
+            })(window, document, "clarity", "script", "ua59wimvoi");
+        } catch (error) {
+            console.debug('Clarity tracking initialization failed:', error);
+        }
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VDZ8N94TCB"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-VDZ8N94TCB');
     </script>
 
     <meta charset="UTF-8">
@@ -56,7 +65,7 @@
 
     <title>Profile | StudyShare Platform for Notes, Past Papers and Study Materials</title>
 
-                <!-- Favicon -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
@@ -68,13 +77,14 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-<!-- Fonts -->
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com" onerror="console.warn('Tailwind CDN failed to load, using fallback styles'); this.onerror=null;"></script>
+    <script src="https://cdn.tailwindcss.com"
+        onerror="console.warn('Tailwind CDN failed to load, using fallback styles'); this.onerror=null;"></script>
 
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -262,7 +272,8 @@
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
-            <a href="login.html" class="mobile-menu-item hidden-by-default" id="mobileLoginLink" onclick="closeMobileMenu()">
+            <a href="login.html" class="mobile-menu-item hidden-by-default" id="mobileLoginLink"
+                onclick="closeMobileMenu()">
                 <i class="fas fa-sign-in-alt"></i>
                 <span>Login</span>
             </a>
@@ -353,10 +364,12 @@
                             </div>
 
                             <!-- Admin Panel Link (for authorized uploaders) -->
-                            <div id="adminPanelSection" class="hidden bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl p-6 border border-purple-500/30">
+                            <div id="adminPanelSection"
+                                class="hidden bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl p-6 border border-purple-500/30">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center space-x-4">
-                                        <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                                        <div
+                                            class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
                                             <i class="fas fa-shield-alt text-white"></i>
                                         </div>
                                         <div>
@@ -364,8 +377,8 @@
                                             <p class="text-gray-300 text-sm">Review and approve pending notes</p>
                                         </div>
                                     </div>
-                                    <a href="admin-approval.html" 
-                                       class="glass-button px-6 py-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:shadow-lg transition-all">
+                                    <a href="admin-approval.html"
+                                        class="glass-button px-6 py-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:shadow-lg transition-all">
                                         <i class="fas fa-cog mr-2"></i>Open Admin Panel
                                     </a>
                                 </div>
